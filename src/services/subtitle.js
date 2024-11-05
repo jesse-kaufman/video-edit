@@ -34,8 +34,7 @@ export const getSubtitleStreams = async (file, type = "") => {
 
     // Filter subtitle streams and return the English ones, along with their indices and codec names.
     const streams = video.streams
-      // Filter out non-subtitle streams.
-      // @ts-ignore
+      // @ts-ignore Filter out non-subtitle streams.
       .filter((stream) => stream.codec_type === "subtitle")
       // Map subtitle streams to an array of objects containing language, codec name, and subtitle index.
       .map((stream, index) => {
