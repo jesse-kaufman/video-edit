@@ -19,15 +19,7 @@ export default winston.createLogger({
   level: "debug",
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(myFormat),
-    }),
-    new winston.transports.File({
-      filename: "jxl-convert.log",
-      level: "debug",
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.simple()
-      ),
+      format: myFormat,
     }),
   ],
 });
