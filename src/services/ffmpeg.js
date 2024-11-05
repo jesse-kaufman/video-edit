@@ -5,6 +5,7 @@
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
+import log from "./logger/logger.js";
 
 /**
  * @typedef {import('./audio.js').AudioStream} AudioStream
@@ -117,15 +118,13 @@ class Ffmpeg {
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
       this.ffmpegProcess
-        .on("start", (command) => console.log(command))
+        .on("start", (command) => log.debug(command))
         // Output message on progress
-        .on("stderr", (err) => console.log(err))
+        .on("stderr", (err) => log.progress(err))
         // Handle errors
-        .on("error", (err) =>
-          reject(console.error("Error stripping audio:", err))
-        )
+        .on("error", (err) => reject(log.error("Error stripping audio:", err)))
         // Output message on success
-        .on("end", () => resolve(console.log("Audio stripped successfully.")))
+        .on("end", () => resolve(log.success("Audio stripped successfully.")))
         // Save the video to the output file
         .save(this.outputFile);
     });
