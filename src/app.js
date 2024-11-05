@@ -75,7 +75,7 @@ export default class App {
     );
 
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = await new Ffmpeg(file, `${outputFile}-cleaned.mkv`)
+    const ffmpeg = new Ffmpeg(file, `${outputFile}-cleaned.mkv`)
       .mapAudioStreams(audioStreams)
       .mapSubtitles(imageSubs);
 
