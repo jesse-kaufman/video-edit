@@ -1,4 +1,5 @@
 import ffprobe from "ffprobe";
+import log from "./logger/logger.js";
 
 /**
  * @typedef AudioStream
@@ -48,11 +49,11 @@ export const getAudioStreams = async (file) => {
       return { ...audioStream, title: getStreamTitle(audioStream) };
     });
 
-    console.log("streams", mappedStreams);
+    log.debug("streams", mappedStreams);
     // Return data for the matching streams
     return mappedStreams;
   } catch (err) {
-    console.error("Error getting ffprobe data:", err);
+    log.error("Error getting ffprobe data:", err);
     process.exit(1);
   }
 };
