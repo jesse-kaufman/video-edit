@@ -45,7 +45,7 @@ export const getSubtitleStreams = async (file, type = "") => {
           codecName: stream.codec_name || "",
           index,
         };
-        console.log(subtitleStream);
+        log.debug("subtitle stream:", subtitleStream);
         return subtitleStream;
       })
       // Filter out subtitle streams that are not in English and don't match the arguments passed
@@ -59,7 +59,7 @@ export const getSubtitleStreams = async (file, type = "") => {
     // Return data for the matching streams
     return streams;
   } catch (err) {
-    console.error("Error getting ffprobe data:", err);
+    log.error("Error getting ffprobe data:", err);
     process.exit(1);
   }
 };
@@ -67,16 +67,22 @@ export const getSubtitleStreams = async (file, type = "") => {
 /**
  * Extract English subtitles from a video file.
  * @param {string} inputFilePath - Path to the input video file.
+ * @param {boolean=} exitIfNotFound - Whether to exit if no subtitles were found.
  */
-export const extractSubs = async (inputFilePath) => {
+export const extractSubs = async (inputFilePath, exitIfNotFound) => {
   // Get subtitle streams from the video file
   const streams = await getSubtitleStreams(inputFilePath, "text");
-  console.log(streams);
+  log.debug(streams);
 
   // If no English subtitles were found, exit the program
   if (streams.length === 0) {
-    log.error("No English subtitles found in the video file.");
-    process.exit(1);
+    const msg = `No text English subtitles were found in the video file.`;
+    if (exitIfNotFound) {
+      log.error(msg);
+      process.exit(1);
+    }
+
+    log.warn(msg);
   }
 
   // Set stream count on module global.
@@ -107,14 +113,14 @@ async function extractSubtitle(inputFilePath, stream) {
         // Set hide output except progress stats
         .outputOptions(["-stats", "-loglevel quiet"])
         // Output message on progress
-        .on("stderr", (err) => console.log(err))
+        .on("stderr", (err) => log.progress(err))
         // Handle errors
         .on("error", (err) =>
-          reject(console.error("Error extracting subtitles:", err))
+          reject(log.error("Error extracting subtitles:", err))
         )
         // Output message on success
         .on("end", () =>
-          resolve(console.log("Subtitles extracted successfully."))
+          resolve(log.success("Subtitles extracted successfully."))
         )
         // Save the subtitle to the output file
         .save(outputFile);
