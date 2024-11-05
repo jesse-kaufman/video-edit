@@ -63,23 +63,31 @@ function getStreamTitle(stream) {
     return stream.origTitle;
   }
 
-  // In all other cases, return "English - [channels]" where channels is "5.1", "2.0", "1.0", etc.
-  return formatChannelLayout(stream.channelLayout);
+  /*
+   * In all other cases, set title to "English - [channel layout]"
+   * (where channel layout is "5.1", "2.0", "1.0", etc.)
+   */
+  const formattedChannelLayout = getFormattedChannelLayout(stream);
+
+  // Append " - Default" on first track, otherwise append space to prevent ffmpeg error 234
+  const defaultString = stream.index === 0 ? " - Default" : " ";
+
+  return `${formattedChannelLayout}${defaultString}`;
 }
 
 /**
- * Formats channel layout for audio stream title.
- * @param {string} channelLayout - Channel layout from ffmpeg.
+ * Gets formatted channel layout for a given stream.
+ * @param {AudioStream} stream - The audio stream.
  * @returns {string} Formatted channel layout.
  */
-function formatChannelLayout(channelLayout) {
+function getFormattedChannelLayout(stream) {
   // Extract channel layout from stream, stripping out anything in parentheses
-  const channels = channelLayout.replace(/\(.*\)/, "");
+  const channels = stream.channelLayout.replace(/\(.*\)/, "");
 
-  // Replace common channel layouts with proper names
-  if (channels === "5.1") return "5.1 Surround ";
-  if (channels === "7.1") return "7.1 Surround ";
+  // Replace surround channel layouts with friendlier names
+  if (channels === "5.1") return "5.1 Surround";
+  if (channels === "7.1") return "7.1 Surround";
 
   // Default to channel layout with initial caps
-  return channels.slice(0, 1).toUpperCase() + channels.slice(1);
+  return `${channels.slice(0, 1).toUpperCase()}${channels.slice(1)}`;
 }
