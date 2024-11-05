@@ -1,43 +1,25 @@
 import winston from "winston";
 
-const myFormat = winston.format.printf((info) => {
-  if (info.level.match("debug")) {
-    return `[DEBUG] ${info.message}`;
-  }
-
-  return `${info.message}`;
-});
+const myFormat = winston.format.printf((info) => info.message);
 
 const customLevels = {
   levels: {
     success: 0,
     error: 1,
-    warning: 2,
+    warn: 2,
     notice: 3,
     info: 4,
-    debug: 5,
-  },
-  colors: {
-    success: "bold green",
-    error: "bold red",
-    warning: "bold orange",
-    notice: "bold blue",
-    info: "grey",
-    debug: "dim grey",
+    progress: 5,
+    debug: 6,
   },
 };
-
-winston.addColors(customLevels.colors);
 
 export default winston.createLogger({
   levels: customLevels.levels,
   level: "debug",
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        myFormat,
-        winston.format.colorize({ all: true })
-      ),
+      format: winston.format.combine(myFormat),
     }),
     new winston.transports.File({
       filename: "jxl-convert.log",
