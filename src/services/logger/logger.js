@@ -24,8 +24,7 @@ export default {
    */
   success(msg) {
     return new Promise((resolve) => {
-      logger.success(msg);
-      resolve();
+      resolve(logger.success(msg));
     });
   },
 
@@ -33,12 +32,11 @@ export default {
    * Logs an error message to the console in red color.
    * @param {string} msg - The message.
    * @param {any} args - Additional arguments.
-   * @returns {Promise<void>} Promise resolved.
+   * @returns {Promise<Logger>} Promise resolved.
    */
   error(msg, ...args) {
     return new Promise((resolve) => {
-      logger.error(msg, ...args);
-      resolve();
+      resolve(logger.error(msg, ...args));
     });
   },
 
@@ -46,33 +44,23 @@ export default {
    * Logs a warning message to the console in yellow color.
    * @param {string} msg - The message.
    * @param {any} args - Additional arguments.
-   * @returns {Promise<void>} Promise resolved.
+   * @returns {Promise<Logger>} Promise resolved.
    */
-  warning(msg, ...args) {
+  warn(msg, ...args) {
     return new Promise((resolve) => {
-      logger.warn(msg, ...args);
-      resolve();
+      resolve(logger.warn(msg, ...args));
     });
-  },
-  /**
-   * Alias for warning() method.
-   * @param {string} args - Arguments.
-   * @returns {Promise<void>} Promise resolved.
-   */
-  warn(args) {
-    return this.warning(args);
   },
 
   /**
    * Logs a highlighted message to the console.
    * @param {string} msg - The message.
    * @param {any} args - Additional arguments.
-   * @returns {Promise<void>}
+   * @returns {Promise<Logger>} Promise resolved.
    */
   notice(msg, ...args) {
     return new Promise((resolve) => {
-      logger.notice(msg, ...args);
-      resolve();
+      resolve(logger.notice(msg, ...args));
     });
   },
 
@@ -80,12 +68,11 @@ export default {
    * Logs a message to the console.
    * @param {string} msg - The message.
    * @param {any} args - Additional arguments.
-   * @returns {Promise<void>} Promise resolved.
+   * @returns {Promise<Logger>} Promise resolved.
    */
   info(msg, ...args) {
     return new Promise((resolve) => {
-      logger.info(msg, ...args);
-      resolve();
+      resolve(logger.info(msg, ...args));
     });
   },
 
@@ -93,12 +80,12 @@ export default {
    * Logs a debug message to the console if debugging is enabled.
    * @param {string} msg - The message.
    * @param {any} args - Additional arguments.
-   * @returns {Promise<void>} Promise resolved.
+   * @returns {Promise<Logger>} Promise resolved.
    */
   debug(msg, ...args) {
     return new Promise((resolve) => {
       if (debug) logger.debug(`${msg}`, ...args);
-      resolve();
+      resolve(logger);
     });
   },
 };
