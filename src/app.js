@@ -5,14 +5,11 @@ import { getAudioStreams } from "./services/audio.js";
 import Ffmpeg from "./services/ffmpeg.js";
 
 /**
- * Wrapper object for winston logging library.
- * @typedef {object} Logger
- * @property {Function} success - Log success message.
- * @property {Function} error - Log error message.
- * @property {Function} warning - Log warning message.
- * @property {Function} notice - Log notice message.
- * @property {Function} info - Log info message.
- * @property {Function} debug - Log debug message.
+ * @typedef {import('./services/logger/logger.js').Logger} Logger
+ */
+
+/**
+ * Main app class.
  */
 export default class App {
   /**
