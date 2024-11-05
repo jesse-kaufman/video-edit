@@ -53,6 +53,9 @@ export default class App {
    * @param {string} file - The video file to be cleaned up.
    */
   async cleanup(file) {
+    // Extract text-based English subtitles from the video file
+    await extractSubs(file);
+
     // Get audio streams from the video file
     const audioStreams = await getAudioStreams(file);
 
