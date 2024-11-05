@@ -1,5 +1,5 @@
 import path from "node:path";
-import logger from "./services/logger/logger.js";
+import log from "./services/logger/logger.js";
 import { extractSubs, getSubtitleStreams } from "./services/subtitle.js";
 import { getAudioStreams } from "./services/audio.js";
 import Ffmpeg from "./services/ffmpeg.js";
@@ -12,19 +12,13 @@ import Ffmpeg from "./services/ffmpeg.js";
  * Main app class.
  */
 export default class App {
-  /**
-   * Static property holding logger object for logging.
-   * @type {Logger}
-   */
-  static log = logger;
-
   constructor() {
-    App.log.info("Starting");
+    log.debug("Starting");
     if (!Ffmpeg.check()) {
-      App.log.error("FFMPEG not found. Please install it and try again.");
+      log.error("FFMPEG not found. Please install it and try again.");
       process.exit(1);
     }
-    console.log("FFMPEG found");
+    log.info("FFMPEG found");
   }
 
   /**
@@ -34,22 +28,24 @@ export default class App {
     const command = process.argv[2];
     const file = process.argv[3];
 
-    if (command === "extract-subs" && file != null) {
-      await extractSubs(file);
+    if (file == null) {
+      log.error("Input file not specified.");
+      process.exit(1);
+    }
+
+    if (command === "extract-subs") {
+      // Extract English subtitles from the video file
+      await extractSubs(file, true);
       process.exit(0);
     }
 
-    if (command === "clean" && file != null) {
-      try {
-        await this.cleanup(file);
-        process.exit(0);
-      } catch (err) {
-        App.log.error("Error stripping audio:", err);
-        process.exit(1);
-      }
+    if (command === "clean") {
+      // Run cleanup process on video file
+      await this.cleanup(file);
+      process.exit(0);
     }
 
-    console.log("Missing filename or action");
+    log.info("Missing filename or action");
   }
 
   /**
@@ -62,7 +58,7 @@ export default class App {
 
     // If no English audio streams were found, exit the program
     if (audioStreams.length === 0) {
-      console.error("No English audio streams found in the video file.");
+      log.error("No English audio streams found in the video file.");
       process.exit(1);
     }
 
