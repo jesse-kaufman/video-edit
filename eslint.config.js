@@ -48,6 +48,7 @@ const config = [
       "default-case-last": "error",
       "default-param-last": "error",
       "dot-notation": "error",
+      "multiline-comment-style": ["error", "starred-block"],
       eqeqeq: ["error", "smart"],
       "func-names": ["error", "as-needed"],
       "func-style": [
