@@ -65,8 +65,10 @@ export default class App {
       process.exit(1);
     }
 
+    // Get image-based subtitle streams
     const imageSubs = await getSubtitleStreams(file, "image");
 
+    // Setup base output filename
     const outputFile = path.join(
       path.dirname(file),
       path.basename(file, path.extname(file))
