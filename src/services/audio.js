@@ -11,9 +11,6 @@ import log from "./logger/logger.js";
  * @property {string} channelLayout - Channel layout of audio stream.
  */
 
-// Stores count of audio streams in file
-let streamCount = 0;
-
 /**
  * Gets audio streams from the input file.
  * @param {string} file - The input file path.
@@ -31,9 +28,6 @@ export const getAudioStreams = async (file) => {
     const streams = video.streams.filter(
       (s) => s.codec_type === "audio" && s.tags?.language === "eng"
     );
-
-    // Update the stream count on module global variable
-    streamCount = streams.length;
 
     const mappedStreams = streams.map((stream, index) => {
       // Setup audio stream object with blank title to be filled in next.
@@ -64,8 +58,8 @@ export const getAudioStreams = async (file) => {
  * @returns {string} Title for audio stream.
  */
 function getStreamTitle(stream) {
-  // If more than one stream, current stream is not the first, and stream has title, use the title
-  if (streamCount > 1 && stream.index > 0 && stream.origTitle !== "") {
+  // If current stream is not the first, and stream has title, use that title
+  if (stream.index > 0 && stream.origTitle !== "") {
     return stream.origTitle;
   }
 
