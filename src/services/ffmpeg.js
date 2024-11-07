@@ -60,7 +60,7 @@ class Ffmpeg {
   setBaseOptions() {
     this.ffmpegProcess
       // Hide output except progress stats
-      //.outputOptions(["-stats", "-loglevel quiet"])
+      .outputOptions(["-stats", "-loglevel quiet"])
       // Map video stream and set codec to copy
       .outputOptions("-map 0:v")
       // Set audio codec to copy
