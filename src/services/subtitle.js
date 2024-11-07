@@ -67,6 +67,8 @@ export const getSubtitleStreams = async (file, type = "") => {
  * @param {boolean=} exitIfNotFound - Whether to exit if no subtitles were found.
  */
 export const extractSubs = async (inputFilePath, exitIfNotFound) => {
+  log.info("Extracting text subtitles ...");
+
   // Get subtitle streams from the video file
   const streams = await getSubtitleStreams(inputFilePath, "text");
   log.debug(streams);
