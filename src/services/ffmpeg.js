@@ -85,9 +85,7 @@ class Ffmpeg {
         // Map audio stream
         .outputOptions(`-map 0:a:${i}`)
         // Set audio stream title
-        .outputOptions([`-metadata:s:a:${i}`, `title=${stream.title} `])
-        // Set audio stream language
-        .outputOptions([`-metadata:s:a:${i}`, `language=eng`]);
+        .outputOptions([`-metadata:s:a:${i}`, `title=${stream.title} `]);
     }
     return this;
   }
@@ -104,9 +102,7 @@ class Ffmpeg {
         // Map subtitle stream and set codec to copy
         .outputOptions([`-map 0:s:${i}`, "-c:s copy"])
         // Set subtitle stream title
-        .outputOptions([`-metadata:s:s:${i}`, `title=${sub.title} `])
-        // Set subtitle stream language
-        .outputOptions([`-metadata:s:s:${i}`, `language=eng`]);
+        .outputOptions([`-metadata:s:s:${i}`, `title=${sub.title} `]);
     }
     return this;
   }
