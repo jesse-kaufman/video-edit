@@ -70,6 +70,8 @@ class Ffmpeg {
       .outputOptions("-scodec copy")
       // Set global language
       .outputOptions([`-metadata`, `language=eng`])
+      // Set video language
+      .outputOptions([`-metadata:s:v:0`, `language=eng`])
       // Blank video title
       .outputOptions([`-metadata:s:v:0`, `title=`]);
   }
