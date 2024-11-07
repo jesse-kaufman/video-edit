@@ -25,23 +25,24 @@ export const getAudioStreams = async (file) => {
     });
 
     // Filter audio streams and return the English ones, along with their indices and codec names.
-    const streams = video.streams.filter(
-      (s) => s.codec_type === "audio" && s.tags?.language === "eng"
-    );
+    const streams = video.streams.filter((s) => s.codec_type === "audio");
 
-    const mappedStreams = streams.map((stream, index) => {
-      // Setup audio stream object with blank title to be filled in next.
-      const audioStream = {
-        lang: stream.tags?.language || "",
-        origTitle: stream.tags?.title || "",
-        codecName: stream.codec_name || "",
-        channelLayout: stream.channel_layout || "",
-        title: "",
-        index,
-      };
+    const mappedStreams = streams
+      .map((stream, index) => {
+        // Setup audio stream object with blank title to be filled in next.
+        const audioStream = {
+          lang: stream.tags?.language || "",
+          origTitle: stream.tags?.title || "",
+          codecName: stream.codec_name || "",
+          channelLayout: stream.channel_layout || "",
+          title: "",
+          index,
+        };
 
-      return { ...audioStream, title: getStreamTitle(audioStream) };
-    });
+        return { ...audioStream, title: getStreamTitle(audioStream) };
+      })
+      // Filter out English audio streams
+      .filter((s) => s.lang === "eng");
 
     log.debug("streams", mappedStreams);
     // Return data for the matching streams
