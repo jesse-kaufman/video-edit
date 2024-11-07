@@ -80,6 +80,12 @@ export default class App {
       .mapSubtitles(imageSubs);
 
     // Run the ffmpeg command.
-    await ffmpeg.run();
+    try {
+      await ffmpeg.run();
+    } catch (err) {
+      // @ts-ignore
+      log.error("Error cleaning up the video file:", err.message);
+      process.exit(1);
+    }
   }
 }
