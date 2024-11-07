@@ -86,9 +86,12 @@ class Ffmpeg {
     for (const [i, stream] of audioStreams.entries()) {
       this.ffmpegProcess
         // Map audio stream
-        .outputOptions("-map", `0:a:${i}`)
+        .outputOptions("-map", `0:a:${stream.index}`)
         // Set audio stream title
-        .outputOptions([`-metadata:s:a:${i}`, `title=${stream.title}  `]);
+        .outputOptions([
+          `-metadata:s:a:${stream.index}`,
+          `title=${stream.title}  `,
+        ]);
     }
     return this;
   }
@@ -103,9 +106,9 @@ class Ffmpeg {
     for (const [i, sub] of subtitles.entries()) {
       this.ffmpegProcess
         // Map subtitle stream and set codec to copy
-        .outputOptions(["-map", `0:s:${i}`])
+        .outputOptions(["-map", `0:s:${sub.index}`])
         // Set subtitle stream title
-        .outputOptions([`-metadata:s:s:${i}`, `title=${sub.title}  `]);
+        .outputOptions([`-metadata:s:s:${sub.index}`, `title=${sub.title}  `]);
     }
     return this;
   }
