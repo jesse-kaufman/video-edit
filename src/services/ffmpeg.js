@@ -60,13 +60,14 @@ class Ffmpeg {
   setBaseOptions() {
     this.ffmpegProcess
       // Hide output except progress stats
-      .outputOptions(["-stats", "-loglevel quiet"])
+      //.outputOptions(["-stats", "-loglevel quiet"])
       // Map video stream and set codec to copy
       .outputOptions("-map 0:v")
       // Set audio codec to copy
       .audioCodec("copy")
       // Set video codec to copy
       .videoCodec("copy")
+      .outputOptions('-scodec copy')
       // Set global language
       .outputOptions([`-metadata`, `language=eng`])
       // Blank video title
@@ -83,9 +84,9 @@ class Ffmpeg {
     for (const [i, stream] of audioStreams.entries()) {
       this.ffmpegProcess
         // Map audio stream
-        .outputOptions(`-map 0:a:${i}`)
+        .outputOptions("-map",`0:a:${i}`)
         // Set audio stream title
-        .outputOptions([`-metadata:s:a:${i}`, `title=${stream.title} `]);
+        .outputOptions([`-metadata:s:a:${i}`,`title=${stream.title}  `]);
     }
     return this;
   }
@@ -100,9 +101,9 @@ class Ffmpeg {
     for (const [i, sub] of subtitles.entries()) {
       this.ffmpegProcess
         // Map subtitle stream and set codec to copy
-        .outputOptions([`-map 0:s:${i}`, "-c:s copy"])
+        .outputOptions(["-map",`0:s:${i}`])
         // Set subtitle stream title
-        .outputOptions([`-metadata:s:s:${i}`, `title=${sub.title} `]);
+        .outputOptions([`-metadata:s:s:${i}`,`title=${sub.title}  `]);
     }
     return this;
   }
