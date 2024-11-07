@@ -12,6 +12,9 @@ import Ffmpeg from "./services/ffmpeg.js";
  * Main app class.
  */
 export default class App {
+  /**
+   * Checks for ffmpeg when creating an instance of App.
+   */
   constructor() {
     log.debug("Starting");
     if (!Ffmpeg.check()) {
