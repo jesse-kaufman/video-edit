@@ -4,13 +4,12 @@
  */
 import { Chalk } from "chalk";
 import { debug } from "../../config/config.js";
-import logger from "./services/winston.js";
 
 // @ts-ignore
 const chalk = new Chalk({ level: 3 });
 
 /**
- * Wrapper object for winston logging library.
+ * Logging module for console messages.
  * @typedef {object} Logger
  * @property {Function} success - Log success message.
  * @property {Function} error - Log error message.
@@ -28,7 +27,7 @@ export default {
    */
   success(msg) {
     return new Promise((resolve) =>
-      resolve(logger.success(chalk.green.bold(msg)))
+      resolve(console.log(chalk.green.bold(msg)))
     );
   },
 
@@ -36,55 +35,55 @@ export default {
    * Logs an error message to the console in red color.
    * @param {string} msg - The message.
    * @param {any} args - Additional arguments.
-   * @returns {Promise<Logger>} Promise resolved.
+   * @returns {Promise<void>} Promise resolved.
    */
   error(msg, ...args) {
     return new Promise((resolve) => {
-      resolve(logger.error(chalk.red(msg), ...args));
+      resolve(console.error(chalk.red(msg), ...args));
     });
   },
 
   /**
    * Logs a warning message to the console in yellow color.
    * @param {string} msg - The message.
-   * @returns {Promise<Logger>} Promise resolved.
+   * @returns {Promise<void>} Promise resolved.
    */
   warn(msg) {
     return new Promise((resolve) => {
-      resolve(logger.warn(chalk.yellow.bold(`[WARN] ${msg}`)));
+      resolve(console.log(chalk.yellow.bold(`[WARN] ${msg}`)));
     });
   },
 
   /**
    * Logs a highlighted message to the console.
    * @param {string} msg - The message.
-   * @returns {Promise<Logger>} Promise resolved.
+   * @returns {Promise<void>} Promise resolved.
    */
   notice(msg) {
     return new Promise((resolve) => {
-      resolve(logger.notice(chalk.blue(msg)));
+      resolve(console.log(chalk.blue(msg)));
     });
   },
 
   /**
    * Logs a message to the console.
    * @param {string} msg - The message.
-   * @returns {Promise<Logger>} Promise resolved.
+   * @returns {Promise<void>} Promise resolved.
    */
   info(msg) {
     return new Promise((resolve) => {
-      resolve(logger.info(chalk.grey(msg)));
+      resolve(console.log(msg));
     });
   },
 
   /**
    * Logs a progress message to the console.
    * @param {string} msg - The message.
-   * @returns {Promise<Logger>} Promise resolved.
+   * @returns {Promise<void>} Promise resolved.
    */
   progress(msg) {
     return new Promise((resolve) => {
-      resolve(logger.progress(chalk.hex("#333311").italic(msg)));
+      resolve(console.log(chalk.hex("#333311").italic(msg)));
     });
   },
 
