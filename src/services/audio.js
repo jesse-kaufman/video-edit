@@ -35,7 +35,7 @@ export const getAudioStreams = async (file) => {
           index,
         };
 
-        return { ...audioStream, title: generateStreamTitle(audioStream) };
+        return { ...audioStream, title: formatStreamTitle(audioStream) };
       })
       // Filter out English audio streams
       .filter((s) => s.lang === "eng");
@@ -102,7 +102,7 @@ function formatCodecLongName(longName) {
  * @param {AudioStream} stream - The audio stream.
  * @returns {string} Title for audio stream.
  */
-function generateStreamTitle(stream) {
+function formatStreamTitle(stream) {
   // If current stream is not the first, and stream has title, use that title
   if (stream.index > 0 && stream.origTitle !== "") {
     return stream.origTitle;
