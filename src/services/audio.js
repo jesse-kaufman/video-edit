@@ -45,6 +45,13 @@ export const getAudioStreams = async (file) => {
       .filter((s) => s.lang === "eng");
 
     log.debug("streams", mappedStreams);
+
+    // If no English audio streams were found, exit the program
+    if (mappedStreams.length === 0) {
+      log.error("No English audio streams found in the video file.");
+      process.exit(1);
+    }
+
     // Return data for the matching streams
     return mappedStreams;
   } catch (err) {

@@ -86,12 +86,6 @@ export default class App {
     // Get audio streams from the video file
     const audioStreams = await getAudioStreams(file);
 
-    // If no English audio streams were found, exit the program
-    if (audioStreams.length === 0) {
-      log.error("No English audio streams found in the video file.");
-      process.exit(1);
-    }
-
     // Get image-based subtitle streams
     const imageSubs = await getSubtitleStreams(file, "image");
 
