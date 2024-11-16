@@ -8,6 +8,12 @@ import fluentFfmpeg from "fluent-ffmpeg";
 import log from "./logger/logger.js";
 
 /**
+ * @typedef ConvertOpts
+ * @property {boolean} [convertAudio] - Whether or not to convert audio streams.
+ * @property {boolean} [convertVideo] - Whether or not to convert video stream.
+ */
+
+/**
  * @typedef {import('./audio.js').AudioStream} AudioStream
  * @typedef {import('./subtitle.js').SubtitleStream} SubtitleStream
  */
@@ -16,21 +22,58 @@ import log from "./logger/logger.js";
  * Class that acts as a wrapper for fluent-ffmpeg.
  */
 class Ffmpeg {
+  /** The fluent-ffmpeg object. */
   ffmpegProcess;
+
+  /** The output file. */
   outputFile = "";
+
+  /** Conversion options. */
+  convertOpts = {};
+
+  /** Audio codec to use if converting. */
+  audioCodec = "aac";
 
   /**
    * Creates a new Ffmpeg object.
    * @param {string} inputFile - The name of the input file.
    * @param {string} outputFile - The name of the output file.
+   * @param {ConvertOpts} convertOpts - Conversion options.
    */
-  constructor(inputFile, outputFile) {
-    // Save fluent ffmpeg object to class property
+  constructor(inputFile, outputFile, convertOpts = {}) {
+    // Save fluent ffmpeg object for access later
     this.ffmpegProcess = fluentFfmpeg(inputFile);
+    // Init conversion options
+    this.convertOpts = convertOpts;
+    // Init output file property
     this.outputFile = outputFile;
+  }
+
+  /**
+   * Sets up codecs if converting.
+   * @returns {Promise<Ffmpeg>} Ffmpeg object.
+   */
+  async init() {
+    // Promisify getAvailableEncoders method from fluent-ffmpeg
+    const getAvailableEncodersAsync = promisify(
+      this.ffmpegProcess.getAvailableEncoders
+    );
+
+    // Get available encoders
+    const encoders = await getAvailableEncodersAsync();
+
+    console.log("encoders", encoders);
+
+    // Use libfdk_aac if available
+    if (encoders?.libfdk_aac?.type === "audio") {
+      this.audioCodec = "libfdk_aac";
+    }
+
+    console.log(this.audioCodec);
 
     // Initialize with base ffmpeg options
-    this.setBaseOptions();
+    this.setBaseOptions(this.convertOpts);
+
     return this;
   }
 
@@ -54,17 +97,22 @@ class Ffmpeg {
 
   /**
    * Sets base options for ffmpeg command.
+   * @param {ConvertOpts} convertOpts - Conversion options.
    */
-  setBaseOptions() {
+  setBaseOptions(convertOpts = {}) {
+    const convertAudio = convertOpts?.convertAudio;
+    const convertVideo = convertOpts?.convertVideo;
+
     this.ffmpegProcess
       // Hide output except progress stats
       .outputOptions(["-stats", "-loglevel quiet"])
       // Map video stream and set codec to copy
       .outputOptions("-map 0:v")
-      // Set audio codec to copy
-      .audioCodec("copy")
-      // Set video codec to copy
-      .videoCodec("copy")
+      // If converting audio, set codec to AAC, otherwise copy (for now, assume libfdk_acc is supported)
+      .audioCodec(convertAudio ? this.audioCodec : "copy")
+      // If converting video, set codec to h265, otherwise copy
+      .videoCodec(convertVideo ? "h265" : "copy")
+      // Set subtitle codec to copy
       .outputOptions("-scodec copy")
       // Set global language
       .outputOptions([`-metadata`, `language=eng`])
@@ -77,10 +125,9 @@ class Ffmpeg {
   /**
    * Maps audio streams in output file.
    * @param {Array<AudioStream>} audioStreams - An array of audio streams.
-   * @param {boolean} convert - Whether or not to convert audio streams when mapping.
    * @returns {Ffmpeg} Returns this to allow chaining.
    */
-  mapAudioStreams(audioStreams, convert = false) {
+  mapAudioStreams(audioStreams) {
     // Walk through audio streams and map them
     for (const [, stream] of audioStreams.entries()) {
       this.ffmpegProcess
@@ -91,13 +138,6 @@ class Ffmpeg {
           `-metadata:s:a:${stream.index}`,
           `title=${stream.title}  `,
         ]);
-
-      if (convert) {
-        // Convert audio stream to AAC if not already
-        this.ffmpegProcess
-          // Set audio codec to AAC (assumes ffmpeg is installed with libfdk_aac support)
-          .audioCodec("libfdk_aac");
-      }
     }
     return this;
   }

@@ -6,6 +6,7 @@ import Ffmpeg from "./services/ffmpeg.js";
 
 /**
  * @typedef {import('./services/logger/logger.js').Logger} Logger
+ * @typedef {import('./services/ffmpeg.js').ConvertOpts} ConvertOpts
  */
 
 /**
@@ -65,9 +66,11 @@ export default class App {
         break;
       case "convert-audio":
         // Convert audio to AAC if not already
+        await this.cleanup(file, { convertAudio: true });
         break;
       case "convert-video":
         // Convert video to H265
+        await this.cleanup(file, { convertVideo: true });
         break;
       default:
         log.info("Missing filename or action");
@@ -78,8 +81,9 @@ export default class App {
   /**
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
    * @param {string} file - The video file to be cleaned up.
+   * @param {ConvertOpts} convertOpts - Conversion options.
    */
-  async cleanup(file) {
+  async cleanup(file, convertOpts = {}) {
     // Extract text-based English subtitles from the video file
     await extractSubs(file);
 
@@ -90,9 +94,13 @@ export default class App {
     const imageSubs = await getSubtitleStreams(file, "image");
 
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = new Ffmpeg(file, this.outputFilename)
-      .mapAudioStreams(audioStreams)
-      .mapSubtitles(imageSubs);
+    const ffmpeg = await new Ffmpeg(
+      file,
+      this.outputFilename,
+      convertOpts
+    ).init();
+
+    ffmpeg.mapAudioStreams(audioStreams).mapSubtitles(imageSubs);
 
     // Run the ffmpeg command.
     try {
