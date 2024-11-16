@@ -1,3 +1,4 @@
+import { promisify } from "node:util";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 
@@ -9,6 +10,10 @@ import log from "./logger/logger.js";
  * @property {string} origTitle - Original title of audio stream.
  * @property {string} title - Title of audio stream.
  * @property {string} channelLayout - Channel layout of audio stream.
+ */
+
+/**
+ * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
 
 /**
@@ -99,3 +104,26 @@ function getFormattedChannelLayout(stream) {
   // Default to channel layout with initial caps
   return `${channels.slice(0, 1).toUpperCase()}${channels.slice(1)}`;
 }
+
+/**
+ * Checks if libfdk_aac is available.
+ * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
+ * @returns {Promise<boolean>} True if libfdk_aac is available.
+ */
+export const isLibfdkAvailable = async (ffmpegProcess) => {
+  // Promisify getAvailableEncoders method from fluent-ffmpeg
+  const getAvailableEncodersAsync = promisify(
+    ffmpegProcess.getAvailableEncoders
+  );
+
+  // Get available encoders
+  const encoders = await getAvailableEncodersAsync();
+
+  if (encoders?.libfdk_aac?.type === "audio") {
+    // The libfdk_aac encoder is available
+    return true;
+  }
+
+  // The libfdk_aac encoder is NOT available
+  return false;
+};
