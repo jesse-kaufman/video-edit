@@ -1,60 +1,9 @@
-import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 
 /**
  * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
-
-/**
- * Gets audio streams from the input file.
- * @param {string} file - The input file path.
- * @returns {Promise<Array<AudioStream>>} Array of audio streams.
- */
-export const getAudioStreams = async (file) => {
-  // Get audio streams with ffprobe
-  try {
-    // Use ffprobe to get audio streams from the video file
-    const video = await ffprobe(file, {
-      path: "/usr/local/bin/ffprobe",
-    });
-
-    // Filter audio streams and return the English ones, along with their indices and codec names.
-    const streams = video.streams.filter((s) => s.codec_type === "audio");
-
-    const mappedStreams = streams
-      .map((stream, index) => {
-        // Setup audio stream object with blank title to be filled in next.
-        const audioStream = {
-          lang: stream.tags?.language || "eng",
-          origTitle: stream.tags?.title || "",
-          codecName: stream.codec_name || "",
-          formattedCodecName: stream.codec_long_name || "",
-          channelLayout: stream.channel_layout || "",
-          title: "",
-          index,
-        };
-
-        return { ...audioStream, title: formatStreamTitle(audioStream) };
-      })
-      // Filter out English audio streams
-      .filter((s) => s.lang === "eng");
-
-    log.debug("streams", mappedStreams);
-
-    // If no English audio streams were found, exit the program
-    if (mappedStreams.length === 0) {
-      log.error("No English audio streams found in the video file.");
-      process.exit(1);
-    }
-
-    // Return data for the matching streams
-    return mappedStreams;
-  } catch (err) {
-    log.error("Error getting ffprobe data:", err);
-    process.exit(1);
-  }
-};
 
 /**
  * Sets up AudioStream based on ffprobe stream data.

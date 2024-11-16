@@ -1,7 +1,6 @@
 import path from "node:path";
 import log from "./services/logger/logger.js";
 import { extractSubs, getSubtitleStreams } from "./services/subtitle.js";
-import { getAudioStreams } from "./services/audio.js";
 import Ffmpeg from "./services/ffmpeg.js";
 
 /**
@@ -92,9 +91,6 @@ export default class App {
       // Extract text-based English subtitles from the video file
       await extractSubs(file);
     }
-
-    // Get audio streams from the video file
-    const audioStreams = await getAudioStreams(file);
 
     // Get image-based subtitle streams
     const imageSubs = await getSubtitleStreams(file, "image");
