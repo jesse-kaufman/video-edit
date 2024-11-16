@@ -1,4 +1,3 @@
-import { promisify } from "node:util";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 
@@ -97,24 +96,31 @@ function getFormattedChannelLayout(stream) {
 }
 
 /**
- * Checks if libfdk_aac is available.
- * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
- * @returns {Promise<boolean>} True if libfdk_aac is available.
+ * Sets the audio codec based on if we're converting and if libfdk_aac is available.
+ * @param {FfmpegCommand} fluentFfmpeg - Fluent ffmpeg object.
+ * @param {boolean|undefined} convert - Whether or not to convert the audio stream.
+ * @returns {string} The audio codec to use.
  */
-export const isLibfdkAvailable = async (ffmpegProcess) => {
-  // Promisify getAvailableEncoders method from fluent-ffmpeg
-  const getAvailableEncodersAsync = promisify(
-    ffmpegProcess.getAvailableEncoders
-  );
+export const getAudioCodec = (fluentFfmpeg, convert) => {
+  console.log(convert);
+  // Copy audio stream unless we're converting
+  if (convert !== true) return "copy";
 
-  // Get available encoders
-  const encoders = await getAvailableEncodersAsync();
+  // Default to aac codec
+  let codec = "aac";
 
-  if (encoders?.libfdk_aac?.type === "audio") {
-    // The libfdk_aac encoder is available
-    return true;
-  }
+  // Check if libfdk_aac is available and use it if available
+  fluentFfmpeg.getAvailableEncoders((err, encoders) => {
+    if (err) {
+      log.error("Error getting available encoders:", err);
+      process.exit(1);
+    }
 
-  // The libfdk_aac encoder is NOT available
-  return false;
+    // Use libfdk_aac if available
+    if (encoders?.libfdk_aac?.type === "audio") {
+      codec = "libfdk_aac";
+    }
+  });
+
+  return codec;
 };
