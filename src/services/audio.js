@@ -31,7 +31,7 @@ export const getAudioStreams = async (file) => {
       .map((stream, index) => {
         // Setup audio stream object with blank title to be filled in next.
         const audioStream = {
-          lang: stream.tags?.language || "",
+          lang: stream.tags?.language || "eng",
           origTitle: stream.tags?.title || "",
           codecName: stream.codec_name || "",
           channelLayout: stream.channel_layout || "",
