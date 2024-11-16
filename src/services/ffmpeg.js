@@ -133,6 +133,7 @@ class Ffmpeg {
       this.ffmpegProcess
         // Map audio stream
         .outputOptions("-map", `0:a:${stream.index}`)
+        .outputOptions([`-metadata:s:a:${stream.index}`, `language=eng`])
         // Set audio stream title
         .outputOptions([
           `-metadata:s:a:${stream.index}`,
