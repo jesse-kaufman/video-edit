@@ -56,6 +56,24 @@ export const getSubtitleStreams = async (file, type = "") => {
 };
 
 /**
+ * Returns a SubtitleStream object for the given input stream from ffprobe.
+ * @param {any} stream - The stream to process.
+ * @param {number} index - The index of the subtitle stream.
+ * @returns {SubtitleStream} SubtitleStream object.
+ */
+export const getSubtitleStreamData = (stream, index) => {
+  const codecLongName = stream.codec_long_name.replace(" subtitle", "");
+
+  return {
+    lang: stream.tags?.language || "",
+    title: stream.tags?.title || "",
+    codecName: `${stream.codec_name}`,
+    codecLongName,
+    index,
+  };
+};
+
+/**
  * Extract English subtitles from a video file.
  * @param {string} inputFilePath - Path to the input video file.
  * @param {boolean=} exitIfNotFound - Whether to exit if no subtitles were found.

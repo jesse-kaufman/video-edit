@@ -56,6 +56,33 @@ export const getAudioStreams = async (file) => {
 };
 
 /**
+ * Sets up AudioStream based on ffprobe stream data.
+ * @param {any} stream - The audio stream object from ffprobe.
+ * @param {number} index - The index of the audio stream.
+ * @returns {AudioStream} The audio stream object.
+ */
+export const getAudioStreamData = (stream, index) => {
+  const codecLongName = formatCodecLongName(stream.codec_long_name);
+  const channelLayout = formatChannelLayout(stream);
+
+  // Setup audio stream object with blank title to be filled in next.
+  const audioStream = {
+    lang: stream.tags?.language || "eng",
+    origTitle: stream.tags?.title || "",
+    codecName: `${stream.codec_name}`,
+    codecLongName,
+    channelLayout: `${stream.channel_layout}`,
+    title: "",
+    index,
+  };
+  return {
+    ...audioStream,
+    title: formatStreamTitle(audioStream),
+  };
+};
+
+
+/**
  * Gets title for audio stream.
  * @param {AudioStream} stream - The audio stream.
  * @returns {string} Title for audio stream.

@@ -5,12 +5,16 @@
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
+import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
-import { getAudioCodec } from "./audio.js";
+import { getAudioCodec, getAudioStreamData } from "./audio.js";
+import { getVideoStreamData } from "./video.js";
+import { getSubtitleStreamData } from "./subtitle.js";
 
 /**
  * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
  * @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream
+ * @typedef {import('../@types/video-stream.js').VideoStream} VideoStream
  * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
@@ -29,6 +33,24 @@ class Ffmpeg {
   audioCodec;
 
   /**
+   * Input file stream data.
+   */
+  inputStreams = {
+    /** @type {Array<AudioStream>} */ audio: [],
+    /** @type {Array<VideoStream>} */ video: [],
+    /** @type {Array<SubtitleStream>} */ subtitle: [],
+  };
+
+  /**
+   * Output file stream data.
+   */
+  outputStreams = {
+    /** @type {Array<AudioStream>} */ audio: [],
+    /** @type {Array<VideoStream>} */ video: [],
+    /** @type {Array<SubtitleStream>} */ subtitle: [],
+  };
+
+  /**
    * Creates a new Ffmpeg object.
    * @param {string} inputFile - The name of the input file.
    * @param {string} outputFile - The name of the output file.
@@ -37,9 +59,11 @@ class Ffmpeg {
   constructor(inputFile, outputFile, convertOpts = {}) {
     // Save fluent ffmpeg object for access later
     this.ffmpegProcess = fluentFfmpeg(inputFile);
-    // Init conversion options
+    // Set conversion options
     this.convertOpts = convertOpts;
-    // Init output file property
+    // Set input file property
+    this.inputFile = inputFile;
+    // Set output file property
     this.outputFile = outputFile;
     // Set audio codec
     this.audioCodec = getAudioCodec(
@@ -66,6 +90,61 @@ class Ffmpeg {
     } catch (err) {
       return false;
     }
+  }
+
+  async readInputFile() {
+    // Get audio streams with ffprobe
+    try {
+      // Use ffprobe to get audio streams from the video file
+      const video = await ffprobe(this.inputFile, {
+        path: "/usr/local/bin/ffprobe",
+      });
+
+      this.setupStreams(video.streams);
+
+      console.log("input streams:", this.inputStreams);
+    } catch (err) {
+      log.error("Error getting ffprobe data:", err);
+      process.exit(1);
+    }
+  }
+
+  /**
+   * Sets up audio, video, and subtitle stream properties.
+   * @param {Array<any>} streams - Input streams from ffprobe.
+   */
+  setupStreams(streams) {
+    let numAudioStreams = 0;
+    let numVideoStreams = 0;
+    let numSubtitleStreams = 0;
+
+    streams.every((stream) => {
+      switch (stream.codec_type) {
+        case "audio":
+          this.inputStreams.audio.push(
+            getAudioStreamData(stream, numAudioStreams)
+          );
+          numAudioStreams++;
+          break;
+
+        case "video":
+          this.inputStreams.video.push(
+            getVideoStreamData(stream, numVideoStreams)
+          );
+          console.log(stream);
+          numVideoStreams++;
+          break;
+
+        case "subtitle":
+          this.inputStreams.subtitle.push(
+            getSubtitleStreamData(stream, numSubtitleStreams)
+          );
+          numSubtitleStreams++;
+          break;
+      }
+
+      return true;
+    });
   }
 
   /**
