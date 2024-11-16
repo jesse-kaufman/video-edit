@@ -77,9 +77,10 @@ class Ffmpeg {
   /**
    * Maps audio streams in output file.
    * @param {Array<AudioStream>} audioStreams - An array of audio streams.
+   * @param {boolean} convert - Whether or not to convert audio streams when mapping.
    * @returns {Ffmpeg} Returns this to allow chaining.
    */
-  mapAudioStreams(audioStreams) {
+  mapAudioStreams(audioStreams, convert = false) {
     // Walk through audio streams and map them
     for (const [, stream] of audioStreams.entries()) {
       this.ffmpegProcess
@@ -90,6 +91,13 @@ class Ffmpeg {
           `-metadata:s:a:${stream.index}`,
           `title=${stream.title}  `,
         ]);
+
+      if (convert) {
+        // Convert audio stream to AAC if not already
+        this.ffmpegProcess
+          // Set audio codec to AAC (assumes ffmpeg is installed with libfdk_aac support)
+          .audioCodec("libfdk_aac");
+      }
     }
     return this;
   }
