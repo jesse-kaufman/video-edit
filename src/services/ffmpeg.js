@@ -153,7 +153,7 @@ class Ffmpeg {
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
       this.ffmpegProcess
-        .on("start", (command) => log.debug(command))
+        .on("start", (command) => log.info(command))
         // Output message on progress
         .on("stderr", (err) => log.progress(err))
         // Handle errors
