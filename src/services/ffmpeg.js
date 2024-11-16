@@ -62,9 +62,7 @@ class Ffmpeg {
     if (libfdkAvailable) this.audioCodec = "libfdk_aac";
 
     // Initialize with base ffmpeg options
-    this.setBaseOptions(this.convertOpts);
-
-    return this;
+    return this.setBaseOptions(this.convertOpts);
   }
 
   /**
@@ -88,6 +86,7 @@ class Ffmpeg {
   /**
    * Sets base options for ffmpeg command.
    * @param {ConvertOpts} convertOpts - Conversion options.
+   * @returns {Ffmpeg} Ffmpeg instance.
    */
   setBaseOptions(convertOpts = {}) {
     const convertAudio = convertOpts?.convertAudio;
@@ -110,6 +109,8 @@ class Ffmpeg {
       .outputOptions([`-metadata:s:v:0`, `language=eng`])
       // Blank video title
       .outputOptions([`-metadata:s:v:0`, `title=`]);
+
+    return this;
   }
 
   /**
