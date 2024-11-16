@@ -54,19 +54,25 @@ export default class App {
       process.exit(1);
     }
 
-    if (command === "extract-subs") {
-      // Extract English subtitles from the video file
-      await extractSubs(file, true);
-      process.exit(0);
+    switch (command) {
+      case "extract-subs":
+        // Extract English subtitles from the video file
+        await extractSubs(file, true);
+        break;
+      case "clean":
+        // Run cleanup process on video file
+        await this.cleanup(file);
+        break;
+      case "convert-audio":
+        // Convert audio to AAC if not already
+        break;
+      case "convert-video":
+        // Convert video to H265
+        break;
+      default:
+        log.info("Missing filename or action");
+        process.exit(1);
     }
-
-    if (command === "clean") {
-      // Run cleanup process on video file
-      await this.cleanup(file);
-      process.exit(0);
-    }
-
-    log.info("Missing filename or action");
   }
 
   /**
