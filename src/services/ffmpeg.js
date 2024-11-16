@@ -9,14 +9,9 @@ import log from "./logger/logger.js";
 import { isLibfdkAvailable } from "./audio.js";
 
 /**
- * @typedef ConvertOpts
- * @property {boolean} [convertAudio] - Whether or not to convert audio streams.
- * @property {boolean} [convertVideo] - Whether or not to convert video stream.
- */
-
-/**
- * @typedef {import('./audio.js').AudioStream} AudioStream
- * @typedef {import('./subtitle.js').SubtitleStream} SubtitleStream
+ * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
+ * @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream
+ * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
 

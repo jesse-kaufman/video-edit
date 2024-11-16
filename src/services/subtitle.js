@@ -4,13 +4,7 @@ import ffmpeg from "fluent-ffmpeg";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 
-/**
- * @typedef SubtitleStream
- * @property {string} lang - Language code of the subtitle.
- * @property {string} codecName - Codec name of subtitle.
- * @property {number} index - Index of subtitle.
- * @property {string} title - Title of subtitle stream.
- */
+/** @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
 
 // Stream count for current input file
 let streamCount = 0;
