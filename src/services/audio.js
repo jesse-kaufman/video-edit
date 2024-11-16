@@ -126,6 +126,7 @@ function formatStreamTitle(stream) {
  * @returns {string} Formatted channel layout.
  */
 function formatChannelLayout(channelLayout) {
+  log.debug("Channel layout:", channelLayout);
   // Extract channel layout from stream, stripping out anything in parentheses
   const channels = channelLayout.replace(/\(.*\)/, "");
 
