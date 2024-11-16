@@ -36,6 +36,7 @@ export const getSubtitleStreams = async (file, type = "") => {
           lang: stream.tags?.language || "",
           title: stream.tags?.title || "",
           codecName: stream.codec_name || "",
+          codecLongName: stream.codec_long_name || "",
           index,
         };
       })

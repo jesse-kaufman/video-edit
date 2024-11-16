@@ -29,6 +29,7 @@ export const getAudioStreams = async (file) => {
           lang: stream.tags?.language || "eng",
           origTitle: stream.tags?.title || "",
           codecName: stream.codec_name || "",
+          codecLongName: stream.codec_long_name || "",
           channelLayout: stream.channel_layout || "",
           title: "",
           index,
@@ -81,6 +82,20 @@ export const getAudioStreamData = (stream, index) => {
   };
 };
 
+/**
+ * Formats the audio codec long name.
+ * @param {string} longName - Default long name from ffprobe.
+ * @returns {string} Formatted long name.
+ */
+function formatCodecLongName(longName) {
+  let codecLongName = longName.replace(/\(.*\)/, "").trim();
+
+  if (codecLongName === "ATSC A/52B") {
+    codecLongName = "AC3";
+  }
+
+  return codecLongName;
+}
 
 /**
  * Gets title for audio stream.
