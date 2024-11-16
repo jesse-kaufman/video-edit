@@ -170,9 +170,9 @@ class Ffmpeg {
         // Output message on progress
         .on("stderr", (err) => log.progress(err))
         // Handle errors
-        .on("error", (err) => reject(log.error("Error stripping audio:", err)))
+        .on("error", (err) => reject(log.error("FFMPEG Error:", err)))
         // Output message on success
-        .on("end", () => resolve(log.success("Audio stripped successfully.")))
+        .on("end", () => resolve(log.success("FFMPEG finished successfully!")))
         // Save the video to the output file
         .save(this.outputFile);
     });
