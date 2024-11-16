@@ -26,13 +26,10 @@ import { isLibfdkAvailable } from "./audio.js";
 class Ffmpeg {
   /** The fluent-ffmpeg object. */
   ffmpegProcess;
-
   /** The output file. */
   outputFile = "";
-
   /** Conversion options. */
   convertOpts = {};
-
   /** Audio codec to use if converting. */
   audioCodec = "aac";
 
