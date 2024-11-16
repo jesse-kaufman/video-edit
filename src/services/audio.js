@@ -72,7 +72,7 @@ export const getAudioStreamData = (stream, index) => {
     origTitle: stream.tags?.title || "",
     codecName: `${stream.codec_name}`,
     codecLongName,
-    channelLayout: `${stream.channel_layout}`,
+    channelLayout,
     title: "",
     index,
   };
