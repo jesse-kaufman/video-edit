@@ -81,7 +81,7 @@ class Ffmpeg {
    */
   mapAudioStreams(audioStreams) {
     // Walk through audio streams and map them
-    for (const [i, stream] of audioStreams.entries()) {
+    for (const [, stream] of audioStreams.entries()) {
       this.ffmpegProcess
         // Map audio stream
         .outputOptions("-map", `0:a:${stream.index}`)
@@ -101,7 +101,7 @@ class Ffmpeg {
    */
   mapSubtitles(subtitles) {
     // Map subtitle streams and set metadata
-    for (const [i, sub] of subtitles.entries()) {
+    for (const [, sub] of subtitles.entries()) {
       this.ffmpegProcess
         // Map subtitle stream and set codec to copy
         .outputOptions(["-map", `0:s:${sub.index}`])
