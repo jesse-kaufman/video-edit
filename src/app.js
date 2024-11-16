@@ -100,9 +100,9 @@ export default class App {
     const imageSubs = await getSubtitleStreams(file, "image");
 
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = new Ffmpeg(file, this.outputFilename, convertOpts);
-
-    ffmpeg.mapAudioStreams(audioStreams).mapSubtitles(imageSubs);
+    const ffmpeg = new Ffmpeg(file, this.outputFilename, convertOpts)
+      .mapAudioStreams(audioStreams)
+      .mapSubtitles(imageSubs);
 
     // Run the ffmpeg command.
     try {
