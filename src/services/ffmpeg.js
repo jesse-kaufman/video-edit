@@ -17,6 +17,7 @@ import { isLibfdkAvailable } from "./audio.js";
 /**
  * @typedef {import('./audio.js').AudioStream} AudioStream
  * @typedef {import('./subtitle.js').SubtitleStream} SubtitleStream
+ * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
 
 /**
