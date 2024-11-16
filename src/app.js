@@ -108,10 +108,11 @@ export default class App {
 
     // Run the ffmpeg command.
     try {
+      console.log("Running ffmpeg command...");
       await ffmpeg.run();
     } catch (err) {
       // @ts-ignore
-      log.error("Error cleaning up the video file:", err.message);
+      log.error("Error running ffmpeg:", err.message);
       process.exit(1);
     }
   }
