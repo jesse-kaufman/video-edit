@@ -179,12 +179,11 @@ class Ffmpeg {
 
   /**
    * Maps audio streams in output file.
-   * @param {Array<AudioStream>} audioStreams - An array of audio streams.
    * @returns {Ffmpeg} Returns this to allow chaining.
    */
-  mapAudioStreams(audioStreams) {
+  mapAudioStreams() {
     // Walk through audio streams and map them
-    for (const [, stream] of audioStreams.entries()) {
+    for (const [, stream] of this.inputStreams.audio.entries()) {
       this.ffmpegProcess
         // Map audio stream
         .outputOptions("-map", `0:a:${stream.index}`)
