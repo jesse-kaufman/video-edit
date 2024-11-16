@@ -95,7 +95,7 @@ class Ffmpeg {
       // If converting audio, set codec to AAC, otherwise copy (for now, assume libfdk_acc is supported)
       .audioCodec(convertAudio ? this.audioCodec : "copy")
       // If converting video, set codec to h265, otherwise copy
-      .videoCodec(convertVideo ? "h265" : "copy")
+      .videoCodec(convertVideo ? "hevc" : "copy")
       // Set subtitle codec to copy
       .outputOptions("-scodec copy")
       // Set global language
