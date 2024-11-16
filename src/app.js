@@ -16,12 +16,30 @@ export default class App {
    * Checks for ffmpeg when creating an instance of App.
    */
   constructor() {
-    log.debug("Starting");
+    this.command = process.argv[2];
+    this.inputFile = process.argv[3];
+    this.outputFilename = this.getOutputFilename(this.inputFile, this.command);
+
+    log.debug("Starting...");
+
     if (!Ffmpeg.check()) {
       log.error("FFMPEG not found. Please install it and try again.");
       process.exit(1);
     }
-    log.info("FFMPEG found");
+  }
+
+  /**
+   * Generates output filename for command.
+   * @param {string} inputFile - The input file.
+   * @param {string} command - The command.
+   * @returns {string} The output filename.
+   */
+  getOutputFilename(inputFile, command) {
+    const dir = path.dirname(inputFile);
+    const basename = path.basename(inputFile, path.extname(inputFile));
+
+    const output = path.join(dir, `${basename}-${command}.mkv`);
+    return output;
   }
 
   /**
@@ -71,14 +89,8 @@ export default class App {
     // Get image-based subtitle streams
     const imageSubs = await getSubtitleStreams(file, "image");
 
-    // Setup base output filename
-    const outputFile = path.join(
-      path.dirname(file),
-      path.basename(file, path.extname(file))
-    );
-
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = new Ffmpeg(file, `${outputFile}-cleaned.mkv`)
+    const ffmpeg = new Ffmpeg(file, this.outputFilename)
       .mapAudioStreams(audioStreams)
       .mapSubtitles(imageSubs);
 

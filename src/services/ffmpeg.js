@@ -16,20 +16,18 @@ import log from "./logger/logger.js";
  * Class that acts as a wrapper for fluent-ffmpeg.
  */
 class Ffmpeg {
+  ffmpegProcess;
+  outputFile = "";
+
   /**
    * Creates a new Ffmpeg object.
    * @param {string} inputFile - The name of the input file.
    * @param {string} outputFile - The name of the output file.
    */
   constructor(inputFile, outputFile) {
-    // Save the name of the input file to class property
-    this.inputFile = inputFile;
-
-    // Save the name of the output file to class property
-    this.outputFile = outputFile;
-
     // Save fluent ffmpeg object to class property
     this.ffmpegProcess = fluentFfmpeg(inputFile);
+    this.outputFile = outputFile;
 
     // Initialize with base ffmpeg options
     this.setBaseOptions();
