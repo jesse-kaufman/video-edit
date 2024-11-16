@@ -11,17 +11,17 @@
  * @returns {VideoStream} The audio stream object.
  */
 export const getVideoStreamData = (stream, index) => {
-  let codecLongName = stream.codec_long_name.replace(/\(.*\)/, "");
+  let formattedCodecName = stream.codec_long_name.replace(/\(.*\)/, "");
 
-  if (codecLongName.match(" / ")) {
-    [codecLongName] = codecLongName.split(" / ");
+  if (formattedCodecName.match(" / ")) {
+    [formattedCodecName] = formattedCodecName.split(" / ");
   }
 
   // Setup video stream object with blank title.
   return {
     lang: stream.tags?.language || "eng",
     codecName: stream.codec_name || "",
-    codecLongName,
+    formattedCodecName,
     resolution: `${stream.width}x${stream.height}`,
     title: "",
     index,

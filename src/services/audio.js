@@ -29,7 +29,7 @@ export const getAudioStreams = async (file) => {
           lang: stream.tags?.language || "eng",
           origTitle: stream.tags?.title || "",
           codecName: stream.codec_name || "",
-          codecLongName: stream.codec_long_name || "",
+          formattedCodecName: stream.codec_long_name || "",
           channelLayout: stream.channel_layout || "",
           title: "",
           index,
@@ -63,15 +63,15 @@ export const getAudioStreams = async (file) => {
  * @returns {AudioStream} The audio stream object.
  */
 export const getAudioStreamData = (stream, index) => {
-  const codecLongName = formatCodecLongName(stream.codec_long_name);
-  const channelLayout = formatChannelLayout(stream);
+  const formattedCodecName = formatCodecName(stream.codec_long_name);
+  const channelLayout = formatChannelLayout(stream.channel_layout);
 
   // Setup audio stream object with blank title to be filled in next.
   const audioStream = {
     lang: stream.tags?.language || "eng",
     origTitle: stream.tags?.title || "",
     codecName: `${stream.codec_name}`,
-    codecLongName,
+    formattedCodecName,
     channelLayout,
     title: "",
     index,
@@ -84,17 +84,17 @@ export const getAudioStreamData = (stream, index) => {
 
 /**
  * Formats the audio codec long name.
- * @param {string} longName - Default long name from ffprobe.
+ * @param {string} name - Default long name from ffprobe.
  * @returns {string} Formatted long name.
  */
-function formatCodecLongName(longName) {
-  let codecLongName = longName.replace(/\(.*\)/, "").trim();
+function formatCodecName(name) {
+  let formattedCodecName = name.replace(/\(.*\)/, "").trim();
 
-  if (codecLongName === "ATSC A/52B") {
-    codecLongName = "AC3";
+  if (formattedCodecName === "ATSC A/52B") {
+    formattedCodecName = "AC3";
   }
 
-  return codecLongName;
+  return formattedCodecName;
 }
 
 /**
