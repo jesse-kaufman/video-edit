@@ -60,18 +60,22 @@ export default class App {
         // Extract English subtitles from the video file
         await extractSubs(file, true);
         break;
+
       case "clean":
         // Run cleanup process on video file
         await this.cleanup(file);
         break;
+
       case "convert-audio":
         // Convert audio to AAC if not already
         await this.cleanup(file, { convertAudio: true });
         break;
+
       case "convert-video":
         // Convert video to H265
         await this.cleanup(file, { convertVideo: true });
         break;
+
       default:
         log.info("Missing filename or action");
         process.exit(1);
