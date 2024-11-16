@@ -122,12 +122,12 @@ function formatStreamTitle(stream) {
 
 /**
  * Gets formatted channel layout for a given stream.
- * @param {AudioStream} stream - The audio stream.
+ * @param {string} channelLayout - The channel layout from ffprobe.
  * @returns {string} Formatted channel layout.
  */
 function formatChannelLayout(channelLayout) {
   // Extract channel layout from stream, stripping out anything in parentheses
-  const channels = stream.channelLayout.replace(/\(.*\)/, "");
+  const channels = channelLayout.replace(/\(.*\)/, "");
 
   // Replace surround channel layouts with friendlier names
   if (channels === "5.1") return "5.1 Surround";
