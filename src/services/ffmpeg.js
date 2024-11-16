@@ -12,11 +12,11 @@ import { getVideoStreamData } from "./video.js";
 import { getSubtitleStreamData } from "./subtitle.js";
 
 /**
+ * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
+ * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
  * @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream
  * @typedef {import('../@types/video-stream.js').VideoStream} VideoStream
- * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
- * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
 
 /**
