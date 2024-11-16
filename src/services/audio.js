@@ -112,7 +112,7 @@ function formatStreamTitle(stream) {
    * In all other cases, set title to "English - [channel layout]"
    * (where channel layout is "5.1", "2.0", "1.0", etc.)
    */
-  const formattedChannelLayout = getFormattedChannelLayout(stream);
+  const formattedChannelLayout = formatChannelLayout(stream);
 
   // Append " - Default" on first track, otherwise append space to prevent ffmpeg error 234
   const defaultString = stream.index === 0 ? " - Default" : " ";
@@ -125,7 +125,7 @@ function formatStreamTitle(stream) {
  * @param {AudioStream} stream - The audio stream.
  * @returns {string} Formatted channel layout.
  */
-function getFormattedChannelLayout(stream) {
+function formatChannelLayout(channelLayout) {
   // Extract channel layout from stream, stripping out anything in parentheses
   const channels = stream.channelLayout.replace(/\(.*\)/, "");
 
