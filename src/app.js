@@ -63,7 +63,7 @@ export default class App {
 
       case "clean":
         // Run cleanup process on video file
-        await this.cleanup(file);
+        await this.cleanup(file, { extractSubs: true });
         break;
 
       case "convert-audio":
@@ -88,8 +88,10 @@ export default class App {
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
   async cleanup(file, convertOpts = {}) {
-    // Extract text-based English subtitles from the video file
-    await extractSubs(file);
+    if (convertOpts?.extractSubs === true) {
+      // Extract text-based English subtitles from the video file
+      await extractSubs(file);
+    }
 
     // Get audio streams from the video file
     const audioStreams = await getAudioStreams(file);
@@ -98,11 +100,7 @@ export default class App {
     const imageSubs = await getSubtitleStreams(file, "image");
 
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = await new Ffmpeg(
-      file,
-      this.outputFilename,
-      convertOpts
-    ).init();
+    const ffmpeg = new Ffmpeg(file, this.outputFilename, convertOpts);
 
     ffmpeg.mapAudioStreams(audioStreams).mapSubtitles(imageSubs);
 
