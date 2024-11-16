@@ -6,7 +6,6 @@ import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
 import log from "./logger/logger.js";
-import { isLibfdkAvailable } from "./audio.js";
 
 /**
  * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
@@ -41,20 +40,10 @@ class Ffmpeg {
     this.convertOpts = convertOpts;
     // Init output file property
     this.outputFile = outputFile;
-  }
 
-  /**
-   * Sets up codecs if converting.
-   * @returns {Promise<Ffmpeg>} Ffmpeg object.
-   */
-  async init() {
-    const libfdkAvailable = await isLibfdkAvailable(this.ffmpegProcess);
+    this.setAudioEncoder();
 
-    // Set audio codec to libfdk_aac if available
-    if (libfdkAvailable) this.audioCodec = "libfdk_aac";
-
-    // Initialize with base ffmpeg options
-    return this.setBaseOptions(this.convertOpts);
+    this.setBaseOptions(this.convertOpts);
   }
 
   /**
@@ -73,6 +62,20 @@ class Ffmpeg {
     } catch (err) {
       return false;
     }
+  }
+
+  /**
+   * Sets the audio codec based on whether or not libfdk_aac is available.
+   */
+  setAudioEncoder() {
+    fluentFfmpeg.getAvailableEncoders((err, encoders) => {
+      if (err) throw err;
+
+      // Use libfdk_aac if available
+      if (encoders?.libfdk_aac?.type === "audio") {
+        this.audioCodec = "libfdk_aac";
+      }
+    });
   }
 
   /**
