@@ -182,8 +182,10 @@ class Ffmpeg {
    * @returns {Ffmpeg} Returns this to allow chaining.
    */
   mapAudioStreams() {
-    // Walk through audio streams and map them
-    for (const [, stream] of this.inputStreams.audio.entries()) {
+    // Filter out non-English audio streams from input file
+    const streams = this.inputStreams.audio.filter((s) => s.lang === "eng");
+
+    streams.forEach((stream) => {
       this.ffmpegProcess
         // Map audio stream
         .outputOptions("-map", `0:a:${stream.index}`)
@@ -193,7 +195,8 @@ class Ffmpeg {
           `-metadata:s:a:${stream.index}`,
           `title=${stream.title}  `,
         ]);
-    }
+    });
+
     return this;
   }
 
