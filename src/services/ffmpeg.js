@@ -7,7 +7,7 @@ import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
-import { getAudioCodec, getAudioStreamData } from "./audio.js";
+import { getOutputAudioCodec, getAudioStreamData } from "./audio.js";
 import { getVideoStreamData } from "./video.js";
 import { getSubtitleStreamData } from "./subtitle.js";
 
@@ -66,7 +66,7 @@ class Ffmpeg {
     // Set output file property
     this.outputFile = outputFile;
     // Set audio codec
-    this.audioCodec = getAudioCodec(
+    this.audioCodec = getOutputAudioCodec(
       this.ffmpegProcess,
       convertOpts?.convertAudio
     );
