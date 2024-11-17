@@ -24,9 +24,7 @@ import {
  * @typedef {import('../@types/video-stream.js').VideoStream} VideoStream
  */
 
-/**
- * Class that acts as a wrapper for fluent-ffmpeg.
- */
+/** Class that acts as a wrapper for fluent-ffmpeg. */
 class VideoEdit {
   /** The fluent-ffmpeg object for cleaning/converting. */
   ffmpegProcess;
