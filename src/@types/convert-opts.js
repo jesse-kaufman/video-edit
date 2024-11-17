@@ -1,3 +1,5 @@
+/** @file Type definition for ConvertOpts. */
+
 /**
  * @typedef ConvertOpts
  * @property {boolean} [convertAudio] - Whether or not to convert audio streams.

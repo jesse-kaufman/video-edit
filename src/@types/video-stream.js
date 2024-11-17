@@ -1,3 +1,5 @@
+/** @file Type definition for VideoStream. */
+
 /**
  * @typedef VideoStream
  * @property {string} lang - Language code of the video stream.

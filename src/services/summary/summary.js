@@ -1,4 +1,8 @@
 /**
+ * @file Summary service.
+ */
+
+/**
  * @typedef {object} Logger
  * @property {Function} success - Log success message.
  * @property {Function} error - Log error message.

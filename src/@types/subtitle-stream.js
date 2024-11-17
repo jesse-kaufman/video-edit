@@ -1,3 +1,5 @@
+/** @file Type definition for SubtitleStream. */
+
 /**
  * @typedef SubtitleStream
  * @property {string} lang - Language code of the subtitle.

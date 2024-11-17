@@ -1,3 +1,5 @@
+/** @file Type definition for AudioStream. */
+
 /**
  * @typedef AudioStream
  * @property {string} lang - Language code of the audio.

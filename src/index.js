@@ -1,3 +1,4 @@
+/** @file Index file. */
 import App from "./app.js";
 
 const app = new App();

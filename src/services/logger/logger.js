@@ -1,5 +1,5 @@
 /**
- * Wrapper for winston logging library.
+ * @file Wrapper for winston logging library.
  * @module services/logging
  */
 import { Chalk } from "chalk";
