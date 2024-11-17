@@ -3,8 +3,6 @@
  */
 
 import path from "node:path";
-import ffmpeg from "fluent-ffmpeg";
-import log from "./logger/logger.js";
 
 /** @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
 
@@ -48,49 +46,13 @@ export const getSubtitleStreamData = (stream, index) => {
 };
 
 /**
- * Gets subtitle from specified input file.
- * @param {string} inputFilePath - Path to input file.
- * @param {SubtitleStream} stream - Stream being extracted.
- * @param {number} streamCount - Total number of text streams.
- */
-export const extractSub = async (inputFilePath, stream, streamCount) => {
-  // Get the subtitle file path
-  const outputFile = getSubFilename(inputFilePath, stream, streamCount);
-
-  await /** @type {Promise<void>} */ (
-    new Promise((resolve, reject) => {
-      // Extract subtitle using ffmpeg
-      ffmpeg(inputFilePath, { logger: log })
-        // Map subtitle
-        .outputOptions([`-map 0:s:${stream.index}`, "-c:s srt"])
-        // Set hide output except progress stats
-        .outputOptions(["-stats", "-loglevel quiet"])
-        // Output message on start
-        .on("start", (command) => log.info(command))
-        // Output message on progress
-        .on("stderr", (err) => log.progress(err))
-        // Handle errors
-        .on("error", (err) =>
-          reject(log.error("Error extracting subtitles:", err))
-        )
-        // Output message on success
-        .on("end", () =>
-          resolve(log.success("Subtitles extracted successfully."))
-        )
-        // Save the subtitle to the output file
-        .save(outputFile);
-    })
-  );
-};
-
-/**
  * Gets the output file based on the specified input file and stream.
  * @param {string} inputFile - The name of the input file.
  * @param {SubtitleStream} stream - The subtitle stream being extracted.
  * @param {number} streamCount - The number of streams to be extracted.
  * @returns {string} The output file.
  */
-function getSubFilename(inputFile, stream, streamCount) {
+export const getSubFilename = (inputFile, stream, streamCount) => {
   // Set base output file path to the input file path minus the extension
   let outputFile = path.join(
     path.dirname(inputFile),
@@ -104,4 +66,4 @@ function getSubFilename(inputFile, stream, streamCount) {
 
   // Append ".eng.srt" to the output file name
   return `${outputFile}.${stream.lang}.srt`;
-}
+};

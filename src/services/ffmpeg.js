@@ -14,7 +14,7 @@ import {
   getSubtitleStreamData,
   getTextSubtitles,
   getImageSubtitles,
-  extractSub,
+  getSubFilename,
 } from "./subtitle.js";
 
 /**
@@ -29,8 +29,10 @@ import {
  * Class that acts as a wrapper for fluent-ffmpeg.
  */
 class Ffmpeg {
-  /** The fluent-ffmpeg object. */
+  /** The fluent-ffmpeg object for cleaning/converting. */
   ffmpegProcess;
+  /** The fluent-ffmpeg object for subtitle extraction. */
+  ffmpegExtract;
   /** Full path to the output file. */
   outputFile;
   /** Conversion options. */
@@ -59,8 +61,10 @@ class Ffmpeg {
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
   constructor(inputFile, outputFile, convertOpts = {}) {
-    // Save fluent ffmpeg object for access later
+    // Setup fluent-ffmpeg object for cleaning/converting
     this.ffmpegProcess = fluentFfmpeg(inputFile);
+    // Setup fluent-ffmpeg object for subtitle extraction
+    this.ffmpegExtract = fluentFfmpeg(inputFile);
     // Set conversion options
     this.convertOpts = convertOpts;
     // Set input file property
@@ -73,7 +77,7 @@ class Ffmpeg {
       convertOpts?.convertAudio
     );
 
-    this.setBaseOptions();
+    this.setBaseOptions(this.ffmpegProcess);
 
     return this;
   }
@@ -147,30 +151,12 @@ class Ffmpeg {
 
   /**
    * Sets base options for ffmpeg command.
-   * @returns {Ffmpeg} Ffmpeg instance.
+   * @param {FfmpegCommand} ffmpeg - Fluent ffmpeg object.
    */
-  setBaseOptions() {
-    const { convertAudio, convertVideo } = this.convertOpts;
-
-    this.ffmpegProcess
+  setBaseOptions(ffmpeg) {
+    ffmpeg
       // Hide output except progress stats
-      .outputOptions(["-stats", "-loglevel quiet"])
-      // Map video stream and set codec to copy
-      .outputOptions("-map 0:v")
-      // If converting audio, set codec to AAC, otherwise copy (for now, assume libfdk_acc is supported)
-      .audioCodec(convertAudio ? this.outputAudioCodec : "copy")
-      // If converting video, set codec to h265, otherwise copy
-      .videoCodec(convertVideo ? "hevc" : "copy")
-      // Set subtitle codec to copy
-      .outputOptions("-scodec copy")
-      // Set global language
-      .outputOptions([`-metadata`, `language=eng`])
-      // Set video language
-      .outputOptions([`-metadata:s:v:0`, `language=eng`])
-      // Blank video title
-      .outputOptions([`-metadata:s:v:0`, `title=`]);
-
-    return this;
+      .outputOptions(["-stats", "-loglevel quiet"]);
   }
 
   /**
@@ -180,12 +166,23 @@ class Ffmpeg {
   mapAudioStreams() {
     // Filter out non-English audio streams from input file
     const streams = this.inputStreams.audio.filter((s) => s.lang === "eng");
+    // Save filtered streams to property
     this.outputStreams.audio = streams;
 
+    // Get the audio codec to use based on the source codec and the stream should be converted
+    const codec = getOutputAudioCodec(
+      this.ffmpegProcess,
+      this.convertOpts.convertAudio
+    );
+
+    // Process each audio stream
     streams.forEach((stream) => {
+      // Map audio stream
       this.ffmpegProcess
-        // Map audio stream
         .outputOptions("-map", `0:a:${stream.index}`)
+        // Set audio stream codec
+        .outputOptions(`-c:a ${codec}`)
+        // Set audio stream language
         .outputOptions([`-metadata:s:a:${stream.index}`, `language=eng`])
         // Set audio stream title
         .outputOptions([
@@ -222,9 +219,8 @@ class Ffmpeg {
   /**
    * Extracts text-based English subtitles from the video file.
    * @param {boolean} exitIfNotFound - Whether to exit the program if no matching subtitles are found.
-   * @returns {Promise<void>} Promise that resolves when the subtitles are extracted.
    */
-  async extractSubs(exitIfNotFound) {
+  extractSubs(exitIfNotFound) {
     log.info("Extracting text subtitles ...");
 
     const textSubs = getTextSubtitles(this.inputStreams.subtitle);
@@ -240,30 +236,92 @@ class Ffmpeg {
       log.warn(msg);
     }
 
-    // Walk through subtitle streams and extract each.
-    for (const stream of this.inputStreams.subtitle) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        await extractSub(this.inputFile, stream, textSubs.length);
-      } catch (err) {
-        log.error(
-          `Error extracting subtitle from stream ${stream.index}:`,
-          err
-        );
-      }
+    // Walk through subtitle streams and extract all simultaneously
+    for (const stream of textSubs) {
+      this.extractSub(stream, textSubs.length);
     }
+  }
+
+  /**
+   * Extracts a single subtitle from a stream.
+   * @param {SubtitleStream} stream - Subtitle stream data.
+   * @param {number} index - Stream index.
+   */
+  async extractSub(stream, index) {
+    try {
+      // Run the extract
+      await this.runExtract(this.inputFile, stream, index);
+    } catch (err) {
+      log.error(`Error extracting subtitle from stream ${stream.index}:`, err);
+    }
+  }
+
+  /**
+   * Gets subtitle from specified input file.
+   * @param {string} inputFilePath - Path to input file.
+   * @param {SubtitleStream} stream - Stream being extracted.
+   * @param {number} streamCount - Total number of text streams.
+   */
+  async runExtract(inputFilePath, stream, streamCount) {
+    // Get the subtitle file path
+    const outputFile = getSubFilename(inputFilePath, stream, streamCount);
+
+    await /** @type {Promise<void>} */ (
+      new Promise((resolve, reject) => {
+        // Extract subtitle using ffmpeg
+        this.ffmpegExtract
+          // Map subtitle
+          .outputOptions([`-map 0:s:${stream.index}`, "-scodec srt"])
+          // Set hide output except progress stats
+          .outputOptions(["-stats", "-loglevel quiet"])
+          // Output message on start
+          .on("start", (command) => log.info(command))
+          // Output message on error
+          .on("stderr", (err) => log.error(err))
+          .on("progress", (progress) =>
+            this.handleProgress(progress, stream.index)
+          )
+          // Handle errors
+          .on("error", (err) =>
+            reject(log.error("Error extracting subtitles:", err))
+          )
+          // Output message on success
+          .on("end", () =>
+            resolve(log.success("Subtitles extracted successfully."))
+          )
+          // Save the subtitle to the output file
+          .save(outputFile);
+      })
+    );
   }
 
   /**
    * Runs the ffmpeg command.
    */
   async run() {
+    const { convertVideo } = this.convertOpts;
+
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
+      // Map video stream
       this.ffmpegProcess
+        .outputOptions("-map 0:v")
+        // If converting video, set codec to h265, otherwise copy
+        .videoCodec(convertVideo ? "hevc" : "copy")
+        // Set subtitle codec to copy
+        .outputOptions("-scodec copy")
+        // Set global language
+        .outputOptions([`-metadata`, `language=eng`])
+        // Set video language
+        .outputOptions([`-metadata:s:v:0`, `language=eng`])
+        // Blank video title
+        .outputOptions([`-metadata:s:v:0`, `title=`])
+        // Output command on start
         .on("start", (command) => log.info(command))
+        // Output message on error
+        .on("stderr", (err) => log.error(err))
         // Output message on progress
-        .on("stderr", (err) => log.progress(err))
+        .on("progress", (progress) => this.handleProgress(progress))
         // Handle errors
         .on("error", (err) => reject(log.error("FFMPEG Error:", err)))
         // Output message on success
@@ -271,6 +329,38 @@ class Ffmpeg {
         // Save the video to the output file
         .save(this.outputFile);
     });
+  }
+
+  /**
+   * Prints progress information to console.
+   * @param {any} progress - Progress data from ffmpeg.
+   * @param {?number} index - Index of subtitle if extracting subtitles.
+   */
+  handleProgress(progress, index = null) {
+    const percent = `${progress.percent?.toFixed(1)}%`;
+    let progressTitle = "Clean/convert";
+    let details = "";
+
+    console.log(progress);
+
+    // If index is set, update progress title for subtitle extract
+    if (index !== null) {
+      progressTitle = `Subtitle extract #${index}`;
+    }
+
+    if (progress.currentFps) {
+      details = `${details}FPS=${progress.currentFps} `;
+    }
+
+    if (!isNaN(progress.targetSize)) {
+      details = `${details}(${progress.targetSize} KiB) `;
+    }
+
+    if (progress.timemark) {
+      details = `${details}${progress.timemark} `;
+    }
+
+    log.progress(`[${percent}] ${progressTitle}: ${details}`);
   }
 }
 
