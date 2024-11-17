@@ -114,36 +114,26 @@ class Ffmpeg {
    * @param {Array<any>} streams - Input streams from ffprobe.
    */
   setupStreams(streams) {
-    let numAudioStreams = 0;
-    let numVideoStreams = 0;
-    let numSubtitleStreams = 0;
-
-    streams.every((stream) => {
+    streams.forEach((stream) => {
       switch (stream.codec_type) {
         case "audio":
           this.inputStreams.audio.push(
-            getAudioStreamData(stream, numAudioStreams)
+            getAudioStreamData(stream, this.inputStreams.audio.length)
           );
-          numAudioStreams++;
           break;
 
         case "video":
           this.inputStreams.video.push(
-            getVideoStreamData(stream, numVideoStreams)
+            getVideoStreamData(stream, this.inputStreams.video.length)
           );
-          console.log(stream);
-          numVideoStreams++;
           break;
 
         case "subtitle":
           this.inputStreams.subtitle.push(
-            getSubtitleStreamData(stream, numSubtitleStreams)
+            getSubtitleStreamData(stream, this.inputStreams.subtitle.length)
           );
-          numSubtitleStreams++;
           break;
       }
-
-      return true;
     });
   }
 
