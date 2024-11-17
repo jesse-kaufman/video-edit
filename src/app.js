@@ -16,16 +16,19 @@ export default class App {
    * Checks for ffmpeg when creating an instance of App.
    */
   constructor() {
-    this.command = process.argv[2];
-    this.inputFile = process.argv[3];
-    this.outputFilename = this.getOutputFilename(this.inputFile, this.command);
-
     log.debug("Starting...");
 
     if (!Ffmpeg.check()) {
       log.error("FFMPEG not found. Please install it and try again.");
       process.exit(1);
     }
+
+    // Command is first argument to node app
+    this.command = process.argv[2];
+    // Input file is second argument to node app
+    this.inputFile = process.argv[3];
+    // Set output filename based on command and input file
+    this.outputFilename = this.getOutputFilename(this.inputFile, this.command);
   }
 
   /**
