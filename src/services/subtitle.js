@@ -1,11 +1,14 @@
-// SubtitleExtractor.js
+/**
+ * @file Subtitle stream service.
+ */
+
 import path from "node:path";
 import ffmpeg from "fluent-ffmpeg";
 import log from "./logger/logger.js";
 
 /** @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
 
-// Supported subtitle formats
+/** Text subtitle formats. */
 export const textSubs = ["subrip", "ass", "ssa"];
 
 /**
@@ -27,7 +30,7 @@ export const getTextSubtitles = (streams) =>
 /**
  * Returns a SubtitleStream object for the given input stream from ffprobe.
  * @param {any} stream - The stream to process.
- * @param {number} index - The index of the subtitle stream.
+ * @param {number} index - The index of the subtitle stream in the file.
  * @returns {SubtitleStream} SubtitleStream object.
  */
 export const getSubtitleStreamData = (stream, index) => {

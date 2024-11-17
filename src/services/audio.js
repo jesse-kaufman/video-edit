@@ -1,3 +1,6 @@
+/**
+ * @file Audio stream service.
+ */
 import log from "./logger/logger.js";
 
 /**
@@ -8,7 +11,7 @@ import log from "./logger/logger.js";
 /**
  * Sets up AudioStream based on ffprobe stream data.
  * @param {any} stream - The audio stream object from ffprobe.
- * @param {number} index - The index of the audio stream.
+ * @param {number} index - Index of audio stream within file.
  * @returns {AudioStream} The audio stream object.
  */
 export const getAudioStreamData = (stream, index) => {

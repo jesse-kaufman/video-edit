@@ -1,7 +1,8 @@
 /**
- * FFMPEG service.
+ * @file FFMPEG service.
  * @module services/ffmpeg
  */
+
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
@@ -30,7 +31,7 @@ import {
 class Ffmpeg {
   /** The fluent-ffmpeg object. */
   ffmpegProcess;
-  /** The output file. */
+  /** Full path to the output file. */
   outputFile;
   /** Conversion options. */
   convertOpts;
@@ -95,6 +96,10 @@ class Ffmpeg {
     }
   }
 
+  /**
+   * Initializes the ffmpeg object.
+   * @returns {Promise<Ffmpeg>} Promise resolves to Ffmpeg instance.
+   */
   async init() {
     // Get audio streams with ffprobe
     try {

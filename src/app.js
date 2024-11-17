@@ -1,3 +1,6 @@
+/**
+ * @file Main video edit application.
+ */
 import path from "node:path";
 import log from "./services/logger/logger.js";
 import Ffmpeg from "./services/ffmpeg.js";
@@ -43,7 +46,7 @@ export default class App {
 
   /**
    * Generates output filename for command.
-   * @returns {string} The output filename.
+   * @returns {string} The generated filename.
    */
   getOutputFilename() {
     /** Directory where input file is located. */

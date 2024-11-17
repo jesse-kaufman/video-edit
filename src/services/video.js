@@ -1,5 +1,5 @@
 /**
- * Video stream module.
+ * @file Video stream service.
  */
 
 /** @typedef {import('../@types/video-stream.js').VideoStream} VideoStream */
@@ -7,7 +7,7 @@
 /**
  * Sets up VideoStream based on ffprobe stream data.
  * @param {any} stream - The video stream object from ffprobe.
- * @param {number} index - The index of the video stream.
+ * @param {number} index - The index of the video stream in the file.
  * @returns {VideoStream} The audio stream object.
  */
 export const getVideoStreamData = (stream, index) => {
