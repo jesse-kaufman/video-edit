@@ -21,6 +21,14 @@ export const getImageSubtitles = (streams) =>
   streams.filter((stream) => !textSubs.includes(stream.codecName));
 
 /**
+ * Returns only text-based subtitle streams.
+ * @param {Array<SubtitleStream>} streams - All input subtitle streams.
+ * @returns {Array<SubtitleStream>} Text-based subtitle streams.
+ */
+export const getTextSubtitles = (streams) =>
+  streams.filter((stream) => !textSubs.includes(stream.codecName));
+
+/**
  * Gets subtitle streams from the input file.
  * @param {string} file - The input file path.
  * @param {string} type - If "image", get image subs. If "text", get text subs.
