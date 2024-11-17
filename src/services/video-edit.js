@@ -52,7 +52,7 @@ class VideoEdit {
   };
 
   /**
-   * Creates a new Ffmpeg object.
+   * Creates a new VideoEdit object.
    * @param {string} inputFile - The name of the input file.
    * @param {string} outputFile - The name of the output file.
    * @param {ConvertOpts} convertOpts - Conversion options.
@@ -84,7 +84,7 @@ class VideoEdit {
 
   /**
    * Initializes inputStreams property.
-   * @returns {Promise<VideoEdit>} Promise resolves to Ffmpeg instance.
+   * @returns {Promise<VideoEdit>} Promise resolves to VideoEdit instance.
    */
   async init() {
     // Set path to ffprobe

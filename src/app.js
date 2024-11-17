@@ -14,7 +14,7 @@ import VideoEdit from "./services/video-edit.js";
  * Main app class.
  */
 export default class App {
-  /** @type {VideoEdit} - Ffmpeg instance. */
+  /** @type {VideoEdit} - VideoEdit instance. */
   // @ts-ignore
   ffmpeg;
 
@@ -59,7 +59,7 @@ export default class App {
    * Runs the program.
    */
   async run() {
-    // Initialize Ffmpeg with input file and output filename
+    // Initialize VideoEdit with input file and output filename
     this.ffmpeg = await new VideoEdit(
       this.inputFile,
       this.outputFilename
@@ -115,7 +115,7 @@ export default class App {
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
   async cleanup(convertOpts = {}) {
-    // Create new Ffmpeg instance and map audio and subtitle streams
+    // Create new VideoEdit instance and map audio and subtitle streams
     this.ffmpeg.convertOpts = convertOpts;
 
     if (convertOpts?.extractSubs === true) {
