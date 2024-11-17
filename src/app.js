@@ -37,12 +37,6 @@ export default class App {
     this.outputFilename = this.getOutputFilename();
 
     log.debug("Starting...");
-
-    // Check if Ffmpeg is installed and available in the system
-    if (!VideoEdit.check()) {
-      log.error("FFMPEG not found. Please install it and try again.");
-      process.exit(1);
-    }
   }
 
   /**
