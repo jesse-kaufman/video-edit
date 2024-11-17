@@ -29,12 +29,12 @@ const formatPercent = (pct) => (isNaN(pct) ? "" : `${pct?.toFixed(1)}%`);
 
 /**
  * Gets speed information for progress reporting.
+ * @param {number} fps - Current processing FPS.
  * @param {number} videoFps - FPS of the source video.
- * @param {number} currentFps - Current processing FPS.
  * @returns {string} Formatted speed information.
  */
-const formatSpeed = (videoFps, currentFps) =>
-  isNaN(currentFps) ? "" : `@ ${(currentFps / videoFps).toFixed()}x`;
+const formatSpeed = (fps, videoFps) =>
+  isNaN(fps) ? "" : `@ ${(fps / videoFps).toFixed()}x`;
 
 /**
  * Gets details for progress output.
@@ -52,7 +52,7 @@ export const getDetailParts = (progress, videoStream) => {
   // Add timestamp to progress output
   parts.push(progress.currentTime || "");
   // Add speed information to progress output
-  parts.push(formatSpeed(videoStream.fps, progress.currentFps));
+  parts.push(formatSpeed(progress.currentFps, videoStream.fps));
   // Return non-empty parts.
   return parts.filter((part) => part !== "");
 };
