@@ -1,3 +1,4 @@
+/** @file Config for eslint. */
 /* eslint-disable no-magic-numbers */
 import pluginJs from "@eslint/js";
 import jest from "eslint-plugin-jest";
@@ -149,16 +150,67 @@ const config = [
       "prefer-template": "error",
       "prefer-spread": "error",
       "require-atomic-updates": "warn",
-      "jsdoc/require-description-complete-sentence": "warn",
-      "require-await": "error",
-      //"sort-keys": "warn",
-      "jsdoc/check-indentation": "warn",
-      "jsdoc/require-hyphen-before-param-description": "warn",
       "sort-vars": "error",
       "valid-typeof": "error",
       "vars-on-top": "error",
-      "jsdoc/require-description": "warn",
+      "require-await": "error",
+
       "import/order": "warn",
+
+      "jsdoc/require-description": "error",
+      "jsdoc/require-hyphen-before-param-description": "warn",
+      "jsdoc/require-description-complete-sentence": "warn",
+      "jsdoc/check-indentation": "error",
+      "jsdoc/check-line-alignment": "error",
+      "jsdoc/check-syntax": "error",
+      "jsdoc/check-values": "warn",
+      "jsdoc/informative-docs": "warn",
+      "jsdoc/no-undefined-types": "error",
+      "jsdoc/require-file-overview": "error",
+      "jsdoc/sort-tags": [
+        "error" | "warn",
+        {
+          tagSequence: [
+            { tags: ["since", "access"] },
+            { tags: ["class", "augments", "mixes"] },
+            { tags: ["alias", "memberof"] },
+            { tags: ["see", "link", "global"] },
+            { tags: ["fires", "listens"] },
+            { tags: ["param"] },
+            { tags: ["yields"] },
+            { tags: ["returns"] },
+          ],
+        },
+      ],
+      "jsdoc/require-jsdoc": [
+        "error",
+        {
+          publicOnly: true, // Only report exports
+          require: {
+            ArrowFunctionExpression: true,
+            ClassDeclaration: true,
+            ClassExpression: true,
+            FunctionDeclaration: true,
+            FunctionExpression: true,
+            MethodDefinition: true,
+          },
+          contexts: [
+            "ArrowFunctionExpression",
+            "ClassDeclaration",
+            "ClassExpression",
+            "ClassProperty",
+            "FunctionDeclaration", // Function
+            "FunctionExpression",
+            "MethodDefinition",
+            "TSDeclareFunction", // Function without body
+            "TSEnumDeclaration",
+            "TSInterfaceDeclaration",
+            "TSModuleDeclaration", // Namespace
+            "TSTypeAliasDeclaration",
+            "VariableDeclaration",
+          ],
+        },
+      ],
     },
   },
 ];
