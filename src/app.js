@@ -41,10 +41,6 @@ export default class App {
       path.extname(this.inputFile)
     );
 
-    if (this.command === "extract-subs") {
-      return path.join(dir, `${basename}-subs.srt`);
-    }
-
     return path.join(dir, `${basename}-${this.command}.mkv`);
   }
 
