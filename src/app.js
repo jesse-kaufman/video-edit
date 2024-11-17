@@ -75,17 +75,17 @@ export default class App {
 
       // Run cleanup process on video file
       case "clean":
-        await this.cleanup(file, { extractSubs: true });
+        await this.cleanup({ extractSubs: true });
         break;
 
       // Convert audio to AAC if not already
       case "convert-audio":
-        await this.cleanup(file, { convertAudio: true });
+        await this.cleanup({ convertAudio: true });
         break;
 
       // Convert video to H265
       case "convert-video":
-        await this.cleanup(file, { convertVideo: true });
+        await this.cleanup({ convertVideo: true });
         break;
 
       default:
@@ -105,13 +105,12 @@ export default class App {
 
   /**
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
-   * @param {string} file - The video file to be cleaned up.
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
-  async cleanup(file, convertOpts = {}) {
+  async cleanup(convertOpts = {}) {
     // Create new Ffmpeg instance and map audio and subtitle streams
     const ffmpeg = await new Ffmpeg(
-      file,
+      this.inputFile,
       this.outputFilename,
       convertOpts
     ).init();
