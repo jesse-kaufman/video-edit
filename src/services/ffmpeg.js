@@ -37,18 +37,14 @@ class Ffmpeg {
   /** Audio codec to use if converting. */
   outputAudioCodec;
 
-  /**
-   * Input file stream data.
-   */
+  /** Input file stream data.*/
   inputStreams = {
     /** @type {Array<AudioStream>} */ audio: [],
     /** @type {Array<VideoStream>} */ video: [],
     /** @type {Array<SubtitleStream>} */ subtitle: [],
   };
 
-  /**
-   * Output file stream data.
-   */
+  /** Output file stream data.*/
   outputStreams = {
     /** @type {Array<AudioStream>} */ audio: [],
     /** @type {Array<VideoStream>} */ video: [],
