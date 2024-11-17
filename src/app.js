@@ -38,6 +38,7 @@ export default class App {
 
     log.debug("Starting...");
 
+    // Check if Ffmpeg is installed and available in the system
     if (!Ffmpeg.check()) {
       log.error("FFMPEG not found. Please install it and try again.");
       process.exit(1);
@@ -88,7 +89,7 @@ export default class App {
         await this.cleanup({ convertVideo: true });
         break;
 
-      // Convert video to H265
+      // Clean and convert anything that needs to be converted
       case "full-clean":
         await this.cleanup({
           extractSubs: true,
@@ -125,7 +126,9 @@ export default class App {
       await this.extractSubs();
     }
 
+    // Map audio streams and set metadata
     this.ffmpeg.mapAudioStreams();
+    // Map subtitle streams and set metadata
     this.ffmpeg.mapSubtitles();
 
     // Run the ffmpeg command.
