@@ -286,7 +286,7 @@ class Ffmpeg {
         // Extract subtitle using ffmpeg
         this.ffmpegExtract
           // Map subtitle
-          .outputOptions([`-map 0:s:${stream.index}`, "-scodec srt"])
+          .outputOptions([`-map 0:s:${index}`, "-scodec srt"])
           // Print progress message
           .on("progress", (progress) =>
             printProgress(log, progress, videoStream, index)
