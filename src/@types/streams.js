@@ -1,4 +1,4 @@
-/** @file Type definition for Streams */
+/** @file Type definition for Streams service. */
 
 /**
  * @typedef {import('./video-stream.js').VideoStream} VideoStream
