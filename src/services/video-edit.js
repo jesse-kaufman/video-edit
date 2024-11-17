@@ -122,6 +122,7 @@ class VideoEdit {
   mapAudioStreams() {
     // Filter out non-English audio streams from input file
     const streams = this.inputStreams.audio.filter((s) => s.lang === "eng");
+
     // Save filtered streams to property
     this.outputStreams.audio = streams;
 
@@ -157,6 +158,7 @@ class VideoEdit {
   mapImageSubs() {
     // Filter out non-English and text-based subtitles
     const imageSubs = getImageSubtitles(this.inputStreams.subtitle);
+
     // Save subtitles to property
     this.outputStreams.subtitle = imageSubs;
 
@@ -179,6 +181,7 @@ class VideoEdit {
   extractSubs(exitIfNotFound) {
     log.notice("Extracting text subtitles ...");
 
+    // Get all text-based subtitle streams from the video file
     const textSubs = getTextSubtitles(this.inputStreams.subtitle);
 
     // If no English subtitles were found, exit the program
