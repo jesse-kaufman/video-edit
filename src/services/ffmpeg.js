@@ -178,6 +178,7 @@ class Ffmpeg {
   mapAudioStreams() {
     // Filter out non-English audio streams from input file
     const streams = this.inputStreams.audio.filter((s) => s.lang === "eng");
+    this.outputStreams.audio = streams;
 
     streams.forEach((stream) => {
       this.ffmpegProcess
