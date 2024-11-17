@@ -8,8 +8,8 @@ import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
-import { getOutputAudioCodec, getAudioStreamData } from "./audio.js";
-import { getVideoStreamData } from "./video.js";
+import { getOutputAudioCodec, getAudioStreamData } from "./audio-stream.js";
+import { getVideoStreamData } from "./video-stream.js";
 import { printProgress } from "./progress.js";
 
 import {
@@ -17,7 +17,7 @@ import {
   getTextSubtitles,
   getImageSubtitles,
   getSubFilename,
-} from "./subtitle.js";
+} from "./subtitle-stream.js";
 
 /**
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
@@ -278,29 +278,27 @@ class Ffmpeg {
     // Get the subtitle file path
     const outputFile = getSubFilename(inputFilePath, stream, streamCount);
 
-    await /** @type {Promise<void>} */ (
-      new Promise((resolve, reject) => {
-        const videoStream = this.inputStreams.video[0];
-        const { index } = stream;
+    await new Promise((resolve, reject) => {
+      const videoStream = this.inputStreams.video[0];
+      const { index } = stream;
 
-        // Extract subtitle using ffmpeg
-        this.ffmpegExtract
-          // Map subtitle
-          .outputOptions([`-map 0:s:${index}`, "-scodec srt"])
-          // Print progress message
-          .on("progress", (progress) =>
-            printProgress(log, progress, videoStream, index)
-          )
-          // Handle errors
-          .on("error", (err) => reject(err))
-          // Output message on success
-          .on("end", () =>
-            resolve(log.success("Subtitle extracted successfully!"))
-          )
-          // Save the subtitle to the output file
-          .save(outputFile);
-      })
-    );
+      // Extract subtitle using ffmpeg
+      this.ffmpegExtract
+        // Map subtitle
+        .outputOptions([`-map 0:s:${index}`, "-scodec srt"])
+        // Print progress message
+        .on("progress", (progress) =>
+          printProgress(log, progress, videoStream, index)
+        )
+        // Handle errors
+        .on("error", (err) => reject(err))
+        // Output message on success
+        .on("end", () =>
+          resolve(log.success("Subtitle extracted successfully!"))
+        )
+        // Save the subtitle to the output file
+        .save(outputFile);
+    });
   }
 
   /**
