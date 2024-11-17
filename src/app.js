@@ -19,19 +19,26 @@ export default class App {
    * Checks for ffmpeg when creating an instance of App.
    */
   constructor() {
+    // Command is first argument to node app
+    this.command = process.argv[2];
+    // Input file is second argument to node app
+    this.inputFile = process.argv[3];
+
+    // Exit if file not specified
+    if (this.inputFile == null) {
+      log.error("Input file not specified.");
+      process.exit(1);
+    }
+
+    // Set output filename based on command and input file
+    this.outputFilename = this.getOutputFilename();
+
     log.debug("Starting...");
 
     if (!Ffmpeg.check()) {
       log.error("FFMPEG not found. Please install it and try again.");
       process.exit(1);
     }
-
-    // Command is first argument to node app
-    this.command = process.argv[2];
-    // Input file is second argument to node app
-    this.inputFile = process.argv[3];
-    // Set output filename based on command and input file
-    this.outputFilename = this.getOutputFilename();
   }
 
   /**
@@ -54,12 +61,6 @@ export default class App {
    * Runs the program.
    */
   async run() {
-    // Exit if file not specified
-    if (this.inputFile == null) {
-      log.error("Input file not specified.");
-      process.exit(1);
-    }
-
     // Initialize Ffmpeg with input file and output filename
     this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
 
