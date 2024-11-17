@@ -295,7 +295,7 @@ class Ffmpeg {
           .on("error", (err) => reject(err))
           // Output message on success
           .on("end", () =>
-            resolve(log.success("Subtitles extracted successfully."))
+            resolve(log.success("Subtitle extracted successfully!"))
           )
           // Save the subtitle to the output file
           .save(outputFile);
@@ -330,7 +330,7 @@ class Ffmpeg {
         // Handle errors
         .on("error", (err) => reject(err))
         // Output message on success
-        .on("end", () => resolve(log.success("FFMPEG finished successfully!")))
+        .on("end", () => resolve(log.success("Command finished successfully!")))
         // Save the video to the output file
         .save(this.outputFile);
     });
