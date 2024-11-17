@@ -87,7 +87,7 @@ export default class App {
         break;
 
       // Clean and convert anything that needs to be converted
-      case "full-clean":
+      case "full":
         await this.cleanup({
           extractSubs: true,
           convertAudio: true,
