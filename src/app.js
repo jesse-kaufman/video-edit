@@ -12,6 +12,12 @@ import Ffmpeg from "./services/ffmpeg.js";
  */
 export default class App {
   /**
+   * Ffmpeg instance.
+   * @type {Ffmpeg|undefined}
+   */
+  ffmpeg;
+
+  /**
    * Checks for ffmpeg when creating an instance of App.
    */
   constructor() {
@@ -56,6 +62,9 @@ export default class App {
       process.exit(1);
     }
 
+    // Initialize Ffmpeg with input file and output filename
+    this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
+
     switch (command) {
       case "extract-subs":
         // Extract English subtitles from the video file
@@ -88,11 +97,8 @@ export default class App {
    * @param {boolean} exitIfNotFound - Whether to exit if no matching subtitles are found.
    */
   async extractSubs(exitIfNotFound = false) {
-    // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
-
     // Extract English subtitles from the video file
-    await ffmpeg.extractSubs(exitIfNotFound);
+    await this?.ffmpeg?.extractSubs(exitIfNotFound);
   }
 
   /**
