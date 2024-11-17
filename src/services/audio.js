@@ -94,7 +94,6 @@ function formatChannelLayout(channelLayout) {
  * @returns {string} The audio codec to use.
  */
 export const getOutputAudioCodec = (fluentFfmpeg, convert) => {
-  console.log(convert);
   // Copy audio stream unless we're converting
   if (convert !== true) return "copy";
 
