@@ -1,9 +1,8 @@
 /** @file Helpers for printing progress to console. */
 
-import log from "./logger/logger.js";
-
 /**
  * @typedef {import ("../@types/video-stream.js").VideoStream} VideoStream
+ * @typedef {import ("./logger/logger.js").Logger} Logger
  */
 
 /**
@@ -59,11 +58,12 @@ export const getDetailParts = (progress, videoStream) => {
 
 /**
  * Prints progress information to console.
+ * @param {Logger} log - Logger instance.
  * @param {any} progress - Progress data from ffmpeg.
  * @param {VideoStream} videoStream - The main video stream of file.
  * @param {?number} index - Index of subtitle if extracting subtitles.
  */
-export const printProgress = (progress, videoStream, index = null) => {
+export const printProgress = (log, progress, videoStream, index = null) => {
   let progressTitle = "Clean/convert";
 
   // Format percent

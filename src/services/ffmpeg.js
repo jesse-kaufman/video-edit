@@ -280,13 +280,16 @@ class Ffmpeg {
 
     await /** @type {Promise<void>} */ (
       new Promise((resolve, reject) => {
+        const videoStream = this.inputStreams.video[0];
+        const { index } = stream;
+
         // Extract subtitle using ffmpeg
         this.ffmpegExtract
           // Map subtitle
           .outputOptions([`-map 0:s:${stream.index}`, "-scodec srt"])
           // Print progress message
           .on("progress", (progress) =>
-            printProgress(progress, this.inputStreams.video[0], stream.index)
+            printProgress(log, progress, videoStream, index)
           )
           // Handle errors
           .on("error", (err) => reject(err))
@@ -305,6 +308,7 @@ class Ffmpeg {
    */
   async run() {
     const { convertVideo } = this.convertOpts;
+    const videoStream = this.inputStreams.video[0];
 
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
@@ -322,9 +326,7 @@ class Ffmpeg {
         // Blank video title
         .outputOptions([`-metadata:s:v:0`, `title=`])
         // Output message on progress
-        .on("progress", (progress) =>
-          printProgress(progress, this.inputStreams.video[0])
-        )
+        .on("progress", (progress) => printProgress(log, progress, videoStream))
         // Handle errors
         .on("error", (err) => reject(err))
         // Output message on success
