@@ -79,11 +79,18 @@ export default {
   /**
    * Logs a progress message to the console.
    * @param {string} msg - The message.
+   * @param {boolean} isExtract - True if progress message is for extract process.
    * @returns {Promise<void>} Promise resolved.
    */
-  progress(msg) {
+  progress(msg, isExtract = false) {
+    // Colorize extract progress messages differently
+    const colorize = isExtract
+      ? chalk.dim.italic.green
+      : chalk.dim.italic.yellow;
+
     return new Promise((resolve) => {
-      resolve(console.log(chalk.hex("#333311").italic(msg)));
+      // Log message and resolve promise
+      resolve(console.log(colorize(msg)));
     });
   },
 

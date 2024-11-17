@@ -64,6 +64,8 @@ export const getDetailParts = (progress, videoStream) => {
  * @param {?number} index - Index of subtitle if extracting subtitles.
  */
 export const printProgress = (log, progress, videoStream, index = null) => {
+  const isExtract = index !== null;
+
   let progressTitle = "Clean/convert";
 
   // Format percent
@@ -76,5 +78,5 @@ export const printProgress = (log, progress, videoStream, index = null) => {
   const details = getDetailParts(progress, videoStream).join(" ");
 
   // Print progress to console
-  log.progress(`[${percent}] ${progressTitle}: ${details}`);
+  log.progress(`- [${percent}] ${progressTitle}: ${details}`, isExtract);
 };
