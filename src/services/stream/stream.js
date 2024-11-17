@@ -21,19 +21,21 @@ export const getInputStreams = (streams) => {
 
   streams.forEach((stream) => {
     switch (stream.codec_type) {
+      // Push data for audio stream to inputStreams
       case "audio":
         inputStreams.audio.push(
           getAudioStreamData(stream, inputStreams.audio.length)
         );
         break;
 
+      // Push data for video stream to inputStreams
       case "video":
         inputStreams.video.push(
           getVideoStreamData(stream, inputStreams.video.length)
         );
-
         break;
 
+      // Push data for subtitle stream to inputStreams
       case "subtitle":
         inputStreams.subtitle.push(
           getSubtitleStreamData(stream, inputStreams.subtitle.length)
