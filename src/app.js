@@ -41,7 +41,9 @@ export default class App {
    * @returns {string} The output filename.
    */
   getOutputFilename() {
+    /** Directory where input file is located. */
     const dir = path.dirname(this.inputFile);
+    /** Base filename of input file. */
     const basename = path.basename(
       this.inputFile,
       path.extname(this.inputFile)
@@ -54,9 +56,12 @@ export default class App {
    * Runs the program.
    */
   async run() {
+    /** Command to execute. */
     const command = process.argv[2];
+    /** Input file to process. */
     const file = process.argv[3];
 
+    // Exit if file not specified
     if (file == null) {
       log.error("Input file not specified.");
       process.exit(1);
@@ -66,23 +71,23 @@ export default class App {
     this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
 
     switch (command) {
+      // Extract English subtitles from the video file
       case "extract-subs":
-        // Extract English subtitles from the video file
         await this.extractSubs(true);
         break;
 
+      // Run cleanup process on video file
       case "clean":
-        // Run cleanup process on video file
         await this.cleanup(file, { extractSubs: true });
         break;
 
+      // Convert audio to AAC if not already
       case "convert-audio":
-        // Convert audio to AAC if not already
         await this.cleanup(file, { convertAudio: true });
         break;
 
+      // Convert video to H265
       case "convert-video":
-        // Convert video to H265
         await this.cleanup(file, { convertVideo: true });
         break;
 
