@@ -53,13 +53,8 @@ export default class App {
    * Runs the program.
    */
   async run() {
-    /** Command to execute. */
-    const command = process.argv[2];
-    /** Input file to process. */
-    const file = process.argv[3];
-
     // Exit if file not specified
-    if (file == null) {
+    if (this.inputFile == null) {
       log.error("Input file not specified.");
       process.exit(1);
     }
@@ -67,7 +62,7 @@ export default class App {
     // Initialize Ffmpeg with input file and output filename
     this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
 
-    switch (command) {
+    switch (this.command) {
       // Extract English subtitles from the video file
       case "extract-subs":
         await this.extractSubs(true);
@@ -89,7 +84,7 @@ export default class App {
         break;
 
       default:
-        log.info(`Invalid command: ${command}`);
+        log.info(`Invalid command: ${this.command}`);
         process.exit(1);
     }
   }
@@ -109,24 +104,20 @@ export default class App {
    */
   async cleanup(convertOpts = {}) {
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = await new Ffmpeg(
-      this.inputFile,
-      this.outputFilename,
-      convertOpts
-    ).init();
+    this.ffmpeg.convertOpts = convertOpts;
 
     if (convertOpts?.extractSubs === true) {
       // Extract text-based English subtitles from the video file
       await this.extractSubs();
     }
 
-    ffmpeg.mapAudioStreams();
-    ffmpeg.mapSubtitles();
+    this.ffmpeg.mapAudioStreams();
+    this.ffmpeg.mapSubtitles();
 
     // Run the ffmpeg command.
     try {
       log.info("Running ffmpeg command...");
-      await ffmpeg.run();
+      await this.ffmpeg.run();
     } catch (err) {
       // @ts-ignore
       log.error("Error running ffmpeg:", err.message);
