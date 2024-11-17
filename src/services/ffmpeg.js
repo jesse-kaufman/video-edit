@@ -30,7 +30,7 @@ class Ffmpeg {
   /** Conversion options. */
   convertOpts;
   /** Audio codec to use if converting. */
-  audioCodec;
+  outputAudioCodec;
 
   /**
    * Input file stream data.
@@ -66,7 +66,7 @@ class Ffmpeg {
     // Set output file property
     this.outputFile = outputFile;
     // Set audio codec
-    this.audioCodec = getOutputAudioCodec(
+    this.outputAudioCodec = getOutputAudioCodec(
       this.ffmpegProcess,
       convertOpts?.convertAudio
     );
@@ -152,7 +152,7 @@ class Ffmpeg {
       // Map video stream and set codec to copy
       .outputOptions("-map 0:v")
       // If converting audio, set codec to AAC, otherwise copy (for now, assume libfdk_acc is supported)
-      .audioCodec(convertAudio ? this.audioCodec : "copy")
+      .audioCodec(convertAudio ? this.outputAudioCodec : "copy")
       // If converting video, set codec to h265, otherwise copy
       .videoCodec(convertVideo ? "hevc" : "copy")
       // Set subtitle codec to copy
