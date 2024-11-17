@@ -68,7 +68,7 @@ export default class App {
     switch (this.command) {
       // Extract English subtitles from the video file
       case "extract-subs":
-        await this.extractSubs(true);
+        this.extractSubs(true);
         break;
 
       // Run cleanup process on video file
@@ -105,9 +105,9 @@ export default class App {
    * Extracts text-based English subtitles from the video file.
    * @param {boolean} exitIfNotFound - Whether to exit if no matching subtitles are found.
    */
-  async extractSubs(exitIfNotFound = false) {
+  extractSubs(exitIfNotFound = false) {
     // Extract English subtitles from the video file
-    await this?.ffmpeg?.extractSubs(exitIfNotFound);
+    this?.ffmpeg?.extractSubs(exitIfNotFound);
   }
 
   /**
