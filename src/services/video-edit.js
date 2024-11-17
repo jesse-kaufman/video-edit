@@ -177,7 +177,7 @@ class VideoEdit {
    * @param {boolean} exitIfNotFound - Whether to exit the program if no matching subtitles are found.
    */
   extractSubs(exitIfNotFound) {
-    log.info("Extracting text subtitles ...");
+    log.notice("Extracting text subtitles ...");
 
     const textSubs = getTextSubtitles(this.inputStreams.subtitle);
 
