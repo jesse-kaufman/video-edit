@@ -27,24 +27,25 @@ export default class App {
     // Input file is second argument to node app
     this.inputFile = process.argv[3];
     // Set output filename based on command and input file
-    this.outputFilename = this.getOutputFilename(this.inputFile, this.command);
+    this.outputFilename = this.getOutputFilename();
   }
 
   /**
    * Generates output filename for command.
-   * @param {string} inputFile - The input file.
-   * @param {string} command - The command.
    * @returns {string} The output filename.
    */
-  getOutputFilename(inputFile, command) {
-    const dir = path.dirname(inputFile);
-    const basename = path.basename(inputFile, path.extname(inputFile));
+  getOutputFilename() {
+    const dir = path.dirname(this.inputFile);
+    const basename = path.basename(
+      this.inputFile,
+      path.extname(this.inputFile)
+    );
 
-    if (command === "extract-subs") {
+    if (this.command === "extract-subs") {
       return path.join(dir, `${basename}-subs.srt`);
     }
 
-    return path.join(dir, `${basename}-${command}.mkv`);
+    return path.join(dir, `${basename}-${this.command}.mkv`);
   }
 
   /**
