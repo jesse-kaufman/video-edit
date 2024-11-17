@@ -63,7 +63,9 @@ export const getSubtitleStreams = async (file, type = "") => {
  * @returns {SubtitleStream} SubtitleStream object.
  */
 export const getSubtitleStreamData = (stream, index) => {
-  const formattedCodecName = stream.codec_long_name.replace(" subtitle", "");
+  const formattedCodecName = stream.codec_long_name
+    .replace("SubRip subtitle", "SubRip")
+    .replace(/HDMV.*/, "HDMV PGS subtitles");
 
   return {
     lang: stream.tags?.language || "",
