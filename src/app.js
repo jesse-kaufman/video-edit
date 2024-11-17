@@ -1,6 +1,6 @@
 import path from "node:path";
 import log from "./services/logger/logger.js";
-import { extractSubs, getSubtitleStreams } from "./services/subtitle.js";
+import { extractSubs } from "./services/subtitle.js";
 import Ffmpeg from "./services/ffmpeg.js";
 
 /**
@@ -95,14 +95,11 @@ export default class App {
       await extractSubs(file);
     }
 
-    // Get image-based subtitle streams
-    const imageSubs = await getSubtitleStreams(file, "image");
-
     // Create new Ffmpeg instance and map audio and subtitle streams
     const ffmpeg = new Ffmpeg(file, this.outputFilename, convertOpts);
     await ffmpeg.readInputFile();
     ffmpeg.mapAudioStreams();
-    ffmpeg.mapSubtitles(imageSubs);
+    ffmpeg.mapSubtitles();
 
     // Run the ffmpeg command.
     try {

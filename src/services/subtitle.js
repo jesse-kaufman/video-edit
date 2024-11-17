@@ -13,6 +13,14 @@ let streamCount = 0;
 export const textSubs = ["subrip", "ass", "ssa"];
 
 /**
+ * Returns only image-based subtitle streams.
+ * @param {Array<SubtitleStream>} streams - All input subtitle streams.
+ * @returns {Array<SubtitleStream>} Image-based subtitle streams.
+ */
+export const getImageSubtitles = (streams) =>
+  streams.filter((stream) => !textSubs.includes(stream.codecName));
+
+/**
  * Gets subtitle streams from the input file.
  * @param {string} file - The input file path.
  * @param {string} type - If "image", get image subs. If "text", get text subs.

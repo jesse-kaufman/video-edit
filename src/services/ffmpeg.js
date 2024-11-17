@@ -9,7 +9,7 @@ import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 import { getOutputAudioCodec, getAudioStreamData } from "./audio.js";
 import { getVideoStreamData } from "./video.js";
-import { getSubtitleStreamData } from "./subtitle.js";
+import { getSubtitleStreamData, getImageSubtitles } from "./subtitle.js";
 
 /**
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
@@ -192,18 +192,23 @@ class Ffmpeg {
 
   /**
    * Maps subtitle streams.
-   * @param {Array<SubtitleStream>} subtitles - An array of subtitle streams.
    * @returns {Ffmpeg} Returns this to allow chaining.
    */
-  mapSubtitles(subtitles) {
+  mapSubtitles() {
+    // Filter out non-English and text-based subtitles
+    const imageSubs = getImageSubtitles(this.inputStreams.subtitle);
+    // Save subtitles to property
+    this.outputStreams.subtitle = imageSubs;
+
     // Map subtitle streams and set metadata
-    for (const [, sub] of subtitles.entries()) {
+    imageSubs.forEach((/** @type {SubtitleStream} */ sub) => {
       this.ffmpegProcess
         // Map subtitle stream and set codec to copy
         .outputOptions(["-map", `0:s:${sub.index}`])
         // Set subtitle stream title
         .outputOptions([`-metadata:s:s:${sub.index}`, `title=${sub.title}  `]);
-    }
+    });
+
     return this;
   }
 
