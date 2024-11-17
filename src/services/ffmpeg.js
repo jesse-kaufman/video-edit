@@ -79,7 +79,10 @@ class Ffmpeg {
       convertOpts?.convertAudio
     );
 
-    this.setBaseOptions(this.ffmpegProcess);
+    // Set base options on convert/clean instance of ffmpeg-fluent
+    this.setCommonOptions(this.ffmpegProcess);
+    // Set base options on subtitle extract instance of ffmpeg-fluent
+    this.setCommonOptions(this.ffmpegExtract);
 
     return this;
   }
@@ -156,7 +159,7 @@ class Ffmpeg {
    * Sets base options for ffmpeg command.
    * @param {FfmpegCommand} ffmpeg - Fluent ffmpeg object.
    */
-  setBaseOptions(ffmpeg) {
+  setCommonOptions(ffmpeg) {
     ffmpeg
       // Hide output except progress stats
       .outputOptions(["-stats", "-loglevel quiet"]);
