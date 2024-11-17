@@ -1,10 +1,10 @@
 /**
  * @file Audio stream service.
  */
-import log from "./logger/logger.js";
+import log from "../logger/logger.js";
 
 /**
- * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
+ * @typedef {import('../../@types/audio-stream.js').AudioStream} AudioStream
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
 

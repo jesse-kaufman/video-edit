@@ -8,8 +8,11 @@ import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
-import { getOutputAudioCodec, getAudioStreamData } from "./audio-stream.js";
-import { getVideoStreamData } from "./video-stream.js";
+import {
+  getOutputAudioCodec,
+  getAudioStreamData,
+} from "./stream/audio-stream.js";
+import { getVideoStreamData } from "./stream/video-stream.js";
 import { printProgress } from "./progress.js";
 
 import {
@@ -17,7 +20,7 @@ import {
   getTextSubtitles,
   getImageSubtitles,
   getSubFilename,
-} from "./subtitle-stream.js";
+} from "./stream/subtitle-stream.js";
 
 /**
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand

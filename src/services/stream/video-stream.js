@@ -2,7 +2,7 @@
  * @file Video stream service.
  */
 
-/** @typedef {import('../@types/video-stream.js').VideoStream} VideoStream */
+/** @typedef {import('../../@types/video-stream.js').VideoStream} VideoStream */
 
 /**
  * Sets up VideoStream based on ffprobe stream data.

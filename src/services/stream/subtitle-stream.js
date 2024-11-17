@@ -4,7 +4,7 @@
 
 import path from "node:path";
 
-/** @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
+/** @typedef {import('../../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
 
 /** Text subtitle formats. */
 export const textSubs = ["subrip", "ass", "ssa"];
