@@ -130,7 +130,7 @@ export default class App {
 
     // Run the ffmpeg command.
     try {
-      log.info("Running ffmpeg command...");
+      log.notice("Running ffmpeg command...");
       await this.ffmpeg.run();
     } catch (err) {
       // @ts-ignore
