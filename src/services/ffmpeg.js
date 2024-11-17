@@ -72,6 +72,8 @@ class Ffmpeg {
     );
 
     this.setBaseOptions(this.convertOpts);
+
+    return this;
   }
 
   /**
@@ -92,7 +94,7 @@ class Ffmpeg {
     }
   }
 
-  async readInputFile() {
+  async init() {
     // Get audio streams with ffprobe
     try {
       // Use ffprobe to get audio streams from the video file
@@ -107,6 +109,8 @@ class Ffmpeg {
       log.error("Error getting ffprobe data:", err);
       process.exit(1);
     }
+
+    return this;
   }
 
   /**

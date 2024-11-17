@@ -96,8 +96,12 @@ export default class App {
     }
 
     // Create new Ffmpeg instance and map audio and subtitle streams
-    const ffmpeg = new Ffmpeg(file, this.outputFilename, convertOpts);
-    await ffmpeg.readInputFile();
+    const ffmpeg = await new Ffmpeg(
+      file,
+      this.outputFilename,
+      convertOpts
+    ).init();
+
     ffmpeg.mapAudioStreams();
     ffmpeg.mapSubtitles();
 
