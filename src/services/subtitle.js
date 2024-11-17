@@ -1,7 +1,6 @@
 // SubtitleExtractor.js
 import path from "node:path";
 import ffmpeg from "fluent-ffmpeg";
-import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 
 /** @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
@@ -24,50 +23,6 @@ export const getImageSubtitles = (streams) =>
  */
 export const getTextSubtitles = (streams) =>
   streams.filter((stream) => textSubs.includes(stream.codecName));
-
-/**
- * Gets subtitle streams from the input file.
- * @param {string} file - The input file path.
- * @param {string} type - If "image", get image subs. If "text", get text subs.
- * @returns {Promise<Array<SubtitleStream>>} Array of subtitle streams.
- */
-export const getSubtitleStreams = async (file, type = "") => {
-  // Get subtitle streams with ffprobe
-  try {
-    // Use ffprobe to get subtitle streams from the video file
-    const video = await ffprobe(file, {
-      path: "/usr/local/bin/ffprobe",
-    });
-
-    // Filter subtitle streams and return the English ones, along with their indices and codec names.
-    const streams = video.streams
-      // @ts-ignore Filter out non-subtitle streams.
-      .filter((stream) => stream.codec_type === "subtitle")
-      // Map subtitle streams to an array of objects containing language, codec name, and subtitle index.
-      .map((stream, index) => {
-        return {
-          lang: stream.tags?.language || "",
-          title: stream.tags?.title || "",
-          codecName: stream.codec_name || "",
-          formattedCodecName: stream.codec_long_name || "",
-          index,
-        };
-      })
-      // Filter out subtitle streams that are not in English and don't match the arguments passed
-      .filter(
-        (stream) =>
-          stream.lang === "eng" &&
-          ((type === "text" && textSubs.includes(stream.codecName)) ||
-            (type === "image" && !textSubs.includes(stream.codecName)))
-      );
-
-    // Return data for the matching streams
-    return streams;
-  } catch (err) {
-    log.error("Error getting ffprobe data:", err);
-    process.exit(1);
-  }
-};
 
 /**
  * Returns a SubtitleStream object for the given input stream from ffprobe.
