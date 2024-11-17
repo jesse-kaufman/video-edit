@@ -34,7 +34,7 @@ const formatPercent = (pct) => (isNaN(pct) ? "" : `${pct?.toFixed(1)}%`);
  * @returns {string} Formatted speed information.
  */
 const formatSpeed = (videoFps, currentFps) =>
-  isNaN(currentFps) ? "" : `- Speed=${(currentFps / videoFps).toFixed()}x`;
+  isNaN(currentFps) ? "" : `@ ${(currentFps / videoFps).toFixed()}x`;
 
 /**
  * Gets details for progress output.
