@@ -12,6 +12,8 @@
  */
 export const getVideoStreamData = (stream, index) => {
   let formattedCodecName = stream.codec_long_name.replace(/\(.*\)/, "");
+  const frameRateParts = stream.r_frame_rate.split("/");
+  const fps = parseFloat((frameRateParts[0] / frameRateParts[1]).toFixed(2));
 
   if (formattedCodecName.match(" / ")) {
     [formattedCodecName] = formattedCodecName.split(" / ");
@@ -23,6 +25,7 @@ export const getVideoStreamData = (stream, index) => {
     codecName: stream.codec_name || "",
     formattedCodecName,
     resolution: `${stream.width}x${stream.height}`,
+    fps,
     title: "",
     index,
   };
