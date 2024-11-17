@@ -3,20 +3,14 @@
  * @module services/ffmpeg
  */
 
-import { exec } from "node:child_process";
-import { promisify } from "node:util";
 import fluentFfmpeg from "fluent-ffmpeg";
 import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
-import {
-  getOutputAudioCodec,
-  getAudioStreamData,
-} from "./stream/audio-stream.js";
-import { getVideoStreamData } from "./stream/video-stream.js";
+import { getOutputAudioCodec } from "./stream/audio-stream.js";
+import { getInputStreams } from "./stream/stream.js";
 import { printProgress } from "./progress.js";
 
 import {
-  getSubtitleStreamData,
   getTextSubtitles,
   getImageSubtitles,
   getSubFilename,
@@ -30,9 +24,7 @@ import {
  * @typedef {import('../@types/video-stream.js').VideoStream} VideoStream
  */
 
-/**
- * Class that acts as a wrapper for fluent-ffmpeg.
- */
+/** Class that acts as a wrapper for fluent-ffmpeg. */
 class VideoEdit {
   /** The fluent-ffmpeg object for cleaning/converting. */
   ffmpegProcess;
@@ -91,71 +83,22 @@ class VideoEdit {
   }
 
   /**
-   * Check if ffmpeg binary can be found.
-   * @returns {Promise<boolean>} True if ffmpeg was found.
-   */
-  static async check() {
-    // Promisify exec
-    const execAsync = promisify(exec);
-
-    // Check if ffmpeg is available by running the command "ffmpeg -version"
-    try {
-      await execAsync("ffmpeg -version");
-      return true;
-    } catch (err) {
-      log.error("Error:", err);
-      return false;
-    }
-  }
-
-  /**
-   * Initializes the ffmpeg object.
+   * Initializes inputStreams property.
    * @returns {Promise<VideoEdit>} Promise resolves to Ffmpeg instance.
    */
   async init() {
-    // Get audio streams with ffprobe
-    try {
-      // Use ffprobe to get audio streams from the video file
-      const video = await ffprobe(this.inputFile, {
-        path: "/usr/local/bin/ffprobe",
-      });
+    // Set path to ffprobe
+    const opts = { path: "/usr/local/bin/ffprobe" };
 
-      this.setupStreams(video.streams);
-    } catch (err) {
-      log.error("Error getting ffprobe data:", err);
-      process.exit(1);
-    }
+    // Use ffprobe to get audio streams from the video file
+    await ffprobe(this.inputFile, opts)
+      .then((info) => {
+        // Initialize inputStreams property
+        this.inputStreams = getInputStreams(info.streams);
+      })
+      .catch((err) => log.error(err));
 
     return this;
-  }
-
-  /**
-   * Sets up audio, video, and subtitle stream properties.
-   * @param {Array<any>} streams - Input streams from ffprobe.
-   */
-  setupStreams(streams) {
-    streams.forEach((stream) => {
-      switch (stream.codec_type) {
-        case "audio":
-          this.inputStreams.audio.push(
-            getAudioStreamData(stream, this.inputStreams.audio.length)
-          );
-          break;
-
-        case "video":
-          this.inputStreams.video.push(
-            getVideoStreamData(stream, this.inputStreams.video.length)
-          );
-          console.log(this.inputStreams.video);
-          break;
-
-        case "subtitle":
-          this.inputStreams.subtitle.push(
-            getSubtitleStreamData(stream, this.inputStreams.subtitle.length)
-          );
-          break;
-      }
-    });
   }
 
   /**
