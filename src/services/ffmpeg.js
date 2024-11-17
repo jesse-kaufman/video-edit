@@ -232,7 +232,7 @@ class Ffmpeg {
         log.error(msg);
         process.exit(1);
       }
-
+      // Log warning if not exiting
       log.warn(msg);
     }
 

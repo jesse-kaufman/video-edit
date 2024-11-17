@@ -15,6 +15,7 @@ export const getVideoStreamData = (stream, index) => {
   const frameRateParts = stream.r_frame_rate.split("/");
   const fps = parseFloat((frameRateParts[0] / frameRateParts[1]).toFixed(2));
 
+  // If formatted codec contains " / ", grab the text before it as the codec name
   if (formattedCodecName.match(" / ")) {
     [formattedCodecName] = formattedCodecName.split(" / ");
   }
