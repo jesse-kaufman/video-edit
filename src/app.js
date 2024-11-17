@@ -78,7 +78,7 @@ export default class App {
         break;
 
       default:
-        log.info("Missing filename or action");
+        log.info(`Invalid command: ${command}`);
         process.exit(1);
     }
   }
