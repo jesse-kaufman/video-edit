@@ -89,8 +89,8 @@ class Ffmpeg {
     try {
       await execAsync("ffmpeg -version");
       return true;
-      // eslint-disable-next-line no-unused-vars
     } catch (err) {
+      log.error("Error:", err);
       return false;
     }
   }
