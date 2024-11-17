@@ -269,7 +269,7 @@ class Ffmpeg {
   }
 
   /**
-   * Gets subtitle from specified input file.
+   * Extracts subtitle(s) from specified input file.
    * @param {string} inputFilePath - Path to input file.
    * @param {SubtitleStream} stream - Stream being extracted.
    * @param {number} streamCount - Total number of text streams.
@@ -312,8 +312,8 @@ class Ffmpeg {
 
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
-      // Map video stream
       this.ffmpegProcess
+        // Map video stream
         .outputOptions("-map 0:v")
         // If converting video, set codec to h265, otherwise copy
         .videoCodec(convertVideo ? "hevc" : "copy")
