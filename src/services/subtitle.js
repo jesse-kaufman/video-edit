@@ -6,9 +6,6 @@ import log from "./logger/logger.js";
 
 /** @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
 
-// Stream count for current input file
-let streamCount = 0;
-
 // Supported subtitle formats
 export const textSubs = ["subrip", "ass", "ssa"];
 
@@ -26,7 +23,7 @@ export const getImageSubtitles = (streams) =>
  * @returns {Array<SubtitleStream>} Text-based subtitle streams.
  */
 export const getTextSubtitles = (streams) =>
-  streams.filter((stream) => !textSubs.includes(stream.codecName));
+  streams.filter((stream) => textSubs.includes(stream.codecName));
 
 /**
  * Gets subtitle streams from the input file.
@@ -93,55 +90,25 @@ export const getSubtitleStreamData = (stream, index) => {
 };
 
 /**
- * Extract English subtitles from a video file.
- * @param {string} inputFilePath - Path to the input video file.
- * @param {boolean=} exitIfNotFound - Whether to exit if no subtitles were found.
- */
-export const extractSubs = async (inputFilePath, exitIfNotFound) => {
-  log.info("Extracting text subtitles ...");
-
-  // Get subtitle streams from the video file
-  const streams = await getSubtitleStreams(inputFilePath, "text");
-  log.debug(streams);
-
-  // If no English subtitles were found, exit the program
-  if (streams.length === 0) {
-    const msg = `No text English subtitles were found in the video file.`;
-    if (exitIfNotFound) {
-      log.error(msg);
-      process.exit(1);
-    }
-
-    log.warn(msg);
-  }
-
-  // Set stream count on module global.
-  streamCount = streams.length;
-
-  // Walk through subtitle streams and extract each.
-  for (const stream of streams) {
-    // eslint-disable-next-line no-await-in-loop
-    await extractSubtitle(inputFilePath, stream);
-  }
-};
-
-/**
  * Gets subtitle from specified input file.
  * @param {string} inputFilePath - Path to input file.
  * @param {SubtitleStream} stream - Stream being extracted.
+ * @param {number} streamCount - Total number of text streams.
  */
-async function extractSubtitle(inputFilePath, stream) {
+export const extractSub = async (inputFilePath, stream, streamCount) => {
   // Get the subtitle file path
-  const outputFile = getOutputFilename(inputFilePath, stream);
+  const outputFile = getSubFilename(inputFilePath, stream, streamCount);
 
-  // Extract the subtitle using ffmpeg and save it to the output file
   await /** @type {Promise<void>} */ (
     new Promise((resolve, reject) => {
+      // Extract subtitle using ffmpeg
       ffmpeg(inputFilePath, { logger: log })
         // Map subtitle
         .outputOptions([`-map 0:s:${stream.index}`, "-c:s srt"])
         // Set hide output except progress stats
         .outputOptions(["-stats", "-loglevel quiet"])
+        // Output message on start
+        .on("start", (command) => log.info(command))
         // Output message on progress
         .on("stderr", (err) => log.progress(err))
         // Handle errors
@@ -156,15 +123,16 @@ async function extractSubtitle(inputFilePath, stream) {
         .save(outputFile);
     })
   );
-}
+};
 
 /**
  * Gets the output file based on the specified input file and stream.
  * @param {string} inputFile - The name of the input file.
  * @param {SubtitleStream} stream - The subtitle stream being extracted.
+ * @param {number} streamCount - The number of streams to be extracted.
  * @returns {string} The output file.
  */
-function getOutputFilename(inputFile, stream) {
+function getSubFilename(inputFile, stream, streamCount) {
   // Set base output file path to the input file path minus the extension
   let outputFile = path.join(
     path.dirname(inputFile),

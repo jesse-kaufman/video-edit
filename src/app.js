@@ -1,6 +1,5 @@
 import path from "node:path";
 import log from "./services/logger/logger.js";
-import { extractSubs } from "./services/subtitle.js";
 import Ffmpeg from "./services/ffmpeg.js";
 
 /**
@@ -41,8 +40,11 @@ export default class App {
     const dir = path.dirname(inputFile);
     const basename = path.basename(inputFile, path.extname(inputFile));
 
-    const output = path.join(dir, `${basename}-${command}.mkv`);
-    return output;
+    if (command === "extract-subs") {
+      return path.join(dir, `${basename}-subs.srt`);
+    }
+
+    return path.join(dir, `${basename}-${command}.mkv`);
   }
 
   /**
@@ -60,7 +62,7 @@ export default class App {
     switch (command) {
       case "extract-subs":
         // Extract English subtitles from the video file
-        await extractSubs(file, true);
+        await this.extractSubs(true);
         break;
 
       case "clean":
@@ -85,22 +87,36 @@ export default class App {
   }
 
   /**
+   * Extracts text-based English subtitles from the video file.
+   * @param {boolean} exitIfNotFound - Whether to exit if no matching subtitles are found.
+   */
+  async extractSubs(exitIfNotFound = false) {
+    // Create new Ffmpeg instance and map audio and subtitle streams
+    const ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
+
+    console.log("SUBS", ffmpeg.inputStreams);
+
+    // Extract English subtitles from the video file
+    await ffmpeg.extractSubs(exitIfNotFound);
+  }
+
+  /**
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
    * @param {string} file - The video file to be cleaned up.
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
   async cleanup(file, convertOpts = {}) {
-    if (convertOpts?.extractSubs === true) {
-      // Extract text-based English subtitles from the video file
-      await extractSubs(file);
-    }
-
     // Create new Ffmpeg instance and map audio and subtitle streams
     const ffmpeg = await new Ffmpeg(
       file,
       this.outputFilename,
       convertOpts
     ).init();
+
+    if (convertOpts?.extractSubs === true) {
+      // Extract text-based English subtitles from the video file
+      await this.extractSubs();
+    }
 
     ffmpeg.mapAudioStreams();
     ffmpeg.mapSubtitles();

@@ -9,7 +9,12 @@ import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 import { getOutputAudioCodec, getAudioStreamData } from "./audio.js";
 import { getVideoStreamData } from "./video.js";
-import { getSubtitleStreamData, getImageSubtitles } from "./subtitle.js";
+import {
+  getSubtitleStreamData,
+  getTextSubtitles,
+  getImageSubtitles,
+  extractSub,
+} from "./subtitle.js";
 
 /**
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
@@ -215,6 +220,41 @@ class Ffmpeg {
     });
 
     return this;
+  }
+
+  /**
+   * Extracts text-based English subtitles from the video file.
+   * @param {boolean} exitIfNotFound - Whether to exit the program if no matching subtitles are found.
+   * @returns {Promise<void>} Promise that resolves when the subtitles are extracted.
+   */
+  async extractSubs(exitIfNotFound) {
+    log.info("Extracting text subtitles ...");
+
+    const textSubs = getTextSubtitles(this.inputStreams.subtitle);
+
+    // If no English subtitles were found, exit the program
+    if (textSubs.length === 0) {
+      const msg = `No text English subtitles were found in the video file.`;
+      if (exitIfNotFound) {
+        log.error(msg);
+        process.exit(1);
+      }
+
+      log.warn(msg);
+    }
+
+    // Walk through subtitle streams and extract each.
+    for (const stream of this.inputStreams.subtitle) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await extractSub(this.inputFile, stream, textSubs.length);
+      } catch (err) {
+        log.error(
+          `Error extracting subtitle from stream ${stream.index}:`,
+          err
+        );
+      }
+    }
   }
 
   /**
