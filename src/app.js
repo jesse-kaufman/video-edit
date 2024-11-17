@@ -129,7 +129,7 @@ export default class App {
     // Map audio streams and set metadata
     this.ffmpeg.mapAudioStreams();
     // Map subtitle streams and set metadata
-    this.ffmpeg.mapSubtitles();
+    this.ffmpeg.mapImageSubs();
 
     // Run the ffmpeg command.
     try {

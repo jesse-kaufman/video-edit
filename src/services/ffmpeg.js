@@ -198,10 +198,10 @@ class Ffmpeg {
   }
 
   /**
-   * Maps subtitle streams.
+   * Maps image-based English subtitle streams.
    * @returns {Ffmpeg} Returns this to allow chaining.
    */
-  mapSubtitles() {
+  mapImageSubs() {
     // Filter out non-English and text-based subtitles
     const imageSubs = getImageSubtitles(this.inputStreams.subtitle);
     // Save subtitles to property
