@@ -162,7 +162,13 @@ class Ffmpeg {
   setCommonOptions(ffmpeg) {
     ffmpeg
       // Hide output except progress stats
-      .outputOptions(["-stats", "-loglevel quiet"]);
+      .outputOptions(["-hide_banner"])
+      // Output command on start
+      .on("start", (command) => log.info(command))
+      // Output message on error
+      .on("stderr", (err) => log.error(err))
+      // Handle errors
+      .on("error", (err) => log.error("FFMPEG Error:", err));
   }
 
   /**
@@ -278,19 +284,12 @@ class Ffmpeg {
         this.ffmpegExtract
           // Map subtitle
           .outputOptions([`-map 0:s:${stream.index}`, "-scodec srt"])
-          // Set hide output except progress stats
-          .outputOptions(["-stats", "-loglevel quiet"])
-          // Output message on start
-          .on("start", (command) => log.info(command))
-          // Output message on error
-          .on("stderr", (err) => log.error(err))
+          // Print progress message
           .on("progress", (progress) =>
             printProgress(progress, this.inputStreams.video[0], stream.index)
           )
           // Handle errors
-          .on("error", (err) =>
-            reject(log.error("Error extracting subtitles:", err))
-          )
+          .on("error", (err) => reject(err))
           // Output message on success
           .on("end", () =>
             resolve(log.success("Subtitles extracted successfully."))
@@ -322,16 +321,12 @@ class Ffmpeg {
         .outputOptions([`-metadata:s:v:0`, `language=eng`])
         // Blank video title
         .outputOptions([`-metadata:s:v:0`, `title=`])
-        // Output command on start
-        .on("start", (command) => log.info(command))
-        // Output message on error
-        .on("stderr", (err) => log.error(err))
         // Output message on progress
         .on("progress", (progress) =>
           printProgress(progress, this.inputStreams.video[0])
         )
         // Handle errors
-        .on("error", (err) => reject(log.error("FFMPEG Error:", err)))
+        .on("error", (err) => reject(err))
         // Output message on success
         .on("end", () => resolve(log.success("FFMPEG finished successfully!")))
         // Save the video to the output file
