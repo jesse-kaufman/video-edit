@@ -88,6 +88,15 @@ export default class App {
         await this.cleanup({ convertVideo: true });
         break;
 
+      // Convert video to H265
+      case "full-clean":
+        await this.cleanup({
+          extractSubs: true,
+          convertAudio: true,
+          convertVideo: true,
+        });
+        break;
+
       default:
         log.info(`Invalid command: ${this.command}`);
         process.exit(1);
