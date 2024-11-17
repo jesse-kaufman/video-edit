@@ -11,10 +11,7 @@ import Ffmpeg from "./services/ffmpeg.js";
  * Main app class.
  */
 export default class App {
-  /**
-   * Ffmpeg instance.
-   * @type {Ffmpeg|undefined}
-   */
+  /** @type {Ffmpeg|undefined} - Ffmpeg instance. */
   ffmpeg;
 
   /**
