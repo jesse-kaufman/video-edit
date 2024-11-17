@@ -10,6 +10,8 @@ import ffprobe from "ffprobe";
 import log from "./logger/logger.js";
 import { getOutputAudioCodec, getAudioStreamData } from "./audio.js";
 import { getVideoStreamData } from "./video.js";
+import { printProgress } from "./progress.js";
+
 import {
   getSubtitleStreamData,
   getTextSubtitles,
@@ -138,6 +140,7 @@ class Ffmpeg {
           this.inputStreams.video.push(
             getVideoStreamData(stream, this.inputStreams.video.length)
           );
+          console.log(this.inputStreams.video);
           break;
 
         case "subtitle":
@@ -279,7 +282,7 @@ class Ffmpeg {
           // Output message on error
           .on("stderr", (err) => log.error(err))
           .on("progress", (progress) =>
-            this.handleProgress(progress, stream.index)
+            printProgress(progress, this.inputStreams.video[0], stream.index)
           )
           // Handle errors
           .on("error", (err) =>
@@ -321,7 +324,9 @@ class Ffmpeg {
         // Output message on error
         .on("stderr", (err) => log.error(err))
         // Output message on progress
-        .on("progress", (progress) => this.handleProgress(progress))
+        .on("progress", (progress) =>
+          printProgress(progress, this.inputStreams.video[0])
+        )
         // Handle errors
         .on("error", (err) => reject(log.error("FFMPEG Error:", err)))
         // Output message on success
@@ -329,38 +334,6 @@ class Ffmpeg {
         // Save the video to the output file
         .save(this.outputFile);
     });
-  }
-
-  /**
-   * Prints progress information to console.
-   * @param {any} progress - Progress data from ffmpeg.
-   * @param {?number} index - Index of subtitle if extracting subtitles.
-   */
-  handleProgress(progress, index = null) {
-    const percent = `${progress.percent?.toFixed(1)}%`;
-    let progressTitle = "Clean/convert";
-    let details = "";
-
-    console.log(progress);
-
-    // If index is set, update progress title for subtitle extract
-    if (index !== null) {
-      progressTitle = `Subtitle extract #${index}`;
-    }
-
-    if (progress.currentFps) {
-      details = `${details}FPS=${progress.currentFps} `;
-    }
-
-    if (!isNaN(progress.targetSize)) {
-      details = `${details}(${progress.targetSize} KiB) `;
-    }
-
-    if (progress.timemark) {
-      details = `${details}${progress.timemark} `;
-    }
-
-    log.progress(`[${percent}] ${progressTitle}: ${details}`);
   }
 }
 
