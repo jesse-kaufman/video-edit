@@ -94,8 +94,6 @@ export default class App {
     // Create new Ffmpeg instance and map audio and subtitle streams
     const ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
 
-    console.log("SUBS", ffmpeg.inputStreams);
-
     // Extract English subtitles from the video file
     await ffmpeg.extractSubs(exitIfNotFound);
   }

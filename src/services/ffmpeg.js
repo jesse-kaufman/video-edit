@@ -108,8 +108,6 @@ class Ffmpeg {
       });
 
       this.setupStreams(video.streams);
-
-      console.log("input streams:", this.inputStreams);
     } catch (err) {
       log.error("Error getting ffprobe data:", err);
       process.exit(1);
