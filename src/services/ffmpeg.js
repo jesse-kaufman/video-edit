@@ -72,7 +72,7 @@ class Ffmpeg {
       convertOpts?.convertAudio
     );
 
-    this.setBaseOptions(this.convertOpts);
+    this.setBaseOptions();
 
     return this;
   }
@@ -142,12 +142,10 @@ class Ffmpeg {
 
   /**
    * Sets base options for ffmpeg command.
-   * @param {ConvertOpts} convertOpts - Conversion options.
    * @returns {Ffmpeg} Ffmpeg instance.
    */
-  setBaseOptions(convertOpts = {}) {
-    const convertAudio = convertOpts?.convertAudio;
-    const convertVideo = convertOpts?.convertVideo;
+  setBaseOptions() {
+    const { convertAudio, convertVideo } = this.convertOpts;
 
     this.ffmpegProcess
       // Hide output except progress stats
