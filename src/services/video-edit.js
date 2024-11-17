@@ -110,9 +110,7 @@ class VideoEdit {
       // Hide output except progress stats
       .outputOptions(["-hide_banner"])
       // Output command on start
-      .on("start", (command) => log.info(command))
-      // Output message on error
-      .on("stderr", (err) => log.error(err))
+      .on("start", (command) => log.debug(command))
       // Handle errors
       .on("error", (err) => log.error("FFMPEG Error:", err));
   }
