@@ -30,7 +30,7 @@ import {
 /**
  * Class that acts as a wrapper for fluent-ffmpeg.
  */
-class Ffmpeg {
+class VideoEdit {
   /** The fluent-ffmpeg object for cleaning/converting. */
   ffmpegProcess;
   /** The fluent-ffmpeg object for subtitle extraction. */
@@ -107,7 +107,7 @@ class Ffmpeg {
 
   /**
    * Initializes the ffmpeg object.
-   * @returns {Promise<Ffmpeg>} Promise resolves to Ffmpeg instance.
+   * @returns {Promise<VideoEdit>} Promise resolves to Ffmpeg instance.
    */
   async init() {
     // Get audio streams with ffprobe
@@ -173,7 +173,7 @@ class Ffmpeg {
 
   /**
    * Maps audio streams in output file.
-   * @returns {Ffmpeg} Returns this to allow chaining.
+   * @returns {VideoEdit} Returns this to allow chaining.
    */
   mapAudioStreams() {
     // Filter out non-English audio streams from input file
@@ -208,7 +208,7 @@ class Ffmpeg {
 
   /**
    * Maps image-based English subtitle streams.
-   * @returns {Ffmpeg} Returns this to allow chaining.
+   * @returns {VideoEdit} Returns this to allow chaining.
    */
   mapImageSubs() {
     // Filter out non-English and text-based subtitles
@@ -335,4 +335,4 @@ class Ffmpeg {
   }
 }
 
-export default Ffmpeg;
+export default VideoEdit;

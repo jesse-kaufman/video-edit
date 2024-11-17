@@ -3,18 +3,18 @@
  */
 import path from "node:path";
 import log from "./services/logger/logger.js";
-import Ffmpeg from "./services/ffmpeg.js";
+import VideoEdit from "./services/video-edit.js";
 
 /**
  * @typedef {import('./services/logger/logger.js').Logger} Logger
- * @typedef {import('./services/ffmpeg.js').ConvertOpts} ConvertOpts
+ * @typedef {import('./services/video-edit.js').ConvertOpts} ConvertOpts
  */
 
 /**
  * Main app class.
  */
 export default class App {
-  /** @type {Ffmpeg} - Ffmpeg instance. */
+  /** @type {VideoEdit} - Ffmpeg instance. */
   // @ts-ignore
   ffmpeg;
 
@@ -39,7 +39,7 @@ export default class App {
     log.debug("Starting...");
 
     // Check if Ffmpeg is installed and available in the system
-    if (!Ffmpeg.check()) {
+    if (!VideoEdit.check()) {
       log.error("FFMPEG not found. Please install it and try again.");
       process.exit(1);
     }
@@ -66,7 +66,10 @@ export default class App {
    */
   async run() {
     // Initialize Ffmpeg with input file and output filename
-    this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init();
+    this.ffmpeg = await new VideoEdit(
+      this.inputFile,
+      this.outputFilename
+    ).init();
 
     switch (this.command) {
       // Extract English subtitles from the video file
