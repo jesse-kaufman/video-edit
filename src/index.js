@@ -1,7 +1,7 @@
 /** @file Index file. */
-import App from "./app.js";
+import App from "./app.js"
 
-const app = new App();
+const app = new App()
 
 // Recursively process the provided base directory
-app.run();
+app.run()

@@ -1,10 +1,10 @@
 /** @file Config for eslint. */
 /* eslint-disable no-magic-numbers */
-import pluginJs from "@eslint/js";
-import jest from "eslint-plugin-jest";
-import jsdoc from "eslint-plugin-jsdoc";
-import importPlugin from "eslint-plugin-import";
-import globals from "globals";
+import pluginJs from "@eslint/js"
+import jest from "eslint-plugin-jest"
+import jsdoc from "eslint-plugin-jsdoc"
+import importPlugin from "eslint-plugin-import"
+import globals from "globals"
 
 const config = [
   { ignores: ["**/node_modules/*", "**/public/js/*"] },
@@ -154,7 +154,11 @@ const config = [
       "valid-typeof": "error",
       "vars-on-top": "error",
       "require-await": "error",
-
+      quotes: [
+        "error",
+        "double",
+        { avoidEscape: true, allowTemplateLiterals: true },
+      ],
       "import/order": "warn",
 
       "jsdoc/require-description": "error",
@@ -213,6 +217,6 @@ const config = [
       ],
     },
   },
-];
+]
 
-export default config;
+export default config

@@ -12,4 +12,4 @@
  * @property {string} resolution - Resolution of video stream.
  */
 
-export default {};
+export default {}

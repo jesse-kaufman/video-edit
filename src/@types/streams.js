@@ -13,4 +13,4 @@
  * @property {Array<SubtitleStream>} subtitle - Subtitle streams from ffmpeg.
  */
 
-export default {};
+export default {}

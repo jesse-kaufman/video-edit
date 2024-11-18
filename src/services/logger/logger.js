@@ -2,11 +2,11 @@
  * @file Wrapper for winston logging library.
  * @module services/logging
  */
-import { Chalk } from "chalk";
-import { debug } from "../../config/config.js";
+import { Chalk } from "chalk"
+import { debug } from "../../config/config.js"
 
 // @ts-ignore
-const chalk = new Chalk({ level: 3 });
+const chalk = new Chalk({ level: 3 })
 
 /**
  * Logging module for console messages.
@@ -28,7 +28,7 @@ export default {
   success(msg) {
     return new Promise((resolve) =>
       resolve(console.log(chalk.greenBright.bold(msg)))
-    );
+    )
   },
 
   /**
@@ -39,8 +39,8 @@ export default {
    */
   error(msg, ...args) {
     return new Promise((resolve) => {
-      resolve(console.error(chalk.red(msg), ...args));
-    });
+      resolve(console.error(chalk.red(msg), ...args))
+    })
   },
 
   /**
@@ -50,8 +50,8 @@ export default {
    */
   warn(msg) {
     return new Promise((resolve) => {
-      resolve(console.log(chalk.yellow.bold(`[WARN] ${msg}`)));
-    });
+      resolve(console.log(chalk.yellow.bold(`[WARN] ${msg}`)))
+    })
   },
 
   /**
@@ -61,8 +61,8 @@ export default {
    */
   notice(msg) {
     return new Promise((resolve) => {
-      resolve(console.log(chalk.blue(msg)));
-    });
+      resolve(console.log(chalk.blue(msg)))
+    })
   },
 
   /**
@@ -72,8 +72,8 @@ export default {
    */
   info(msg) {
     return new Promise((resolve) => {
-      resolve(console.log(msg));
-    });
+      resolve(console.log(msg))
+    })
   },
 
   /**
@@ -86,12 +86,12 @@ export default {
     // Colorize extract progress messages differently
     const colorize = isExtract
       ? chalk.dim.italic.green
-      : chalk.dim.italic.yellow;
+      : chalk.dim.italic.yellow
 
     return new Promise((resolve) => {
       // Log message and resolve promise
-      resolve(console.log(colorize(msg)));
-    });
+      resolve(console.log(colorize(msg)))
+    })
   },
 
   /**
@@ -99,18 +99,18 @@ export default {
    * @param {any} args - Arguments to send to console.debug().
    */
   debug(...args) {
-    if (!debug) return;
+    if (!debug) return
 
     // Get first argument
-    const firstArg = args.shift();
+    const firstArg = args.shift()
 
     // If first argument is not a string or number, print it as is and the rest as separate arguments
     if (typeof firstArg !== "string" && typeof firstArg !== "number") {
-      console.debug(chalk.black.italic(`[DEBUG]`), firstArg, ...args);
-      return;
+      console.debug(chalk.black.italic(`[DEBUG]`), firstArg, ...args)
+      return
     }
 
     // If first argument is a string or number, colorize it as well
-    console.debug(chalk.black.dim(`[DEBUG] ${firstArg}`), ...args);
+    console.debug(chalk.black.dim(`[DEBUG] ${firstArg}`), ...args)
   },
-};
+}

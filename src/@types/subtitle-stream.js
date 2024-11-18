@@ -9,4 +9,4 @@
  * @property {string} title - Title of subtitle stream.
  */
 
-export default {};
+export default {}

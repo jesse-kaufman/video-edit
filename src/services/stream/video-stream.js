@@ -11,14 +11,14 @@
  * @returns {VideoStream} The audio stream object.
  */
 export const getVideoStreamData = (stream, index) => {
-  let formattedCodecName = stream.codec_long_name.replace(/\(.*\)/, "");
-  const frameRateParts = stream.r_frame_rate.split("/");
+  let formattedCodecName = stream.codec_long_name.replace(/\(.*\)/, "")
+  const frameRateParts = stream.r_frame_rate.split("/")
   // eslint-disable-next-line no-magic-numbers
-  const fps = parseFloat((frameRateParts[0] / frameRateParts[1]).toFixed(2));
+  const fps = parseFloat((frameRateParts[0] / frameRateParts[1]).toFixed(2))
 
   // If formatted codec contains " / ", grab the text before it as the codec name
   if (formattedCodecName.match(" / ")) {
-    [formattedCodecName] = formattedCodecName.split(" / ");
+    formattedCodecName = formattedCodecName.split(" / ")[0]
   }
 
   // Setup video stream object with blank title.
@@ -30,5 +30,5 @@ export const getVideoStreamData = (stream, index) => {
     fps,
     title: "",
     index,
-  };
-};
+  }
+}

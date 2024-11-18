@@ -11,4 +11,4 @@
  * @property {string} channelLayout - Channel layout of audio stream.
  */
 
-export default {};
+export default {}

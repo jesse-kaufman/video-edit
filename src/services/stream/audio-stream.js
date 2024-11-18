@@ -1,7 +1,7 @@
 /**
  * @file Audio stream service.
  */
-import log from "../logger/logger.js";
+import log from "../logger/logger.js"
 
 /**
  * @typedef {import('../../@types/audio-stream.js').AudioStream} AudioStream
@@ -15,8 +15,8 @@ import log from "../logger/logger.js";
  * @returns {AudioStream} The audio stream object.
  */
 export const getAudioStreamData = (stream, index) => {
-  const formattedCodecName = formatCodecName(stream.codec_long_name);
-  const channelLayout = formatChannelLayout(stream.channel_layout);
+  const formattedCodecName = formatCodecName(stream.codec_long_name)
+  const channelLayout = formatChannelLayout(stream.channel_layout)
 
   // Setup audio stream object with blank title to be filled in next.
   const audioStream = {
@@ -27,12 +27,12 @@ export const getAudioStreamData = (stream, index) => {
     channelLayout,
     title: "",
     index,
-  };
+  }
   return {
     ...audioStream,
     title: formatStreamTitle(audioStream),
-  };
-};
+  }
+}
 
 /**
  * Formats the audio codec long name.
@@ -40,13 +40,13 @@ export const getAudioStreamData = (stream, index) => {
  * @returns {string} Formatted long name.
  */
 function formatCodecName(name) {
-  let formattedCodecName = name.replace(/\(.*\)/, "").trim();
+  let formattedCodecName = name.replace(/\(.*\)/, "").trim()
 
   if (formattedCodecName === "ATSC A/52B") {
-    formattedCodecName = "AC3";
+    formattedCodecName = "AC3"
   }
 
-  return formattedCodecName;
+  return formattedCodecName
 }
 
 /**
@@ -57,19 +57,19 @@ function formatCodecName(name) {
 function formatStreamTitle(stream) {
   // If current stream is not the first, and stream has title, use that title
   if (stream.index > 0 && stream.origTitle !== "") {
-    return stream.origTitle;
+    return stream.origTitle
   }
 
   /*
    * In all other cases, set title to "English - [channel layout]"
    * (where channel layout is "5.1", "2.0", "1.0", etc.)
    */
-  const formattedChannelLayout = formatChannelLayout(stream.channelLayout);
+  const formattedChannelLayout = formatChannelLayout(stream.channelLayout)
 
   // Append " - Default" on first track, otherwise append space to prevent ffmpeg error 234
-  const defaultString = stream.index === 0 ? " - Default" : " ";
+  const defaultString = stream.index === 0 ? " - Default" : " "
 
-  return `${formattedChannelLayout}${defaultString}`;
+  return `${formattedChannelLayout}${defaultString}`
 }
 
 /**
@@ -78,16 +78,16 @@ function formatStreamTitle(stream) {
  * @returns {string} Formatted channel layout.
  */
 function formatChannelLayout(channelLayout) {
-  log.debug("Channel layout:", channelLayout);
+  log.debug("Channel layout:", channelLayout)
   // Extract channel layout from stream, stripping out anything in parentheses
-  const channels = channelLayout.replace(/\(.*\)/, "");
+  const channels = channelLayout.replace(/\(.*\)/, "")
 
   // Replace surround channel layouts with friendlier names
-  if (channels === "5.1") return "5.1 Surround";
-  if (channels === "7.1") return "7.1 Surround";
+  if (channels === "5.1") return "5.1 Surround"
+  if (channels === "7.1") return "7.1 Surround"
 
   // Default to channel layout with initial caps
-  return `${channels.slice(0, 1).toUpperCase()}${channels.slice(1)}`;
+  return `${channels.slice(0, 1).toUpperCase()}${channels.slice(1)}`
 }
 
 /**
@@ -98,23 +98,23 @@ function formatChannelLayout(channelLayout) {
  */
 export const getOutputAudioCodec = (fluentFfmpeg, convert) => {
   // Copy audio stream unless we're converting
-  if (convert !== true) return "copy";
+  if (convert !== true) return "copy"
 
   // Default to aac codec
-  let codec = "aac";
+  let codec = "aac"
 
   // Check if libfdk_aac is available and use it if available
   fluentFfmpeg.getAvailableEncoders((err, encoders) => {
     if (err) {
-      log.error("Error getting available encoders:", err);
-      process.exit(1);
+      log.error("Error getting available encoders:", err)
+      process.exit(1)
     }
 
     // Use libfdk_aac if available
     if (encoders?.libfdk_aac?.type === "audio") {
-      codec = "libfdk_aac";
+      codec = "libfdk_aac"
     }
-  });
+  })
 
-  return codec;
-};
+  return codec
+}

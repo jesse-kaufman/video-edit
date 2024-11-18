@@ -3,18 +3,18 @@
  * @module services/ffmpeg
  */
 
-import fluentFfmpeg from "fluent-ffmpeg";
-import ffprobe from "ffprobe";
-import log from "./logger/logger.js";
-import { getOutputAudioCodec } from "./stream/audio-stream.js";
-import { getInputStreams } from "./stream/stream.js";
-import { printProgress } from "./progress.js";
+import fluentFfmpeg from "fluent-ffmpeg"
+import ffprobe from "ffprobe"
+import log from "./logger/logger.js"
+import { getOutputAudioCodec } from "./stream/audio-stream.js"
+import { getInputStreams } from "./stream/stream.js"
+import { printProgress } from "./progress.js"
 
 import {
   getTextSubtitles,
   getImageSubtitles,
   getSubFilename,
-} from "./stream/subtitle-stream.js";
+} from "./stream/subtitle-stream.js"
 
 /**
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
@@ -27,29 +27,29 @@ import {
 /** Class that acts as a wrapper for fluent-ffmpeg. */
 class VideoEdit {
   /** The fluent-ffmpeg object for cleaning/converting. */
-  ffmpegProcess;
+  ffmpegProcess
   /** The fluent-ffmpeg object for subtitle extraction. */
-  ffmpegExtract;
+  ffmpegExtract
   /** Full path to the output file. */
-  outputFile;
+  outputFile
   /** Conversion options. */
-  convertOpts;
+  convertOpts
   /** Audio codec to use if converting. */
-  outputAudioCodec;
+  outputAudioCodec
 
   /** Input file stream data.*/
   inputStreams = {
     /** @type {Array<AudioStream>} */ audio: [],
     /** @type {Array<VideoStream>} */ video: [],
     /** @type {Array<SubtitleStream>} */ subtitle: [],
-  };
+  }
 
   /** Output file stream data.*/
   outputStreams = {
     /** @type {Array<AudioStream>} */ audio: [],
     /** @type {Array<VideoStream>} */ video: [],
     /** @type {Array<SubtitleStream>} */ subtitle: [],
-  };
+  }
 
   /**
    * Creates a new VideoEdit object.
@@ -59,27 +59,27 @@ class VideoEdit {
    */
   constructor(inputFile, outputFile, convertOpts = {}) {
     // Setup fluent-ffmpeg object for cleaning/converting
-    this.ffmpegProcess = fluentFfmpeg(inputFile);
+    this.ffmpegProcess = fluentFfmpeg(inputFile)
     // Setup fluent-ffmpeg object for subtitle extraction
-    this.ffmpegExtract = fluentFfmpeg(inputFile);
+    this.ffmpegExtract = fluentFfmpeg(inputFile)
     // Set conversion options
-    this.convertOpts = convertOpts;
+    this.convertOpts = convertOpts
     // Set input file property
-    this.inputFile = inputFile;
+    this.inputFile = inputFile
     // Set output file property
-    this.outputFile = outputFile;
+    this.outputFile = outputFile
     // Set audio codec
     this.outputAudioCodec = getOutputAudioCodec(
       this.ffmpegProcess,
       convertOpts?.convertAudio
-    );
+    )
 
     // Set base options on convert/clean instance of ffmpeg-fluent
-    this.setCommonOptions(this.ffmpegProcess);
+    this.setCommonOptions(this.ffmpegProcess)
     // Set base options on subtitle extract instance of ffmpeg-fluent
-    this.setCommonOptions(this.ffmpegExtract);
+    this.setCommonOptions(this.ffmpegExtract)
 
-    return this;
+    return this
   }
 
   /**
@@ -88,17 +88,17 @@ class VideoEdit {
    */
   async init() {
     // Set path to ffprobe
-    const opts = { path: "/usr/local/bin/ffprobe" };
+    const opts = { path: "/usr/local/bin/ffprobe" }
 
     // Use ffprobe to get audio streams from the video file
     await ffprobe(this.inputFile, opts)
       .then((info) => {
         // Initialize inputStreams property
-        this.inputStreams = getInputStreams(info.streams);
+        this.inputStreams = getInputStreams(info.streams)
       })
-      .catch((err) => log.error(err));
+      .catch((err) => log.error(err))
 
-    return this;
+    return this
   }
 
   /**
@@ -112,7 +112,7 @@ class VideoEdit {
       // Output command on start
       .on("start", (command) => log.debug(command))
       // Handle errors
-      .on("error", (err) => log.error("FFMPEG Error:", err));
+      .on("error", (err) => log.error("FFMPEG Error:", err))
   }
 
   /**
@@ -121,16 +121,16 @@ class VideoEdit {
    */
   mapAudioStreams() {
     // Filter out non-English audio streams from input file
-    const streams = this.inputStreams.audio.filter((s) => s.lang === "eng");
+    const streams = this.inputStreams.audio.filter((s) => s.lang === "eng")
 
     // Save filtered streams to property
-    this.outputStreams.audio = streams;
+    this.outputStreams.audio = streams
 
     // Get the audio codec to use based on the source codec and the stream should be converted
     const codec = getOutputAudioCodec(
       this.ffmpegProcess,
       this.convertOpts.convertAudio
-    );
+    )
 
     // Process each audio stream
     streams.forEach((stream) => {
@@ -145,10 +145,10 @@ class VideoEdit {
         .outputOptions([
           `-metadata:s:a:${stream.index}`,
           `title=${stream.title}  `,
-        ]);
-    });
+        ])
+    })
 
-    return this;
+    return this
   }
 
   /**
@@ -157,10 +157,10 @@ class VideoEdit {
    */
   mapImageSubs() {
     // Filter out non-English and text-based subtitles
-    const imageSubs = getImageSubtitles(this.inputStreams.subtitle);
+    const imageSubs = getImageSubtitles(this.inputStreams.subtitle)
 
     // Save subtitles to property
-    this.outputStreams.subtitle = imageSubs;
+    this.outputStreams.subtitle = imageSubs
 
     // Map subtitle streams and set metadata
     imageSubs.forEach((/** @type {SubtitleStream} */ sub) => {
@@ -168,10 +168,10 @@ class VideoEdit {
         // Map subtitle stream and set codec to copy
         .outputOptions(["-map", `0:s:${sub.index}`])
         // Set subtitle stream title
-        .outputOptions([`-metadata:s:s:${sub.index}`, `title=${sub.title}  `]);
-    });
+        .outputOptions([`-metadata:s:s:${sub.index}`, `title=${sub.title}  `])
+    })
 
-    return this;
+    return this
   }
 
   /**
@@ -179,25 +179,25 @@ class VideoEdit {
    * @param {boolean} exitIfNotFound - Whether to exit the program if no matching subtitles are found.
    */
   extractSubs(exitIfNotFound) {
-    log.notice("Extracting text subtitles ...");
+    log.notice("Extracting text subtitles ...")
 
     // Get all text-based subtitle streams from the video file
-    const textSubs = getTextSubtitles(this.inputStreams.subtitle);
+    const textSubs = getTextSubtitles(this.inputStreams.subtitle)
 
     // If no English subtitles were found, exit the program
     if (textSubs.length === 0) {
-      const msg = `No text English subtitles were found in the video file.`;
+      const msg = `No text English subtitles were found in the video file.`
       if (exitIfNotFound) {
-        log.error(msg);
-        process.exit(1);
+        log.error(msg)
+        process.exit(1)
       }
       // Log warning if not exiting
-      log.warn(msg);
+      log.warn(msg)
     }
 
     // Walk through subtitle streams and extract all simultaneously
     for (const stream of textSubs) {
-      this.extractSub(stream, textSubs.length);
+      this.extractSub(stream, textSubs.length)
     }
   }
 
@@ -209,9 +209,9 @@ class VideoEdit {
   async extractSub(stream, index) {
     try {
       // Run the extract
-      await this.runExtract(this.inputFile, stream, index);
+      await this.runExtract(this.inputFile, stream, index)
     } catch (err) {
-      log.error(`Error extracting subtitle from stream ${stream.index}:`, err);
+      log.error(`Error extracting subtitle from stream ${stream.index}:`, err)
     }
   }
 
@@ -223,11 +223,11 @@ class VideoEdit {
    */
   async runExtract(inputFilePath, stream, streamCount) {
     // Get the subtitle file path
-    const outputFile = getSubFilename(inputFilePath, stream, streamCount);
+    const outputFile = getSubFilename(inputFilePath, stream, streamCount)
 
     await new Promise((resolve, reject) => {
-      const videoStream = this.inputStreams.video[0];
-      const { index } = stream;
+      const videoStream = this.inputStreams.video[0]
+      const { index } = stream
 
       // Extract subtitle using ffmpeg
       this.ffmpegExtract
@@ -244,16 +244,16 @@ class VideoEdit {
           resolve(log.success("Subtitle extracted successfully!"))
         )
         // Save the subtitle to the output file
-        .save(outputFile);
-    });
+        .save(outputFile)
+    })
   }
 
   /**
    * Runs the ffmpeg command.
    */
   async run() {
-    const { convertVideo } = this.convertOpts;
-    const videoStream = this.inputStreams.video[0];
+    const { convertVideo } = this.convertOpts
+    const videoStream = this.inputStreams.video[0]
 
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
@@ -277,9 +277,9 @@ class VideoEdit {
         // Output message on success
         .on("end", () => resolve(log.success("Command finished successfully!")))
         // Save the video to the output file
-        .save(this.outputFile);
-    });
+        .save(this.outputFile)
+    })
   }
 }
 
-export default VideoEdit;
+export default VideoEdit

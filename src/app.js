@@ -1,9 +1,9 @@
 /**
  * @file Main video edit application.
  */
-import path from "node:path";
-import log from "./services/logger/logger.js";
-import VideoEdit from "./services/video-edit.js";
+import path from "node:path"
+import log from "./services/logger/logger.js"
+import VideoEdit from "./services/video-edit.js"
 
 /**
  * @typedef {import('./services/logger/logger.js').Logger} Logger
@@ -16,27 +16,27 @@ import VideoEdit from "./services/video-edit.js";
 export default class App {
   /** @type {VideoEdit} - VideoEdit instance. */
   // @ts-ignore
-  ffmpeg;
+  ffmpeg
 
   /**
    * Checks for ffmpeg when creating an instance of App.
    */
   constructor() {
     // Command is first argument to node app
-    this.command = process.argv[2];
+    this.command = process.argv[2]
     // Input file is second argument to node app
-    this.inputFile = process.argv[3];
+    this.inputFile = process.argv[3]
 
     // Exit if file not specified
     if (this.inputFile == null) {
-      log.error("Input file not specified.");
-      process.exit(1);
+      log.error("Input file not specified.")
+      process.exit(1)
     }
 
     // Set output filename based on command and input file
-    this.outputFilename = this.getOutputFilename();
+    this.outputFilename = this.getOutputFilename()
 
-    log.debug("Starting...");
+    log.debug("Starting...")
   }
 
   /**
@@ -45,14 +45,11 @@ export default class App {
    */
   getOutputFilename() {
     /** Directory where input file is located. */
-    const dir = path.dirname(this.inputFile);
+    const dir = path.dirname(this.inputFile)
     /** Base filename of input file. */
-    const basename = path.basename(
-      this.inputFile,
-      path.extname(this.inputFile)
-    );
+    const basename = path.basename(this.inputFile, path.extname(this.inputFile))
 
-    return path.join(dir, `${basename}-${this.command}.mkv`);
+    return path.join(dir, `${basename}-${this.command}.mkv`)
   }
 
   /**
@@ -63,28 +60,28 @@ export default class App {
     this.ffmpeg = await new VideoEdit(
       this.inputFile,
       this.outputFilename
-    ).init();
+    ).init()
 
     switch (this.command) {
       // Extract English subtitles from the video file
       case "extract-subs":
-        this.extractSubs(true);
-        break;
+        this.extractSubs(true)
+        break
 
       // Run cleanup process on video file
       case "clean":
-        await this.cleanup({ extractSubs: true });
-        break;
+        await this.cleanup({ extractSubs: true })
+        break
 
       // Convert audio to AAC if not already
       case "convert-audio":
-        await this.cleanup({ convertAudio: true });
-        break;
+        await this.cleanup({ convertAudio: true })
+        break
 
       // Convert video to H265
       case "convert-video":
-        await this.cleanup({ convertVideo: true });
-        break;
+        await this.cleanup({ convertVideo: true })
+        break
 
       // Clean and convert anything that needs to be converted
       case "full":
@@ -92,12 +89,12 @@ export default class App {
           extractSubs: true,
           convertAudio: true,
           convertVideo: true,
-        });
-        break;
+        })
+        break
 
       default:
-        log.info(`Invalid command: ${this.command}`);
-        process.exit(1);
+        log.info(`Invalid command: ${this.command}`)
+        process.exit(1)
     }
   }
 
@@ -107,7 +104,7 @@ export default class App {
    */
   extractSubs(exitIfNotFound = false) {
     // Extract English subtitles from the video file
-    this?.ffmpeg?.extractSubs(exitIfNotFound);
+    this?.ffmpeg?.extractSubs(exitIfNotFound)
   }
 
   /**
@@ -116,26 +113,26 @@ export default class App {
    */
   async cleanup(convertOpts = {}) {
     // Create new VideoEdit instance and map audio and subtitle streams
-    this.ffmpeg.convertOpts = convertOpts;
+    this.ffmpeg.convertOpts = convertOpts
 
     if (convertOpts?.extractSubs === true) {
       // Extract text-based English subtitles from the video file
-      await this.extractSubs();
+      await this.extractSubs()
     }
 
     // Map audio streams and set metadata
-    this.ffmpeg.mapAudioStreams();
+    this.ffmpeg.mapAudioStreams()
     // Map subtitle streams and set metadata
-    this.ffmpeg.mapImageSubs();
+    this.ffmpeg.mapImageSubs()
 
     // Run the ffmpeg command.
     try {
-      log.notice("Running ffmpeg command...");
-      await this.ffmpeg.run();
+      log.notice("Running ffmpeg command...")
+      await this.ffmpeg.run()
     } catch (err) {
       // @ts-ignore
-      log.error("Error running ffmpeg:", err.message);
-      process.exit(1);
+      log.error("Error running ffmpeg:", err.message)
+      process.exit(1)
     }
   }
 }

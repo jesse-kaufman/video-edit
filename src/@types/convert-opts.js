@@ -7,4 +7,4 @@
  * @property {boolean} [extractSubs] - Whether or not to extract subtitles.
  */
 
-export default {};
+export default {}

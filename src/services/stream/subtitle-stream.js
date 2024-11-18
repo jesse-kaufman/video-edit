@@ -2,12 +2,12 @@
  * @file Subtitle stream service.
  */
 
-import path from "node:path";
+import path from "node:path"
 
 /** @typedef {import('../../@types/subtitle-stream.js').SubtitleStream} SubtitleStream */
 
 /** Text subtitle formats. */
-export const textSubs = ["subrip", "ass", "ssa"];
+export const textSubs = ["subrip", "ass", "ssa"]
 
 /**
  * Returns only image-based subtitle streams.
@@ -15,7 +15,7 @@ export const textSubs = ["subrip", "ass", "ssa"];
  * @returns {Array<SubtitleStream>} Image-based subtitle streams.
  */
 export const getImageSubtitles = (streams) =>
-  streams.filter((stream) => !textSubs.includes(stream.codecName));
+  streams.filter((stream) => !textSubs.includes(stream.codecName))
 
 /**
  * Returns only text-based subtitle streams.
@@ -23,7 +23,7 @@ export const getImageSubtitles = (streams) =>
  * @returns {Array<SubtitleStream>} Text-based subtitle streams.
  */
 export const getTextSubtitles = (streams) =>
-  streams.filter((stream) => textSubs.includes(stream.codecName));
+  streams.filter((stream) => textSubs.includes(stream.codecName))
 
 /**
  * Returns a SubtitleStream object for the given input stream from ffprobe.
@@ -34,7 +34,7 @@ export const getTextSubtitles = (streams) =>
 export const getSubtitleStreamData = (stream, index) => {
   const formattedCodecName = stream.codec_long_name
     .replace("SubRip subtitle", "SubRip")
-    .replace(/HDMV.*/, "HDMV PGS subtitles");
+    .replace(/HDMV.*/, "HDMV PGS subtitles")
 
   return {
     lang: stream.tags?.language || "",
@@ -42,8 +42,8 @@ export const getSubtitleStreamData = (stream, index) => {
     codecName: `${stream.codec_name}`,
     formattedCodecName,
     index,
-  };
-};
+  }
+}
 
 /**
  * Gets the output file based on the specified input file and stream.
@@ -57,13 +57,13 @@ export const getSubFilename = (inputFile, stream, streamCount) => {
   let outputFile = path.join(
     path.dirname(inputFile),
     path.basename(inputFile, path.extname(inputFile))
-  );
+  )
 
   // If there are multiple streams, append title (if set) or index to the output file name
   if (streamCount > 1 && stream.index !== 0) {
-    outputFile += `.${stream.title ?? stream.index}`;
+    outputFile += `.${stream.title ?? stream.index}`
   }
 
   // Append ".eng.srt" to the output file name
-  return `${outputFile}.${stream.lang}.srt`;
-};
+  return `${outputFile}.${stream.lang}.srt`
+}

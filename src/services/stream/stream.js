@@ -2,9 +2,9 @@
 
 /** @typedef {import("../../@types/streams.js").Streams} Streams */
 
-import { getAudioStreamData } from "./audio-stream.js";
-import { getVideoStreamData } from "./video-stream.js";
-import { getSubtitleStreamData } from "./subtitle-stream.js";
+import { getAudioStreamData } from "./audio-stream.js"
+import { getVideoStreamData } from "./video-stream.js"
+import { getSubtitleStreamData } from "./subtitle-stream.js"
 
 /**
  * Sets up audio, video, and subtitle stream properties.
@@ -17,7 +17,7 @@ export const getInputStreams = (streams) => {
     audio: [],
     video: [],
     subtitle: [],
-  };
+  }
 
   streams.forEach((stream) => {
     switch (stream.codec_type) {
@@ -25,24 +25,24 @@ export const getInputStreams = (streams) => {
       case "audio":
         inputStreams.audio.push(
           getAudioStreamData(stream, inputStreams.audio.length)
-        );
-        break;
+        )
+        break
 
       // Push data for video stream to inputStreams
       case "video":
         inputStreams.video.push(
           getVideoStreamData(stream, inputStreams.video.length)
-        );
-        break;
+        )
+        break
 
       // Push data for subtitle stream to inputStreams
       case "subtitle":
         inputStreams.subtitle.push(
           getSubtitleStreamData(stream, inputStreams.subtitle.length)
-        );
-        break;
+        )
+        break
     }
-  });
+  })
 
-  return inputStreams;
-};
+  return inputStreams
+}
