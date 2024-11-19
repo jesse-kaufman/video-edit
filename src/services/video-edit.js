@@ -125,9 +125,10 @@ class VideoEdit {
 
   /**
    * Maps audio streams in output file.
-   * @returns {VideoEdit} Returns this to allow chaining.
+   * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
+   * @returns {VideoEdit} Returns `this` to allow chaining.
    */
-  mapAudioStreams() {
+  mapAudioStreams(ffmpegProcess) {
     // Filter out non-English audio streams from input file
     const streams = this.inputStreams.audio.filter((s) => s.lang === "eng")
 
@@ -136,14 +137,14 @@ class VideoEdit {
 
     // Get the audio codec to use based on the source codec and the stream should be converted
     const codec = getOutputAudioCodec(
-      this.ffmpegProcess,
+      ffmpegProcess,
       this.convertOpts.convertAudio
     )
 
     // Process each audio stream
     streams.forEach((stream) => {
       // Map audio stream
-      this.ffmpegProcess
+      ffmpegProcess
         .outputOptions("-map", `0:a:${stream.index}`)
         // Set audio stream codec
         .outputOptions(`-c:a ${codec}`)
@@ -161,9 +162,10 @@ class VideoEdit {
 
   /**
    * Maps image-based English subtitle streams.
-   * @returns {VideoEdit} Returns this to allow chaining.
+   * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
+   * @returns {VideoEdit} Returns `this` to allow chaining.
    */
-  mapImageSubs() {
+  mapImageSubs(ffmpegProcess) {
     // Grab image-based English subtitle streams
     const imageSubs = getImageSubtitles(this.inputStreams.subtitle).filter(
       (sub) => sub.lang === "eng"
@@ -174,11 +176,18 @@ class VideoEdit {
 
     // Map subtitle streams and set metadata
     imageSubs.forEach((/** @type {SubtitleStream} */ sub) => {
-      this.ffmpegProcess
+      ffmpegProcess
         // Map subtitle stream and set codec to copy
         .outputOptions(["-map", `0:s:${sub.index}`])
-        // Set subtitle stream title
-        .outputOptions([`-metadata:s:s:${sub.index}`, `title=${sub.title}  `])
+
+      // Set subtitle stream title
+      if (sub?.title !== "") {
+        console.log("Subtitle title already set: `", sub.title.trim(), "`")
+        ffmpegProcess.outputOptions([
+          `-metadata:s:s:${sub.index}`,
+          `title=${sub.title}  `,
+        ])
+      }
     })
 
     return this
@@ -186,14 +195,16 @@ class VideoEdit {
 
   /**
    * Maps video stream(s).
+   * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
+   * @returns {VideoEdit} Returns `this` to allow chaining.
    */
-  mapVideoStreams() {
+  mapVideoStreams(ffmpegProcess) {
     // Get conversion options for video
     const { convertVideo } = this.convertOpts
     // Add video stream(s) to outputStreams property
     this.outputStreams.video = this.inputStreams.video
 
-    this.ffmpegProcess
+    ffmpegProcess
       // Map video stream
       .outputOptions("-map 0:v")
       // If converting video, set codec to h265, otherwise copy
@@ -202,6 +213,8 @@ class VideoEdit {
       .outputOptions([`-metadata:s:v:0`, `language=eng`])
       // Blank video title
       .outputOptions([`-metadata:s:v:0`, `title=`])
+
+    return this
   }
 
   /**
@@ -287,9 +300,19 @@ class VideoEdit {
   async run() {
     const videoStream = this.inputStreams.video[0]
 
+    const ffmpegProcess = fluentFfmpeg(this.inputFile)
+    // Set common options
+    this.setCommonOptions(ffmpegProcess)
+    // Map video streams and set metadata
+    this.mapVideoStreams(ffmpegProcess)
+    // Map audio streams and set metadata
+    this.mapAudioStreams(ffmpegProcess)
+    // Map subtitle streams and set metadata
+    this.mapImageSubs(ffmpegProcess)
+
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
-      this.ffmpegProcess
+      ffmpegProcess
         // Set subtitle codec to copy
         .outputOptions("-scodec copy")
         // Set global language

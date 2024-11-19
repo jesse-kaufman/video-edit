@@ -120,11 +120,6 @@ export default class App {
       await this.extractSubs()
     }
 
-    // Map audio streams and set metadata
-    this.ffmpeg.mapAudioStreams()
-    // Map subtitle streams and set metadata
-    this.ffmpeg.mapImageSubs()
-
     // Run the ffmpeg command.
     try {
       log.notice("Running ffmpeg command...")
