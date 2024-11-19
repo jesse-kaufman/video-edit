@@ -21,7 +21,7 @@ export const getAudioStreamData = (stream, index) => {
   // Setup audio stream object with blank title to be filled in next.
   const audioStream = {
     lang: stream.tags?.language || "eng",
-    origTitle: stream.tags?.title.trim() || "",
+    origTitle: stream.tags?.title?.trim() || "",
     codecName: `${stream.codec_name}`,
     formattedCodecName,
     channelLayout,
