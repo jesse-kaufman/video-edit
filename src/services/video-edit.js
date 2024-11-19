@@ -8,7 +8,7 @@ import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
 import { getOutputAudioCodec, mapAudioStreams } from "./stream/audio-stream.js"
 import { getInputStreams } from "./stream/stream.js"
-import { printProgress } from "./progress.js"
+import { printProgress } from "./progress-output.js"
 
 import {
   getTextSubtitles,
