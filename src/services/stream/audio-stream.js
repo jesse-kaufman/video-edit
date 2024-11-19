@@ -85,7 +85,7 @@ function formatChannelLayout(channelLayout) {
   const channels = channelLayout.toString().replace(/\(.*\)/, "")
 
   // Replace surround channel layouts with friendlier names
-  if (channels === "5.1") return "5.1 Surround"
+  if (channels === "6" || channels === "5.1") return "5.1 Surround"
   if (channels === "7.1") return "7.1 Surround"
 
   // Default to channel layout with initial caps
