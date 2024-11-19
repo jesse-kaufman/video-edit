@@ -6,5 +6,5 @@ const app = new App()
 try {
   app.run()
 } catch (/** @type {any} */ err) {
-  console.error(err.message)
+  console.error(err.message, err.stack)
 }
