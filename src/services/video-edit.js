@@ -96,8 +96,6 @@ class VideoEdit {
       .on("start", (command) => log.debug(command))
       // Handle errors
       .on("error", (err) => log.error("FFMPEG Error:", err))
-
-    return this
   }
 
   /**
