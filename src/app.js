@@ -104,14 +104,8 @@ export default class App {
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
   async cleanup(convertOpts) {
-    const defaultOpts = {
-      extractSubs: false,
-      convertAudio: false,
-      convertVideo: false,
-    }
-
     // Merge default options with provided options and set to ffmpeg instance.s
-    this.ffmpeg.convertOpts = { ...defaultOpts, ...convertOpts }
+    this.ffmpeg.convertOpts = { ...this.defaultOpts, ...convertOpts }
 
     if (convertOpts?.extractSubs === true) {
       // Extract text-based English subtitles from the video file
