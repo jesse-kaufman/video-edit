@@ -6,7 +6,7 @@
 import path from "node:path"
 
 /** Text subtitle formats. */
-export const textSubs = ["subrip", "ass", "ssa"]
+export const textSubTypes = ["mov_text", "subrip", "ass", "ssa"]
 
 /**
  * Returns only image-based subtitle streams.
