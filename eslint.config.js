@@ -44,6 +44,7 @@ const config = [
           ignoreInlineComments: true,
         },
       ],
+      semi: ["error", "never"],
       complexity: ["warn", { max: 7 }],
       curly: ["error", "multi-line", "consistent"],
       "default-case-last": "error",
@@ -186,6 +187,7 @@ const config = [
           ],
         },
       ],
+      "eol-last": ["error", "always"],
       "jsdoc/require-jsdoc": [
         "error",
         {
