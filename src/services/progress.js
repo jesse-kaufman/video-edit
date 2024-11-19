@@ -51,7 +51,7 @@ export const getDetailParts = (progress, videoStream) => {
   // Add timestamp to progress output
   parts.push(progress.currentTime || "")
   // Add speed information to progress output
-  parts.push(formatSpeed(progress.currentFps, videoStream.fps))
+  parts.push(formatSpeed(progress.currentFps, videoStream?.fps))
   // Return non-empty parts.
   return parts.filter((part) => part !== "")
 }
