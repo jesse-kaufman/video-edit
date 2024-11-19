@@ -1,5 +1,4 @@
 {
-  "cSpell.words": [
-    "ffprobe"
-  ]
+  "cSpell.words": ["ffprobe"],
+  "prettier.semi": false
 }
