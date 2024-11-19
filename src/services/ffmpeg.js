@@ -4,9 +4,7 @@
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
  * @typedef {import('../@types/streams.js').Streams} Streams
- * @typedef {import('../@types/streams.js').AudioStream} AudioStream
  * @typedef {import('../@types/streams.js').SubtitleStream} SubtitleStream
- * @typedef {import('../@types/streams.js').VideoStream} VideoStream
  */
 
 import fluentFfmpeg from "fluent-ffmpeg"
