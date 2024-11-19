@@ -23,7 +23,7 @@ const formatCurrentSize = (size) => (isNaN(size) ? "" : `(${size} KiB)`)
  * @param {number} pct - Percent of progress.
  * @returns {string} Formatted progress percentage.
  */
-const formatPercent = (pct) => (isNaN(pct) ? "" : `${pct?.toFixed(1)}%`)
+const formatPercent = (pct) => (isNaN(pct) ? "N/A" : `${pct?.toFixed(1)}%`)
 
 /**
  * Gets speed information for progress reporting.
