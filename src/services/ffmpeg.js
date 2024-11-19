@@ -13,12 +13,12 @@ import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
 import { getInputStreams, mapStreams } from "./stream/stream.js"
-import { printProgress } from "./progress-output.js"
+import { printProgress } from "./output/progress.js"
 import { getTextSubtitles } from "./stream/subtitle-stream.js"
 import { getSubFilename } from "./filename.js"
 
 /** Class that acts as a wrapper for fluent-ffmpeg. */
-class VideoEdit {
+class Ffmpeg {
   /** Full path to the input file. */
   inputFile
   /** Full path to the output file. */
@@ -51,7 +51,7 @@ class VideoEdit {
 
   /**
    * Initializes inputStreams property.
-   * @returns {Promise<VideoEdit>} Promise resolves to VideoEdit instance.
+   * @returns {Promise<Ffmpeg>} Promise resolves to VideoEdit instance.
    */
   async init() {
     // Set path to ffprobe
@@ -181,4 +181,4 @@ class VideoEdit {
   }
 }
 
-export default VideoEdit
+export default Ffmpeg

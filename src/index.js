@@ -1,18 +1,18 @@
 /**
  * @file Main video edit application.
  * @typedef {import('./services/logger/logger.js').Logger} Logger
- * @typedef {import('./services/video-edit.js').ConvertOpts} ConvertOpts
+ * @typedef {import('./services/ffmpeg.js').ConvertOpts} ConvertOpts
  */
 
 import log from "./services/logger/logger.js"
-import VideoEdit from "./services/video-edit.js"
+import Ffmpeg from "./services/ffmpeg.js"
 import { getOutputFilename } from "./services/filename.js"
 
 /**
  * Main app class.
  */
 class App {
-  /** @type {VideoEdit} - VideoEdit instance. */
+  /** @type {Ffmpeg} - VideoEdit instance. */
   // @ts-ignore
   ffmpeg
 
@@ -49,10 +49,7 @@ class App {
    */
   async run() {
     // Initialize VideoEdit with input file and output filename
-    this.ffmpeg = await new VideoEdit(
-      this.inputFile,
-      this.outputFilename
-    ).init()
+    this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init()
 
     switch (this.command) {
       // Extract English subtitles from the video file
