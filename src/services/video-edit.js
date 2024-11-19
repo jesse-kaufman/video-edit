@@ -100,6 +100,7 @@ class VideoEdit {
       })
       .catch((err) => {
         log.error(err)
+        // eslint-disable-next-line no-magic-numbers
         process.exit(-1)
       })
 
