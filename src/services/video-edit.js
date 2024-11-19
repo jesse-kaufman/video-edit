@@ -19,6 +19,7 @@ import {
 
 /**
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
+ * @typedef {import('../@types/streams.js').Streams} Streams
  * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
  * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
  * @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream
@@ -34,19 +35,11 @@ class VideoEdit {
   /** Conversion options. */
   convertOpts
 
-  /** Input file stream data.*/
-  inputStreams = {
-    /** @type {Array<AudioStream>} */ audio: [],
-    /** @type {Array<VideoStream>} */ video: [],
-    /** @type {Array<SubtitleStream>} */ subtitle: [],
-  }
+  /** @type {Streams} Input file stream data.*/
+  inputStreams = { audio: [], video: [], subtitle: [] }
 
-  /** Output file stream data.*/
-  outputStreams = {
-    /** @type {Array<AudioStream>} */ audio: [],
-    /** @type {Array<VideoStream>} */ video: [],
-    /** @type {Array<SubtitleStream>} */ subtitle: [],
-  }
+  /** @type {Streams} Output file stream data. */
+  outputStreams = { audio: [], video: [], subtitle: [] }
 
   /**
    * Creates a new VideoEdit object.
