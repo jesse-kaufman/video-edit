@@ -82,7 +82,7 @@ function formatStreamTitle(stream) {
 function formatChannelLayout(channelLayout) {
   log.debug("Channel layout:", channelLayout)
   // Extract channel layout from stream, stripping out anything in parentheses
-  const channels = channelLayout.replace(/\(.*\)/, "")
+  const channels = channelLayout.toString().replace(/\(.*\)/, "")
 
   // Replace surround channel layouts with friendlier names
   if (channels === "5.1") return "5.1 Surround"
