@@ -57,7 +57,7 @@ export default class App {
     switch (this.command) {
       // Extract English subtitles from the video file
       case "extract-subs":
-        this.extractSubs(true)
+        this.cleanup({ extractSubs: true, extractOnly: true })
         break
 
       // Run cleanup process on video file
@@ -91,15 +91,6 @@ export default class App {
   }
 
   /**
-   * Extracts text-based English subtitles from the video file.
-   * @param {boolean} exitIfNotFound - Whether to exit if no matching subtitles are found.
-   */
-  extractSubs(exitIfNotFound = false) {
-    // Extract English subtitles from the video file
-    this?.ffmpeg?.extractSubs(exitIfNotFound)
-  }
-
-  /**
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
@@ -107,13 +98,13 @@ export default class App {
     // Merge default options with provided options and set to ffmpeg instance.s
     this.ffmpeg.convertOpts = { ...this.defaultOpts, ...convertOpts }
 
-    if (convertOpts?.extractSubs === true) {
+    if (convertOpts?.extractSubs) {
       // Extract text-based English subtitles from the video file
       this.ffmpeg.extractSubs(false)
-    }
 
-    // Exit if only extracting subtitles
-    if (convertOpts?.extractOnly === true) return
+      // Exit if only extracting subtitles
+      if (convertOpts?.extractOnly === true) return
+    }
 
     // Convert/clean file
     try {
