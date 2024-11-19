@@ -8,7 +8,7 @@ import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
 import { mapAudioStreams } from "./stream/audio-stream.js"
 import { mapVideoStreams } from "./stream/video-stream.js"
-import { getInputStreams } from "./stream/stream.js"
+import { getInputStreams, mapStreams } from "./stream/stream.js"
 import { printProgress } from "./progress-output.js"
 
 import {
@@ -101,57 +101,26 @@ class VideoEdit {
   }
 
   /**
-   * Maps audio streams in output file.
-   * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
-   * @returns {VideoEdit} Returns `this` to allow chaining.
+   * Map all streams to output file and store results in outputStream property.
+   * @param {FfmpegCommand} ffmpeg - Fluent-ffmpeg instance.
    */
-  mapAudioStreams(ffmpegProcess) {
-    const { audio } = this.inputStreams
-    const { convertAudio } = this.convertOpts
+  mapStreams(ffmpeg) {
+    const { convertVideo, convertAudio } = this.convertOpts
+    const { video, audio, subtitle } = this.inputStreams
 
-    // Map audio streams and save returned audio streams to class property
-    this.outputStreams.audio = mapAudioStreams(
-      ffmpegProcess,
-      audio,
-      convertAudio
-    )
+    // Map video stream(s)
+    const outputVideo = mapVideoStreams(ffmpeg, video, convertVideo)
+    // Map audio streams
+    const outputAudio = mapAudioStreams(ffmpeg, audio, convertAudio)
+    // Map image-based English subtitles
+    const outputSubtitle = mapImageSubs(ffmpeg, subtitle)
 
-    return this
-  }
-
-  /**
-   * Maps image-based English subtitle streams.
-   * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
-   * @returns {VideoEdit} Returns `this` to allow chaining.
-   */
-  mapImageSubs(ffmpegProcess) {
-    // Save subtitles to property
-    this.outputStreams.subtitle = mapImageSubs(
-      ffmpegProcess,
-      this.inputStreams.subtitle
-    )
-
-    return this
-  }
-
-  /**
-   * Maps video stream(s).
-   * @param {FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
-   * @returns {VideoEdit} Returns `this` to allow chaining.
-   */
-  mapVideoStreams(ffmpegProcess) {
-    // Get conversion options for video
-    const { convertVideo } = this.convertOpts
-    const streams = this.inputStreams.video
-
-    // Add video stream(s) to outputStreams property
-    this.outputStreams.video = mapVideoStreams(
-      ffmpegProcess,
-      streams,
-      convertVideo
-    )
-
-    return this
+    // Save mapped streams to outputStreams property for later use
+    this.outputStreams = {
+      audio: outputAudio,
+      video: outputVideo,
+      subtitle: outputSubtitle,
+    }
   }
 
   /**
@@ -236,16 +205,12 @@ class VideoEdit {
    */
   async run() {
     const videoStream = this.inputStreams.video[0]
-
     const ffmpegProcess = fluentFfmpeg(this.inputFile)
+
     // Set common options
     this.setCommonOptions(ffmpegProcess)
-    // Map video streams and set metadata
-    this.mapVideoStreams(ffmpegProcess)
-    // Map audio streams and set metadata
-    this.mapAudioStreams(ffmpegProcess)
-    // Map subtitle streams and set metadata
-    this.mapImageSubs(ffmpegProcess)
+    // Map streams
+    mapStreams(ffmpegProcess, this.inputStreams, this.convertOpts)
 
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {

@@ -1,10 +1,11 @@
 /** @file Stream service. */
 
 /** @typedef {import("../../@types/streams.js").Streams} Streams */
+/** @typedef {import("../../@types/convert-opts.js").ConvertOpts} ConvertOpts */
 
-import { getAudioStreamData } from "./audio-stream.js"
-import { getVideoStreamData } from "./video-stream.js"
-import { getSubtitleStreamData } from "./subtitle-stream.js"
+import { getAudioStreamData, mapAudioStreams } from "./audio-stream.js"
+import { getVideoStreamData, mapVideoStreams } from "./video-stream.js"
+import { getSubtitleStreamData, mapImageSubs } from "./subtitle-stream.js"
 
 /**
  * Sets up audio, video, and subtitle stream properties.
@@ -45,4 +46,29 @@ export const getInputStreams = (streams) => {
   })
 
   return inputStreams
+}
+
+/**
+ * Map all streams to output file and store results in outputStream property.
+ * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpeg - Fluent-ffmpeg instance.
+ * @param {Streams} streams - Input file streams.
+ * @param {ConvertOpts} opts - Options.
+ * @returns {Streams} Mapped outbut streams.
+ */
+export const mapStreams = (ffmpeg, streams, opts) => {
+  const { convertVideo, convertAudio } = opts
+  const { video, audio, subtitle } = streams
+
+  // Map video stream(s)
+  const outputVideo = mapVideoStreams(ffmpeg, video, convertVideo)
+  // Map audio streams
+  const outputAudio = mapAudioStreams(ffmpeg, audio, convertAudio)
+  // Map image-based English subtitles
+  const outputSubtitle = mapImageSubs(ffmpeg, subtitle)
+
+  return {
+    video: outputVideo,
+    audio: outputAudio,
+    subtitle: outputSubtitle,
+  }
 }
