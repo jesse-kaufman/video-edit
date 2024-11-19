@@ -111,9 +111,15 @@ export default class App {
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
-  async cleanup(convertOpts = {}) {
-    // Create new VideoEdit instance and map audio and subtitle streams
-    this.ffmpeg.convertOpts = convertOpts
+  async cleanup(convertOpts) {
+    const defaultOpts = {
+      extractSubs: false,
+      convertAudio: false,
+      convertVideo: false,
+    }
+
+    // Merge default options with provided options and set to ffmpeg instance.s
+    this.ffmpeg.convertOpts = { ...defaultOpts, ...convertOpts }
 
     if (convertOpts?.extractSubs === true) {
       // Extract text-based English subtitles from the video file
