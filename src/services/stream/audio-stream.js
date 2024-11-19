@@ -40,13 +40,10 @@ export const getAudioStreamData = (stream, index) => {
  * @returns {string} Formatted long name.
  */
 function formatCodecName(name) {
-  let formattedCodecName = name.replace(/\(.*\)/, "").trim()
+  const formattedCodecName = name.replace(/\(.*\)/, "").trim()
 
-  if (formattedCodecName === "ATSC A/52B") {
-    formattedCodecName = "AC3"
-  }
-
-  return formattedCodecName
+  // Use AC3 for ATSC A/52B codec
+  return (formattedCodecName === "ATSC A/52B") ? "AC3" : formattedCodecName
 }
 
 /**
