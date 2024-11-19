@@ -137,7 +137,7 @@ class VideoEdit {
         // Print progress message
         .on("progress", (progress) => printProgress(log, progress, fps, index))
         // Handle errors
-        .on("error", (err) => reject(err))
+        .on("error", (err) => reject(console.error(err)))
         // Output message on success
         .on("end", () =>
           resolve(log.success("Subtitle extracted successfully!"))
@@ -169,7 +169,7 @@ class VideoEdit {
         // Output message on progress
         .on("progress", (progress) => printProgress(log, progress, fps))
         // Handle errors
-        .on("error", (err) => reject(err))
+        .on("error", (err) => reject(console.error(err)))
         // Output message on success
         .on("end", () => resolve(log.success("Command finished successfully!")))
         // Save the video to the output file
