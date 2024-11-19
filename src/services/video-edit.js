@@ -30,6 +30,8 @@ class VideoEdit {
   ffmpegProcess
   /** The fluent-ffmpeg object for subtitle extraction. */
   ffmpegExtract
+  /** Full path to the input file. */
+  inputFile
   /** Full path to the output file. */
   outputFile
   /** Conversion options. */
@@ -234,8 +236,11 @@ class VideoEdit {
       const videoStream = this.inputStreams.video[0]
       const { index } = stream
 
+      const ffmpegExtract = fluentFfmpeg(this.inputFile)
+      this.setCommonOptions(ffmpegExtract)
+
       // Extract subtitle using ffmpeg
-      this.ffmpegExtract
+      ffmpegExtract
         // Map subtitle
         .outputOptions([`-map 0:s:${index}`, "-scodec srt"])
         // Print progress message
