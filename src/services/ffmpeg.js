@@ -10,7 +10,7 @@
 import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
 import { extraDebug } from "../config/config.js"
-import log from "./logger/logger.js"
+import log from "./logger.js"
 import { getInputStreams, mapStreams } from "./stream/stream.js"
 import { printProgress } from "./output/progress.js"
 import { getTextSubtitles } from "./stream/subtitle-stream.js"

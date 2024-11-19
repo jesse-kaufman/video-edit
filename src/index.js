@@ -1,10 +1,10 @@
 /**
  * @file Main video edit application.
- * @typedef {import('./services/logger/logger.js').Logger} Logger
+ * @typedef {import('./services/logger.js').Logger} Logger
  * @typedef {import('./services/ffmpeg.js').ConvertOpts} ConvertOpts
  */
 
-import log from "./services/logger/logger.js"
+import log from "./services/logger.js"
 import Ffmpeg from "./services/ffmpeg.js"
 import { getOutputFilename } from "./services/filename.js"
 

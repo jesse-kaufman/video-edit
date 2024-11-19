@@ -3,7 +3,7 @@
  * @module services/logging
  */
 import { Chalk } from "chalk"
-import { debug } from "../../config/config.js"
+import { debug } from "../config/config.js"
 
 // @ts-ignore
 const chalk = new Chalk({ level: 3 })

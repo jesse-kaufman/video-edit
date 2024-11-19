@@ -4,7 +4,7 @@
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
 
-import log from "../logger/logger.js"
+import log from "../logger.js"
 
 /**
  * Sets up AudioStream based on ffprobe stream data.
