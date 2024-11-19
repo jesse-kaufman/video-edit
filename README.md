@@ -4,15 +4,13 @@ A wrapper to ffmpeg that simplifies repetative tasks related to managing downloa
 
 `npm start [command] [inputFile]`
 
+---
+
 ## Commands
 
 ### `extract-subs`
 
 Extracts all text-based English subtitles from input file to subrip format.
-
-### `set-metadata`\*
-
-Sets metadata on streams in input file. _(TODO)_
 
 ### `cleanup`
 
@@ -42,8 +40,16 @@ Sets metadata on streams in input file. _(TODO)_
 - Converts all remaining audio streams to AAC (if not already in that format)
 - Converts primary video stream to h265 (if not already in that format)
 
+### `set-metadata`\*
+
+Sets metadata on streams in input file. _(TODO)_
+
 _\* Commands marked with an asterisk are not yet implemented._
+
+---
 
 ## To Do List
 
 - [ ] Set stream title and language for all stream types
+- [ ] Print list of input file streams and proposed output file streams before processing
+- [ ] Add summary after processing
