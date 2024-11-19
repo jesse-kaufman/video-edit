@@ -67,3 +67,34 @@ export const getSubFilename = (inputFile, stream, streamCount) => {
   // Append ".eng.srt" to the output file name
   return `${outputFile}.${stream.lang}.srt`
 }
+
+/**
+ * Map image-based English subtitles.
+ * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - Fluent-ffmpeg instance.
+ * @param {Array<SubtitleStream>} streams - Array of subtitle streams from ffprobe.
+ * @returns {Array<SubtitleStream>} An array of mapped subtitle streams.
+ */
+export const mapImageSubs = (ffmpegProcess, streams) => {
+  // Grab image-based English subtitle streams
+  const imageSubs = getImageSubtitles(streams).filter(
+    (sub) => sub.lang === "eng"
+  )
+
+  // Map subtitle streams and set metadata
+  imageSubs.forEach((/** @type {SubtitleStream} */ sub) => {
+    ffmpegProcess
+      // Map subtitle stream and set codec to copy
+      .outputOptions(["-map", `0:s:${sub.index}`])
+
+    // Set subtitle stream title
+    if (sub?.title !== "") {
+      console.log("Subtitle title already set: `", sub.title.trim(), "`")
+      ffmpegProcess.outputOptions([
+        `-metadata:s:s:${sub.index}`,
+        `title=${sub.title}  `,
+      ])
+    }
+  })
+
+  return imageSubs
+}

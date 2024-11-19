@@ -12,8 +12,8 @@ import { printProgress } from "./progress.js"
 
 import {
   getTextSubtitles,
-  getImageSubtitles,
   getSubFilename,
+  mapImageSubs,
 } from "./stream/subtitle-stream.js"
 
 /**
@@ -149,29 +149,11 @@ class VideoEdit {
    * @returns {VideoEdit} Returns `this` to allow chaining.
    */
   mapImageSubs(ffmpegProcess) {
-    // Grab image-based English subtitle streams
-    const imageSubs = getImageSubtitles(this.inputStreams.subtitle).filter(
-      (sub) => sub.lang === "eng"
-    )
-
     // Save subtitles to property
-    this.outputStreams.subtitle = imageSubs
-
-    // Map subtitle streams and set metadata
-    imageSubs.forEach((/** @type {SubtitleStream} */ sub) => {
-      ffmpegProcess
-        // Map subtitle stream and set codec to copy
-        .outputOptions(["-map", `0:s:${sub.index}`])
-
-      // Set subtitle stream title
-      if (sub?.title !== "") {
-        console.log("Subtitle title already set: `", sub.title.trim(), "`")
-        ffmpegProcess.outputOptions([
-          `-metadata:s:s:${sub.index}`,
-          `title=${sub.title}  `,
-        ])
-      }
-    })
+    this.outputStreams.subtitle = mapImageSubs(
+      ffmpegProcess,
+      this.inputStreams.subtitle
+    )
 
     return this
   }
