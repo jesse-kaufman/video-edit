@@ -16,23 +16,23 @@ export default class App {
   // @ts-ignore
   ffmpeg
 
+  // Command is first argument to node app
+  command = process.argv[2]
+  // Input file is second argument to node app
+  inputFile = process.argv[3]
+
+  // Set output filename based on command and input file
+  outputFilename = getOutputFilename(this.inputFile, this.command)
+
   /**
    * Checks for ffmpeg when creating an instance of App.
    */
   constructor() {
-    // Command is first argument to node app
-    this.command = process.argv[2]
-    // Input file is second argument to node app
-    this.inputFile = process.argv[3]
-
     // Exit if file not specified
     if (this.inputFile == null) {
       log.error("Input file not specified.")
       process.exit(1)
     }
-
-    // Set output filename based on command and input file
-    this.outputFilename = getOutputFilename(this.inputFile, this.command)
 
     log.debug("Starting...")
   }
@@ -108,7 +108,7 @@ export default class App {
 
     if (convertOpts?.extractSubs === true) {
       // Extract text-based English subtitles from the video file
-      await this.extractSubs()
+      await this.ffmpeg.extractSubs(false)
     }
 
     // Run the ffmpeg command.
@@ -116,8 +116,7 @@ export default class App {
       log.notice("Running ffmpeg command...")
       await this.ffmpeg.run()
     } catch (err) {
-      // @ts-ignore
-      log.error("Error running ffmpeg:", err.message)
+      console.error("Error running ffmpeg:", err)
       process.exit(1)
     }
   }
