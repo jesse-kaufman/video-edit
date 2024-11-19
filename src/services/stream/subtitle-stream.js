@@ -14,7 +14,7 @@ export const textSubTypes = ["mov_text", "subrip", "ass", "ssa"]
  * @returns {Array<SubtitleStream>} Image-based subtitle streams.
  */
 export const getImageSubtitles = (streams) =>
-  streams.filter((stream) => !textSubs.includes(stream.codecName))
+  streams.filter((stream) => !textSubTypes.includes(stream.codecName))
 
 /**
  * Returns only text-based subtitle streams.
@@ -22,7 +22,7 @@ export const getImageSubtitles = (streams) =>
  * @returns {Array<SubtitleStream>} Text-based subtitle streams.
  */
 export const getTextSubtitles = (streams) =>
-  streams.filter((stream) => textSubs.includes(stream.codecName))
+  streams.filter((stream) => textSubTypes.includes(stream.codecName))
 
 /**
  * Returns a SubtitleStream object for the given input stream from ffprobe.
