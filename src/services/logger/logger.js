@@ -27,7 +27,7 @@ export default {
    */
   success(msg) {
     return new Promise((resolve) =>
-      resolve(console.log(chalk.greenBright.bold(msg)))
+      resolve(console.log(chalk.bgGreen.bold(` ${msg} `)))
     )
   },
 
@@ -84,9 +84,7 @@ export default {
    */
   progress(msg, isExtract = false) {
     // Colorize extract progress messages differently
-    const colorize = isExtract
-      ? chalk.dim.italic.green
-      : chalk.dim.italic.yellow
+    const colorize = isExtract ? chalk.italic.green : chalk.italic.yellow
 
     return new Promise((resolve) => {
       // Log message and resolve promise
@@ -111,6 +109,6 @@ export default {
     }
 
     // If first argument is a string or number, colorize it as well
-    console.debug(chalk.black.dim(`[DEBUG] ${firstArg}`), ...args)
+    console.debug(chalk.magenta.dim(`[DEBUG] ${firstArg}`), ...args)
   },
 }
