@@ -6,7 +6,7 @@
 import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
-import { getOutputAudioCodec, mapAudioStreams } from "./stream/audio-stream.js"
+import { mapAudioStreams } from "./stream/audio-stream.js"
 import { getInputStreams } from "./stream/stream.js"
 import { printProgress } from "./progress-output.js"
 
@@ -26,18 +26,12 @@ import {
 
 /** Class that acts as a wrapper for fluent-ffmpeg. */
 class VideoEdit {
-  /** The fluent-ffmpeg object for cleaning/converting. */
-  ffmpegProcess
-  /** The fluent-ffmpeg object for subtitle extraction. */
-  ffmpegExtract
   /** Full path to the input file. */
   inputFile
   /** Full path to the output file. */
   outputFile
   /** Conversion options. */
   convertOpts
-  /** Audio codec to use if converting. */
-  outputAudioCodec
 
   /** Input file stream data.*/
   inputStreams = {
@@ -60,26 +54,12 @@ class VideoEdit {
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
   constructor(inputFile, outputFile, convertOpts = {}) {
-    // Setup fluent-ffmpeg object for cleaning/converting
-    this.ffmpegProcess = fluentFfmpeg(inputFile)
-    // Setup fluent-ffmpeg object for subtitle extraction
-    this.ffmpegExtract = fluentFfmpeg(inputFile)
     // Set conversion options
     this.convertOpts = convertOpts
     // Set input file property
     this.inputFile = inputFile
     // Set output file property
     this.outputFile = outputFile
-    // Set audio codec
-    this.outputAudioCodec = getOutputAudioCodec(
-      this.ffmpegProcess,
-      convertOpts?.convertAudio
-    )
-
-    // Set base options on convert/clean instance of ffmpeg-fluent
-    this.setCommonOptions(this.ffmpegProcess)
-    // Set base options on subtitle extract instance of ffmpeg-fluent
-    this.setCommonOptions(this.ffmpegExtract)
 
     return this
   }
