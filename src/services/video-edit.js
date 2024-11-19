@@ -156,8 +156,10 @@ class VideoEdit {
    * @returns {VideoEdit} Returns this to allow chaining.
    */
   mapImageSubs() {
-    // Filter out non-English and text-based subtitles
-    const imageSubs = getImageSubtitles(this.inputStreams.subtitle)
+    // Grab image-based English subtitle streams
+    const imageSubs = getImageSubtitles(this.inputStreams.subtitle).filter(
+      (sub) => sub.lang === "eng"
+    )
 
     // Save subtitles to property
     this.outputStreams.subtitle = imageSubs
