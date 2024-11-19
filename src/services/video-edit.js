@@ -96,7 +96,10 @@ class VideoEdit {
         // Initialize inputStreams property
         this.inputStreams = getInputStreams(info.streams)
       })
-      .catch((err) => log.error(err))
+      .catch((err) => {
+        log.error(err)
+        process.exit(-1)
+      })
 
     return this
   }
