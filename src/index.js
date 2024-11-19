@@ -11,7 +11,7 @@ import { getOutputFilename } from "./services/filename.js"
 /**
  * Main app class.
  */
-export default class App {
+class App {
   /** @type {VideoEdit} - VideoEdit instance. */
   // @ts-ignore
   ffmpeg
