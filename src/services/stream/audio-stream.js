@@ -28,6 +28,7 @@ export const getAudioStreamData = (stream, index) => {
     title: "",
     index,
   }
+
   return {
     ...audioStream,
     title: formatStreamTitle(audioStream),
