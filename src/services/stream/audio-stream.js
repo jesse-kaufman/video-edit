@@ -120,3 +120,36 @@ export const getOutputAudioCodec = (fluentFfmpeg, convert) => {
 
   return codec
 }
+
+/**
+ * Maps audio streams in fluent-ffmpeg and returns array of mapped streams.
+ * @param {FfmpegCommand} ffmpegProcess - Fluent-ffmpeg object.
+ * @param {Array<AudioStream>} streams - Audio streams from ffprobe.
+ * @param {boolean} [convertAudio] - True to convert audio stream, otherwise copy.
+ * @returns {Array<AudioStream>} Array of audio stream objects.
+ */
+export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
+  // Filter out non-English audio streams from input file
+  const outputStreams = streams.filter((s) => s.lang === "eng")
+
+  // Get the audio codec to use based on the source codec and the stream should be converted
+  const codec = getOutputAudioCodec(ffmpegProcess, convertAudio)
+
+  // Process each audio stream
+  streams.forEach((stream) => {
+    // Map audio stream
+    ffmpegProcess
+      .outputOptions("-map", `0:a:${stream.index}`)
+      // Set audio stream codec
+      .outputOptions(`-c:a ${codec}`)
+      // Set audio stream language
+      .outputOptions([`-metadata:s:a:${stream.index}`, `language=eng`])
+      // Set audio stream title
+      .outputOptions([
+        `-metadata:s:a:${stream.index}`,
+        `title=${stream.title}  `,
+      ])
+  })
+
+  return outputStreams
+}

@@ -6,7 +6,7 @@
 import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
-import { getOutputAudioCodec } from "./stream/audio-stream.js"
+import { getOutputAudioCodec, mapAudioStreams } from "./stream/audio-stream.js"
 import { getInputStreams } from "./stream/stream.js"
 import { printProgress } from "./progress.js"
 
@@ -129,33 +129,15 @@ class VideoEdit {
    * @returns {VideoEdit} Returns `this` to allow chaining.
    */
   mapAudioStreams(ffmpegProcess) {
-    // Filter out non-English audio streams from input file
-    const streams = this.inputStreams.audio.filter((s) => s.lang === "eng")
+    const { audio } = this.inputStreams
+    const { convertAudio } = this.convertOpts
 
-    // Save filtered streams to property
-    this.outputStreams.audio = streams
-
-    // Get the audio codec to use based on the source codec and the stream should be converted
-    const codec = getOutputAudioCodec(
+    // Map audio streams and save returned audio streams to class property
+    this.outputStreams.audio = mapAudioStreams(
       ffmpegProcess,
-      this.convertOpts.convertAudio
+      audio,
+      convertAudio
     )
-
-    // Process each audio stream
-    streams.forEach((stream) => {
-      // Map audio stream
-      ffmpegProcess
-        .outputOptions("-map", `0:a:${stream.index}`)
-        // Set audio stream codec
-        .outputOptions(`-c:a ${codec}`)
-        // Set audio stream language
-        .outputOptions([`-metadata:s:a:${stream.index}`, `language=eng`])
-        // Set audio stream title
-        .outputOptions([
-          `-metadata:s:a:${stream.index}`,
-          `title=${stream.title}  `,
-        ])
-    })
 
     return this
   }
