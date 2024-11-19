@@ -144,21 +144,7 @@ class VideoEdit {
 
     // Walk through subtitle streams and extract all simultaneously
     for (const stream of textSubs) {
-      this.extractSub(stream, textSubs.length)
-    }
-  }
-
-  /**
-   * Extracts a single subtitle from a stream.
-   * @param {SubtitleStream} stream - Subtitle stream data.
-   * @param {number} index - Stream index.
-   */
-  async extractSub(stream, index) {
-    try {
-      // Run the extract
-      await this.runExtract(this.inputFile, stream, index)
-    } catch (err) {
-      log.error(`Error extracting subtitle from stream ${stream.index}:`, err)
+      this.runExtract(this.inputFile, stream, stream.index)
     }
   }
 
