@@ -108,7 +108,7 @@ export default class App {
 
     if (convertOpts?.extractSubs === true) {
       // Extract text-based English subtitles from the video file
-      await this.ffmpeg.extractSubs(false)
+      this.ffmpeg.extractSubs(false)
     }
 
     // Run the ffmpeg command.
