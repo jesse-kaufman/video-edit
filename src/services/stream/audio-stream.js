@@ -16,7 +16,9 @@ import log from "../logger/logger.js"
  */
 export const getAudioStreamData = (stream, index) => {
   const formattedCodecName = formatCodecName(stream.codec_long_name)
-  const channelLayout = formatChannelLayout(stream.channel_layout)
+  const channelLayout = formatChannelLayout(
+    stream.channel_layout || stream.channels
+  )
 
   // Setup audio stream object with blank title to be filled in next.
   const audioStream = {
