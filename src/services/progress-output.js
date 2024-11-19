@@ -38,10 +38,10 @@ const formatSpeed = (fps, videoFps) =>
 /**
  * Gets details for progress output.
  * @param {any} progress - The progress object from ffmpeg.
- * @param {VideoStream} videoStream - The video stream data of the input file.
+ * @param {number} fps - FPS of video stream.
  * @returns {Array<string>} The progress details parts.
  */
-export const getDetailParts = (progress, videoStream) => {
+export const getDetailParts = (progress, fps) => {
   const parts = []
 
   // Add FPS information to progress output
@@ -51,7 +51,7 @@ export const getDetailParts = (progress, videoStream) => {
   // Add timestamp to progress output
   parts.push(progress.currentTime || "")
   // Add speed information to progress output
-  parts.push(formatSpeed(progress.currentFps, videoStream?.fps))
+  parts.push(formatSpeed(progress.currentFps, fps))
   // Return non-empty parts.
   return parts.filter((part) => part !== "")
 }
@@ -60,10 +60,10 @@ export const getDetailParts = (progress, videoStream) => {
  * Prints progress information to console.
  * @param {Logger} log - Logger instance.
  * @param {any} progress - Progress data from ffmpeg.
- * @param {VideoStream} videoStream - The main video stream of file.
+ * @param {number} fps - FPS of video stream.
  * @param {?number} index - Index of subtitle if extracting subtitles.
  */
-export const printProgress = (log, progress, videoStream, index = null) => {
+export const printProgress = (log, progress, fps, index = null) => {
   const isExtract = index !== null
 
   let progressTitle = "Clean/convert"
@@ -75,7 +75,7 @@ export const printProgress = (log, progress, videoStream, index = null) => {
   if (index !== null) progressTitle = `Subtitle extract #${index}`
 
   // Get progress details
-  const details = getDetailParts(progress, videoStream).join(" ")
+  const details = getDetailParts(progress, fps).join(" ")
 
   // Print progress to console
   log.progress(`- [${percent}] ${progressTitle}: ${details}`, isExtract)

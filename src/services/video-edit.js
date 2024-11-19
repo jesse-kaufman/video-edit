@@ -173,7 +173,7 @@ class VideoEdit {
     const outputFile = getSubFilename(inputFilePath, stream, streamCount)
 
     await new Promise((resolve, reject) => {
-      const videoStream = this.inputStreams.video[0]
+      const { fps } = this.inputStreams.video[0]
       const { index } = stream
 
       const ffmpegExtract = fluentFfmpeg(this.inputFile)
@@ -184,9 +184,7 @@ class VideoEdit {
         // Map subtitle
         .outputOptions([`-map 0:s:${index}`, "-scodec srt"])
         // Print progress message
-        .on("progress", (progress) =>
-          printProgress(log, progress, videoStream, index)
-        )
+        .on("progress", (progress) => printProgress(log, progress, fps, index))
         // Handle errors
         .on("error", (err) => reject(err))
         // Output message on success
@@ -202,7 +200,7 @@ class VideoEdit {
    * Runs the ffmpeg command.
    */
   async run() {
-    const videoStream = this.inputStreams.video[0]
+    const { fps } = this.inputStreams.video[0]
     const ffmpegProcess = fluentFfmpeg(this.inputFile)
 
     // Set common options
@@ -218,7 +216,7 @@ class VideoEdit {
         // Set global language
         .outputOptions([`-metadata`, `language=eng`])
         // Output message on progress
-        .on("progress", (progress) => printProgress(log, progress, videoStream))
+        .on("progress", (progress) => printProgress(log, progress, fps))
         // Handle errors
         .on("error", (err) => reject(err))
         // Output message on success
