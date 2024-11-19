@@ -24,6 +24,13 @@ export default class App {
   // Set output filename based on command and input file
   outputFilename = getOutputFilename(this.inputFile, this.command)
 
+  defaultOpts = {
+    extractSubs: false,
+    convertAudio: false,
+    convertVideo: false,
+    extractOnly: false,
+  }
+
   /**
    * Checks for ffmpeg when creating an instance of App.
    */
@@ -111,7 +118,10 @@ export default class App {
       this.ffmpeg.extractSubs(false)
     }
 
-    // Run the ffmpeg command.
+    // Exit if only extracting subtitles
+    if (convertOpts?.extractOnly === true) return
+
+    // Convert/clean file
     try {
       log.notice("Running ffmpeg command...")
       await this.ffmpeg.run()
