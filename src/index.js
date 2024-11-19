@@ -117,8 +117,8 @@ class App {
   }
 }
 
+// Run the app
 const app = new App()
-
 try {
   app.run()
 } catch (/** @type {any} */ err) {
