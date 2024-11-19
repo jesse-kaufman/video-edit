@@ -43,3 +43,7 @@ Sets metadata on streams in input file. _(TODO)_
 - Converts primary video stream to h265 (if not already in that format)
 
 _\* Commands marked with an asterisk are not yet implemented._
+
+## To Do List
+
+- [ ] Set stream title and language for all stream types
