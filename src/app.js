@@ -4,9 +4,9 @@
  * @typedef {import('./services/video-edit.js').ConvertOpts} ConvertOpts
  */
 
-import path from "node:path"
 import log from "./services/logger/logger.js"
 import VideoEdit from "./services/video-edit.js"
+import { getOutputFilename } from "./services/filename.js"
 
 /**
  * Main app class.
@@ -32,22 +32,9 @@ export default class App {
     }
 
     // Set output filename based on command and input file
-    this.outputFilename = this.getOutputFilename()
+    this.outputFilename = getOutputFilename(this.inputFile, this.command)
 
     log.debug("Starting...")
-  }
-
-  /**
-   * Generates output filename for command.
-   * @returns {string} The generated filename.
-   */
-  getOutputFilename() {
-    /** Directory where input file is located. */
-    const dir = path.dirname(this.inputFile)
-    /** Base filename of input file. */
-    const basename = path.basename(this.inputFile, path.extname(this.inputFile))
-
-    return path.join(dir, `${basename}-${this.command}.mkv`)
   }
 
   /**
