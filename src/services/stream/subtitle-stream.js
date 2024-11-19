@@ -61,7 +61,7 @@ export const getSubFilename = (inputFile, stream, streamCount) => {
 
   // If there are multiple streams, append title (if set) or index to the output file name
   if (streamCount > 1 && stream.index !== 0) {
-    outputFile += `.${stream.title ?? stream.index}`
+    outputFile += `.${stream.title || stream.index}`
   }
 
   // Append ".eng.srt" to the output file name
