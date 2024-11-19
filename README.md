@@ -37,8 +37,9 @@ Extracts all text-based English subtitles from input file to subrip format.
 - Removes all non-English audio streams
 - Removes all non-English subtitle streams
 - Removes all text-based subtitle streams
-- Converts all remaining audio streams to AAC (if not already in that format)
-- Converts primary video stream to h265 (if not already in that format)
+- Maps and converts all remaining audio streams to AAC (if not already in that format)
+- Maps and converts primary video stream to h265 (if not already in that format)
+- Maps all remaining image subtitle streams
 
 ### `set-metadata`\*
 
