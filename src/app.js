@@ -1,14 +1,12 @@
 /**
  * @file Main video edit application.
- */
-import path from "node:path"
-import log from "./services/logger/logger.js"
-import VideoEdit from "./services/video-edit.js"
-
-/**
  * @typedef {import('./services/logger/logger.js').Logger} Logger
  * @typedef {import('./services/video-edit.js').ConvertOpts} ConvertOpts
  */
+
+import path from "node:path"
+import log from "./services/logger/logger.js"
+import VideoEdit from "./services/video-edit.js"
 
 /**
  * Main app class.

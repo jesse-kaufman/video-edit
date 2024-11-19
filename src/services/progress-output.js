@@ -1,7 +1,6 @@
-/** @file Helpers for printing progress to console. */
-
 /**
- * @typedef {import ("../@types/video-stream.js").VideoStream} VideoStream
+ * @file Helpers for printing progress to console.
+ * @typedef {import ("../@types/streams.js").VideoStream} VideoStream
  * @typedef {import ("./logger/logger.js").Logger} Logger
  */
 

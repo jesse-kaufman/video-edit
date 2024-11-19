@@ -1,6 +1,12 @@
 /**
  * @file FFMPEG service.
  * @module services/ffmpeg
+ * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
+ * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
+ * @typedef {import('../@types/streams.js').Streams} Streams
+ * @typedef {import('../@types/streams.js').AudioStream} AudioStream
+ * @typedef {import('../@types/streams.js').SubtitleStream} SubtitleStream
+ * @typedef {import('../@types/streams.js').VideoStream} VideoStream
  */
 
 import fluentFfmpeg from "fluent-ffmpeg"
@@ -16,15 +22,6 @@ import {
   getSubFilename,
   mapImageSubs,
 } from "./stream/subtitle-stream.js"
-
-/**
- * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
- * @typedef {import('../@types/streams.js').Streams} Streams
- * @typedef {import('../@types/audio-stream.js').AudioStream} AudioStream
- * @typedef {import('../@types/convert-opts.js').ConvertOpts} ConvertOpts
- * @typedef {import('../@types/subtitle-stream.js').SubtitleStream} SubtitleStream
- * @typedef {import('../@types/video-stream.js').VideoStream} VideoStream
- */
 
 /** Class that acts as a wrapper for fluent-ffmpeg. */
 class VideoEdit {

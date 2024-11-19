@@ -1,12 +1,10 @@
 /**
  * @file Audio stream service.
- */
-import log from "../logger/logger.js"
-
-/**
- * @typedef {import('../../@types/audio-stream.js').AudioStream} AudioStream
+ * @typedef {import('../../@types/streams.js').AudioStream} AudioStream
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
+
+import log from "../logger/logger.js"
 
 /**
  * Sets up AudioStream based on ffprobe stream data.

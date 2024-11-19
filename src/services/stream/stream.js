@@ -1,7 +1,8 @@
-/** @file Stream service. */
-
-/** @typedef {import("../../@types/streams.js").Streams} Streams */
-/** @typedef {import("../../@types/convert-opts.js").ConvertOpts} ConvertOpts */
+/**
+ * @file Stream service.
+ * @typedef {import("../../@types/streams.js").Streams} Streams
+ * @typedef {import("../../@types/convert-opts.js").ConvertOpts} ConvertOpts
+ */
 
 import { getAudioStreamData, mapAudioStreams } from "./audio-stream.js"
 import { getVideoStreamData, mapVideoStreams } from "./video-stream.js"

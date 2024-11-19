@@ -3,5 +3,8 @@ import App from "./app.js"
 
 const app = new App()
 
-// Recursively process the provided base directory
-app.run()
+try {
+  app.run()
+} catch (/** @type {any} */ err) {
+  console.error(err.message)
+}
