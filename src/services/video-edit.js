@@ -71,6 +71,8 @@ class VideoEdit {
     if (this.inputStreams.audio.length === 0) {
       log.error("No audio streams mapped.")
     }
+
+    // Return instance
     return this
   }
 
