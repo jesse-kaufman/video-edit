@@ -12,16 +12,9 @@
 import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
-import { mapAudioStreams } from "./stream/audio-stream.js"
-import { mapVideoStreams } from "./stream/video-stream.js"
 import { getInputStreams, mapStreams } from "./stream/stream.js"
 import { printProgress } from "./progress-output.js"
-
-import {
-  getTextSubtitles,
-  getSubFilename,
-  mapImageSubs,
-} from "./stream/subtitle-stream.js"
+import { getTextSubtitles, getSubFilename } from "./stream/subtitle-stream.js"
 
 /** Class that acts as a wrapper for fluent-ffmpeg. */
 class VideoEdit {
@@ -91,31 +84,6 @@ class VideoEdit {
       .outputOptions(["-hide_banner"])
       // Output command on start
       .on("start", (command) => log.debug(command))
-      // Handle errors
-      .on("error", (err) => log.error("FFMPEG Error:", err))
-  }
-
-  /**
-   * Map all streams to output file and store results in outputStream property.
-   * @param {FfmpegCommand} ffmpeg - Fluent-ffmpeg instance.
-   */
-  mapStreams(ffmpeg) {
-    const { convertVideo, convertAudio } = this.convertOpts
-    const { video, audio, subtitle } = this.inputStreams
-
-    // Map video stream(s)
-    const outputVideo = mapVideoStreams(ffmpeg, video, convertVideo)
-    // Map audio streams
-    const outputAudio = mapAudioStreams(ffmpeg, audio, convertAudio)
-    // Map image-based English subtitles
-    const outputSubtitle = mapImageSubs(ffmpeg, subtitle)
-
-    // Save mapped streams to outputStreams property for later use
-    this.outputStreams = {
-      audio: outputAudio,
-      video: outputVideo,
-      subtitle: outputSubtitle,
-    }
   }
 
   /**
