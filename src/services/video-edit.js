@@ -182,6 +182,26 @@ class VideoEdit {
   }
 
   /**
+   * Maps video stream(s).
+   */
+  mapVideoStreams() {
+    // Get conversion options for video
+    const { convertVideo } = this.convertOpts
+    // Add video stream(s) to outputStreams property
+    this.outputStreams.video = this.inputStreams.video
+
+    this.ffmpegProcess
+      // Map video stream
+      .outputOptions("-map 0:v")
+      // If converting video, set codec to h265, otherwise copy
+      .videoCodec(convertVideo ? "hevc" : "copy")
+      // Set video language
+      .outputOptions([`-metadata:s:v:0`, `language=eng`])
+      // Blank video title
+      .outputOptions([`-metadata:s:v:0`, `title=`])
+  }
+
+  /**
    * Extracts text-based English subtitles from the video file.
    * @param {boolean} exitIfNotFound - Whether to exit the program if no matching subtitles are found.
    */
@@ -262,24 +282,15 @@ class VideoEdit {
    * Runs the ffmpeg command.
    */
   async run() {
-    const { convertVideo } = this.convertOpts
     const videoStream = this.inputStreams.video[0]
 
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
       this.ffmpegProcess
-        // Map video stream
-        .outputOptions("-map 0:v")
-        // If converting video, set codec to h265, otherwise copy
-        .videoCodec(convertVideo ? "hevc" : "copy")
         // Set subtitle codec to copy
         .outputOptions("-scodec copy")
         // Set global language
         .outputOptions([`-metadata`, `language=eng`])
-        // Set video language
-        .outputOptions([`-metadata:s:v:0`, `language=eng`])
-        // Blank video title
-        .outputOptions([`-metadata:s:v:0`, `title=`])
         // Output message on progress
         .on("progress", (progress) => printProgress(log, progress, videoStream))
         // Handle errors
