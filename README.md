@@ -51,6 +51,9 @@ _\* Commands marked with an asterisk are not yet implemented._
 
 ## To Do List
 
-- [ ] Set stream title and language for all stream types
+- [ ] Add ability to set stream metadata
+  - [ ] Set title for all stream types
+  - [ ] Set language for all stream types
+  - [ ] Set default audio stream
 - [ ] Print list of input file streams and proposed output file streams before processing
 - [ ] Add summary after processing
