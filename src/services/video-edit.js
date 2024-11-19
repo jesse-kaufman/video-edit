@@ -7,6 +7,7 @@ import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
 import log from "./logger/logger.js"
 import { mapAudioStreams } from "./stream/audio-stream.js"
+import { mapVideoStreams } from "./stream/video-stream.js"
 import { getInputStreams } from "./stream/stream.js"
 import { printProgress } from "./progress-output.js"
 
@@ -146,18 +147,14 @@ class VideoEdit {
   mapVideoStreams(ffmpegProcess) {
     // Get conversion options for video
     const { convertVideo } = this.convertOpts
-    // Add video stream(s) to outputStreams property
-    this.outputStreams.video = this.inputStreams.video
+    const streams = this.inputStreams.video
 
-    ffmpegProcess
-      // Map video stream
-      .outputOptions("-map 0:v")
-      // If converting video, set codec to h265, otherwise copy
-      .videoCodec(convertVideo ? "hevc" : "copy")
-      // Set video language
-      .outputOptions([`-metadata:s:v:0`, `language=eng`])
-      // Blank video title
-      .outputOptions([`-metadata:s:v:0`, `title=`])
+    // Add video stream(s) to outputStreams property
+    this.outputStreams.video = mapVideoStreams(
+      ffmpegProcess,
+      streams,
+      convertVideo
+    )
 
     return this
   }

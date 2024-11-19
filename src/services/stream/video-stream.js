@@ -32,3 +32,27 @@ export const getVideoStreamData = (stream, index) => {
     index,
   }
 }
+
+/**
+ * Maps video stream(s).
+ * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
+ * @param {Array<VideoStream>} inputStreams - Video streams from input file.
+ * @param {boolean} [convertVideo] - True to convert video stream, otherwise copy.
+ * @returns {Array<VideoStream>} Array of mapped video streams.
+ */
+export const mapVideoStreams = (ffmpegProcess, inputStreams, convertVideo) => {
+  // Add video stream(s) to outputStreams property
+  const outputStreams = inputStreams
+
+  ffmpegProcess
+    // Map video stream
+    .outputOptions("-map 0:v")
+    // If converting video, set codec to h265, otherwise copy
+    .videoCodec(convertVideo ? "hevc" : "copy")
+    // Set video language
+    .outputOptions([`-metadata:s:v:0`, `language=eng`])
+    // Blank video title
+    .outputOptions([`-metadata:s:v:0`, `title=`])
+
+  return outputStreams
+}
