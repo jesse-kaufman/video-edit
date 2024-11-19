@@ -9,6 +9,7 @@
 
 import fluentFfmpeg from "fluent-ffmpeg"
 import ffprobe from "ffprobe"
+import { extraDebug } from "../config/config.js"
 import log from "./logger/logger.js"
 import { getInputStreams, mapStreams } from "./stream/stream.js"
 import { printProgress } from "./output/progress.js"
@@ -85,6 +86,9 @@ class Ffmpeg {
       .outputOptions(["-hide_banner"])
       // Output command on start
       .on("start", (command) => log.debug(command))
+      .on("stderr", (err) => {
+        if (extraDebug) log.debug(err)
+      })
   }
 
   /**
