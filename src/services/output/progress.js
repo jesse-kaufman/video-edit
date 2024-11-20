@@ -4,6 +4,11 @@
  * @typedef {import ("../logger.js").Logger} Logger
  */
 
+import bytes from "bytes"
+
+/** Used to convert kilobytes to bytes. */
+const KB = 1024
+
 /**
  * Gets FPS information for progress reporting.
  * @param {number} fps - The current framerate of the ffmpeg process.
@@ -16,7 +21,8 @@ const formatFps = (fps) => (isNaN(fps) ? "" : `FPS=${fps}`)
  * @param {number} size - The current size of the output file.
  * @returns {string} Formatted size information.
  */
-const formatCurrentSize = (size) => (isNaN(size) ? "" : `(${size} KiB)`)
+const formatCurrentSize = (size) =>
+  isNaN(size) ? "" : `(${bytes.format(size * KB)})`
 
 /**
  * Rounds percent to one decimal point and appends percent sign.
