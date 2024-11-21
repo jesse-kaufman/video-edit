@@ -34,7 +34,7 @@ export default {
   /**
    * Logs an error message to the console in red color.
    * @param {any} args - All arguments passed to function.
-   * @returns {Promise<void>} Promise resolved.
+   * @returns {Promise<void>} Resolved when error is logged.
    */
   error(...args) {
     return new Promise((resolve) => {
@@ -45,12 +45,20 @@ export default {
       if (typeof firstArg === "string") {
         resolve(console.error(chalk.red(firstArg), ...args))
       }
-
       // If first argument is an Error object, print the error message and stack trace in red
-      if (firstArg instanceof Error) {
+      else if (firstArg instanceof Error) {
         resolve(console.error(chalk.red(firstArg.message), firstArg.stack))
       }
     })
+  },
+
+  /**
+   * Logs an error message to the console in red color and exits immediately.
+   * @param {any} args - All arguments passed to function.
+   */
+  fail(...args) {
+    this.error(...args)
+    process.exit(1)
   },
 
   /**

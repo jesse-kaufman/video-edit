@@ -81,10 +81,18 @@ class App {
         })
         break
 
+      case "info":
+        this.printInfo()
+        break
+
       default:
         log.info(`Invalid command: ${this.command}`)
         process.exit(1)
     }
+  }
+
+  printInfo() {
+    this.ffmpeg.printInputFileInfo()
   }
 
   /**
@@ -108,8 +116,7 @@ class App {
       log.notice("Running ffmpeg command...")
       await this.ffmpeg.run()
     } catch (err) {
-      console.error("Error running ffmpeg:", err)
-      process.exit(1)
+      log.fail("Error running ffmpeg:", err)
     }
   }
 }
