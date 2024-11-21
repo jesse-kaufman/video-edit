@@ -33,13 +33,23 @@ export default {
 
   /**
    * Logs an error message to the console in red color.
-   * @param {string} msg - The message.
-   * @param {any} args - Additional arguments.
+   * @param {any} args - All arguments passed to function.
    * @returns {Promise<void>} Promise resolved.
    */
-  error(msg, ...args) {
+  error(...args) {
     return new Promise((resolve) => {
-      resolve(console.error(chalk.red(msg), ...args))
+      // Shift first argument off args array
+      const firstArg = args.shift()
+
+      // If first argument is a string, colorize the string and print the rest as usual
+      if (typeof firstArg === "string") {
+        resolve(console.error(chalk.red(firstArg), ...args))
+      }
+
+      // If first argument is an Error object, print the error message and stack trace in red
+      if (firstArg instanceof Error) {
+        resolve(console.error(chalk.red(firstArg.message), firstArg.stack))
+      }
     })
   },
 
