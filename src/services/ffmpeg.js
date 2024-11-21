@@ -8,11 +8,11 @@
  */
 
 import fluentFfmpeg from "fluent-ffmpeg"
-import ffprobe from "ffprobe"
 import { extraDebug } from "../config/config.js"
+import { getFileInfo } from "./ffprobe.js"
 import log from "./logger.js"
-import { getInputStreams, mapStreams } from "./stream/stream.js"
-import { printProgress } from "./output/progress.js"
+import { mapStreams } from "./stream/stream.js"
+import { printProgress } from "./output/progress-output.js"
 import { getTextSubtitles } from "./stream/subtitle-stream.js"
 import { getSubFilename } from "./filename.js"
 
@@ -24,6 +24,9 @@ class Ffmpeg {
   outputFile
   /** Conversion options. */
   convertOpts
+
+  /** Input file size in bytes. */
+  inputFileSize = 0
 
   /** @type {Streams} Input file stream data.*/
   inputStreams = { audio: [], video: [], subtitle: [] }
@@ -53,20 +56,12 @@ class Ffmpeg {
    * @returns {Promise<Ffmpeg>} Promise resolves to VideoEdit instance.
    */
   async init() {
-    // Set path to ffprobe
-    const opts = { path: "/usr/local/bin/ffprobe" }
-
-    // Use ffprobe to get audio streams from the video file
-    await ffprobe(this.inputFile, opts)
-      .then((info) => {
-        // Initialize inputStreams property
-        this.inputStreams = getInputStreams(info.streams)
-      })
-      .catch((err) => {
-        log.error(err)
-        // eslint-disable-next-line no-magic-numbers
-        process.exit(-1)
-      })
+    // Read input file info
+    const info = await getFileInfo(this.inputFile)
+    // Set input streams from info
+    this.inputStreams = info.streams
+    // Set input file size
+    this.inputFileSize = info.size
 
     if (this.inputStreams.audio.length === 0) {
       log.error("No audio streams mapped.")
