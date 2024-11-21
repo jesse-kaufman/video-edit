@@ -4,7 +4,7 @@
   "description": "Runs ffmpeg on video with simplified options specified on CLI",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/app.js",
     "check-types": "tsc --project ./jsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
