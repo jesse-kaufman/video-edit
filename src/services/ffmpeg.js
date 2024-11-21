@@ -15,6 +15,7 @@ import { mapStreams } from "./stream/stream.js"
 import { printProgress } from "./output/progress-output.js"
 import { getTextSubtitles } from "./stream/subtitle-stream.js"
 import { getSubFilename } from "./filename.js"
+import { printInputFileInfo } from "./output/file-info-output.js"
 
 /** Class that acts as a wrapper for fluent-ffmpeg. */
 class Ffmpeg {
@@ -175,6 +176,16 @@ class Ffmpeg {
         // Save the video to the output file
         .save(this.outputFile)
     })
+  }
+
+  /** Prints input file info */
+  printInputFileInfo() {
+    printInputFileInfo(
+      log,
+      this.inputFile,
+      this.inputFileSize,
+      this.inputStreams
+    )
   }
 }
 
