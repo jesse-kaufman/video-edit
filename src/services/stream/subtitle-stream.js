@@ -33,7 +33,7 @@ export const getTextSubtitles = (streams) =>
 export const getSubtitleStreamData = (stream, index) => {
   const formattedCodecName = stream.codec_long_name
     .replace("SubRip subtitle", "SubRip")
-    .replace(/HDMV.*/, "HDMV PGS subtitles")
+    .replace(/HDMV.*/, "PGS subtitle")
 
   return {
     lang: stream.tags?.language || "",
