@@ -163,8 +163,6 @@ class Ffmpeg {
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
       ffmpegProcess
-        // Set subtitle codec to copy
-        .outputOptions("-scodec copy")
         // Set global language
         .outputOptions([`-metadata`, `language=eng`])
         // Output message on progress

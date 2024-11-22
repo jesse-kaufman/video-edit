@@ -84,6 +84,7 @@ export const mapImageSubs = (ffmpegProcess, streams) => {
     ffmpegProcess
       // Map subtitle stream and set codec to copy
       .outputOptions(["-map", `0:s:${sub.index}`])
+      .outputOptions(`-c:s:${sub.index} copy`)
 
     // Set subtitle stream title
     if (sub?.title !== "") {
