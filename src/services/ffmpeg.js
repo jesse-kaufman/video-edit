@@ -176,7 +176,7 @@ class Ffmpeg {
     })
   }
 
-  /** Prints input file info */
+  /** Prints input file info. */
   printInputFileInfo() {
     printInputFileInfo(
       log,
