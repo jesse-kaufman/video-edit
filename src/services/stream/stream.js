@@ -54,16 +54,16 @@ export const getInputStreams = (streams) => {
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpeg - Fluent-ffmpeg instance.
  * @param {Streams} streams - Input file streams.
  * @param {ConvertOpts} opts - Options.
- * @returns {Streams} Mapped outbut streams.
+ * @returns {Promise<Streams>} Mapped outbut streams.
  */
-export const mapStreams = (ffmpeg, streams, opts) => {
+export const mapStreams = async (ffmpeg, streams, opts) => {
   const { convertVideo, convertAudio } = opts
   const { video, audio, subtitle } = streams
 
   // Map video stream(s)
   const outputVideo = mapVideoStreams(ffmpeg, video, convertVideo)
   // Map audio streams
-  const outputAudio = mapAudioStreams(ffmpeg, audio, convertAudio)
+  const outputAudio = await mapAudioStreams(ffmpeg, audio, convertAudio)
   // Map image-based English subtitles
   const outputSubtitle = mapImageSubs(ffmpeg, subtitle)
 

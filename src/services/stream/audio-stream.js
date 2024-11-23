@@ -44,7 +44,7 @@ function formatCodecName(name) {
   const formattedCodecName = name.replace(/\(.*\)/, "").trim()
 
   // Use AC3 for ATSC A/52B codec
-  return (formattedCodecName === "ATSC A/52B") ? "AC3" : formattedCodecName
+  return formattedCodecName === "ATSC A/52B" ? "AC3" : formattedCodecName
 }
 
 /**
@@ -92,26 +92,24 @@ function formatChannelLayout(channelLayout) {
  * Sets the audio codec based on if we're converting and if libfdk_aac is available.
  * @param {FfmpegCommand} fluentFfmpeg - Fluent ffmpeg object.
  * @param {boolean|undefined} convert - Whether or not to convert the audio stream.
- * @returns {string} The audio codec to use.
+ * @returns {Promise<string>} The audio codec to use.
  */
-export const getOutputAudioCodec = (fluentFfmpeg, convert) => {
+export const getOutputAudioCodec = async (fluentFfmpeg, convert) => {
   // Copy audio stream unless we're converting
   if (convert !== true) return "copy"
 
-  // Default to aac codec
-  let codec = "aac"
+  const codec = await new Promise((resolve, reject) => {
+    fluentFfmpeg.getAvailableEncoders((err, availableEncoders) => {
+      if (err) reject(log.fail("Error getting available encoders:", err))
 
-  // Check if libfdk_aac is available and use it if available
-  fluentFfmpeg.getAvailableEncoders((err, encoders) => {
-    if (err) {
-      log.error("Error getting available encoders:", err)
-      process.exit(1)
-    }
+      if (availableEncoders.libfdk_aac.type === "audio") {
+        log.debug("Using libfdk_aac codec")
+        resolve("libfdk_aac")
+      }
 
-    // Use libfdk_aac if available
-    if (encoders?.libfdk_aac?.type === "audio") {
-      codec = "libfdk_aac"
-    }
+      // Default audio codec to aac
+      resolve("aac")
+    })
   })
 
   return codec
@@ -122,15 +120,16 @@ export const getOutputAudioCodec = (fluentFfmpeg, convert) => {
  * @param {FfmpegCommand} ffmpegProcess - Fluent-ffmpeg object.
  * @param {Array<AudioStream>} streams - Audio streams from ffprobe.
  * @param {boolean} [convertAudio] - True to convert audio stream, otherwise copy.
- * @returns {Array<AudioStream>} Array of audio stream objects.
+ * @returns {Promise<Array<AudioStream>>} Array of audio stream objects.
  */
-export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
+export const mapAudioStreams = async (ffmpegProcess, streams, convertAudio) => {
   // Filter out non-English audio streams from input file
   const outputStreams = streams.filter((s) => s.lang === "eng")
 
   // Get the audio codec to use based on the source codec and the stream should be converted
-  const codec = getOutputAudioCodec(ffmpegProcess, convertAudio)
+  const codec = await getOutputAudioCodec(ffmpegProcess, convertAudio)
 
+  console.log("Codec", codec)
   // Process each audio stream
   streams.forEach((stream) => {
     // Map audio stream

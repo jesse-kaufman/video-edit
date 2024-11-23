@@ -158,7 +158,7 @@ class Ffmpeg {
     // Set common options
     this.setCommonOptions(ffmpegProcess)
     // Map streams
-    mapStreams(ffmpegProcess, this.inputStreams, this.convertOpts)
+    await mapStreams(ffmpegProcess, this.inputStreams, this.convertOpts)
 
     // Wrap ffmpeg call in promise
     await new Promise((resolve, reject) => {
