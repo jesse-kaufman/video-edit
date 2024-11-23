@@ -91,6 +91,7 @@ function formatChannelLayout(channelLayout) {
 /**
  * Sets the audio codec based on if we're converting and if libfdk_aac is available.
  * @param {FfmpegCommand} fluentFfmpeg - Fluent ffmpeg object.
+ * @param {string} currentCodec - The audio codec of the current stream.
  * @param {boolean|undefined} convert - Whether or not to convert the audio stream.
  * @returns {Promise<string>} The audio codec to use.
  */
@@ -105,10 +106,12 @@ export const getOutputAudioCodec = async (
   // Copy if already AAC
   if (currentCodec === "aac") return "copy"
 
+  // Check if libfdk_aac is available
   const codec = await new Promise((resolve, reject) => {
     fluentFfmpeg.getAvailableEncoders((err, availableEncoders) => {
       if (err) reject(log.fail("Error getting available encoders:", err))
 
+      // If libfdk_aac is available, use it
       if (availableEncoders.libfdk_aac.type === "audio") {
         log.debug("Using libfdk_aac codec")
         resolve("libfdk_aac")
@@ -127,7 +130,7 @@ export const getOutputAudioCodec = async (
  * @param {FfmpegCommand} ffmpegProcess - Fluent-ffmpeg object.
  * @param {Array<AudioStream>} streams - Audio streams from ffprobe.
  * @param {boolean} [convertAudio] - True to convert audio stream, otherwise copy.
- * @returns {Promise<Array<AudioStream>>} Array of audio stream objects.
+ * @returns {Array<AudioStream>} Array of audio stream objects.
  */
 export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
   // Filter out non-English audio streams from input file
