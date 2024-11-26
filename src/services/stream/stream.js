@@ -48,7 +48,11 @@ export const getInputStreams = (streams) => {
 
   // Sort audio streams by channel count
 
-  //inputStreams.audio.sort((a, b) => a.channelCount - b.channelCount)
+  inputStreams.audio
+    .sort((a, b) => a.channelCount - b.channelCount)
+    .map((stream, index) => {
+      return { ...stream, index }
+    })
 
   // TODO: Reindex audio streams to match the new order
 
