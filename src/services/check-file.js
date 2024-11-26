@@ -21,8 +21,8 @@ export const streamNeedsAttention = (lang, codec, type) =>
   (type === "subtitle" && textSubTypes.includes(codec))
 
 /**
- * Returns true if the container needs attention (it is not MKV).
+ * Returns true if the container needs attention (it is not MP4).
  * @param {string} container - Container type of input file.
  * @returns {boolean} True if container needs attention, otherwise false.
  */
-export const containerNeedsAttention = (container) => container !== "MKV"
+export const containerNeedsAttention = (container) => container !== "MP4"

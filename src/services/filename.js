@@ -17,7 +17,7 @@ export const getOutputFilename = (inputFile, command) => {
   /** Base filename of input file. */
   const basename = path.basename(inputFile, path.extname(inputFile))
 
-  return path.join(dir, `${basename}-${command}.mkv`)
+  return path.join(dir, `${basename}-${command}.mp4`)
 }
 
 /**
