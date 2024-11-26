@@ -162,10 +162,10 @@ const config = [
       ],
       "import/order": "warn",
 
+      "jsdoc/check-param-names": ["error", { enableFixer: true }],
       "jsdoc/require-description": "error",
       "jsdoc/require-hyphen-before-param-description": "warn",
       "jsdoc/require-description-complete-sentence": "warn",
-      "jsdoc/check-indentation": "error",
       "jsdoc/check-line-alignment": "error",
       "jsdoc/check-syntax": "error",
       "jsdoc/check-values": "warn",
