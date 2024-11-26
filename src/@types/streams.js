@@ -28,6 +28,7 @@
  * @property {string} origTitle - Original title of audio stream.
  * @property {string} title - Title of audio stream.
  * @property {string} channelLayout - Channel layout of audio stream.
+ * @property {number} channelCount - Number of channels in audio stream.
  */
 
 /**

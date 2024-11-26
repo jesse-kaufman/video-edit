@@ -25,6 +25,7 @@ export const getAudioStreamData = (stream, index) => {
     codecName: `${stream.codec_name}`,
     formattedCodecName,
     channelLayout,
+    channelCount: stream.channels,
     title: "",
     index,
   }
