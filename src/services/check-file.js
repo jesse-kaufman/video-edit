@@ -1,5 +1,6 @@
 /**
- * @file Check file service.
+ * Functions to check stream and container for compliance.
+ * @file File check service.
  */
 
 import { textSubTypes } from "./stream/subtitle-stream.js"
