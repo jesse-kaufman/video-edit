@@ -1,14 +1,14 @@
 /** @file Type definitions for stream service. */
 
 /**
- * @typedef Streams
+ * @typedef {object} Streams
  * @property {Array<AudioStream>} audio - Audio streams from ffmpeg.
  * @property {Array<VideoStream>} video - Video streams from ffmpeg.
  * @property {Array<SubtitleStream>} subtitle - Subtitle streams from ffmpeg.
  */
 
 /**
- * @typedef VideoStream
+ * @typedef {object} VideoStream
  * @property {string} lang - Language code of the video stream.
  * @property {string} codecName - Codec name of video stream.
  * @property {string} formattedCodecName - Long name of codec.
@@ -20,7 +20,7 @@
  */
 
 /**
- * @typedef AudioStream
+ * @typedef {object} AudioStream
  * @property {string} lang - Language code of the audio.
  * @property {string} codecName - Codec name of audio.
  * @property {string} formattedCodecName - Long name of codec.
@@ -31,7 +31,7 @@
  */
 
 /**
- * @typedef SubtitleStream
+ * @typedef {object} SubtitleStream
  * @property {string} lang - Language code of the subtitle.
  * @property {string} codecName - Codec name of subtitle.
  * @property {string} formattedCodecName - Long name of codec.
