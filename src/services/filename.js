@@ -4,6 +4,7 @@
  */
 
 import path from "node:path"
+import { outputFileExt } from "../config/config.js"
 
 /**
  * Generates output filename for command.
@@ -17,7 +18,7 @@ export const getOutputFilename = (inputFile, command) => {
   /** Base filename of input file. */
   const basename = path.basename(inputFile, path.extname(inputFile))
 
-  return path.join(dir, `${basename}-${command}.mp4`)
+  return path.join(dir, `${basename}-${command}.${outputFileExt}`)
 }
 
 /**

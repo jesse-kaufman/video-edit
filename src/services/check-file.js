@@ -3,6 +3,7 @@
  * @file File check service.
  */
 
+import { outputContainerFormat } from "../config/config.js"
 import { textSubTypes } from "./stream/subtitle-stream.js"
 
 /**
@@ -22,8 +23,9 @@ export const streamNeedsAttention = (lang, codec, type) =>
   (type === "subtitle" && textSubTypes.includes(codec))
 
 /**
- * Returns true if the container needs attention (it is not MP4).
+ * Returns true if the container does not match the preferred format.
  * @param {string} container - Container type of input file.
  * @returns {boolean} True if container needs attention, otherwise false.
  */
-export const containerNeedsAttention = (container) => container !== "MP4"
+export const containerNeedsAttention = (container) =>
+  container.toLowerCase() !== outputContainerFormat.toLocaleLowerCase()

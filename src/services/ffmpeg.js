@@ -8,7 +8,7 @@
  */
 
 import fluentFfmpeg from "fluent-ffmpeg"
-import { extraDebug } from "../config/config.js"
+import { extraDebug, outputContainerFormat } from "../config/config.js"
 import { getFileInfo } from "./ffprobe.js"
 import log from "./logger.js"
 import { mapStreams } from "./stream/stream.js"
@@ -79,7 +79,8 @@ class Ffmpeg {
   setCommonOptions(ffmpeg) {
     ffmpeg
       // Hide output except progress stats
-      .outputOptions(["-hide_banner"])
+      .outputOptions("-hide_banner")
+      .outputOptions(`-f ${outputContainerFormat}`)
       // Output command on start
       .on("start", (command) => log.debug(command))
       .on("stderr", (err) => {

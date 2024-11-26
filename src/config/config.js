@@ -7,3 +7,9 @@ export const debug = process.env.DEBUG || false
 
 /** True to print all the output from FFMPEG. */
 export const extraDebug = process.env.EXTRA_DEBUG || false
+
+/** Format to use for the container when saving a file. */
+export const outputContainerFormat = "mp4"
+
+/** Extension to use when saving a file. */
+export const outputFileExt = "m4v"
