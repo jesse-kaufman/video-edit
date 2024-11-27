@@ -145,7 +145,7 @@ class Ffmpeg {
   }
 
   /**
-   * Extracts subtitle(s) from specified input file.
+   * Extracts text-based subtitle(s) from specified input file.
    * @param {string} inputFilePath - Path to input file.
    * @param {SubtitleStream} stream - Stream being extracted.
    * @param {number} streamCount - Total number of text streams.
