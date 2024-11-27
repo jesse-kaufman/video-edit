@@ -105,7 +105,7 @@ class App {
 
     if (convertOpts?.extractSubs) {
       // Extract text-based English subtitles from the video file
-      this.ffmpeg.extractSubs(false)
+      this.ffmpeg.extractSubs()
 
       // Return if only extracting subtitles
       if (convertOpts?.extractOnly === true) return

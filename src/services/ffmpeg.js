@@ -88,11 +88,8 @@ class Ffmpeg {
       })
   }
 
-  /**
-   * Extracts text-based English subtitles from the video file.
-   * @param {boolean} exitIfNotFound - Whether to exit the program if no matching subtitles are found.
-   */
-  extractSubs(exitIfNotFound) {
+  /** Extracts text-based English subtitles from the video file. */
+  async extractSubs() {
     log.notice("Extracting text subtitles ...")
 
     // Get all text-based subtitle streams from the video file
