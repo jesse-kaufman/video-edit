@@ -27,7 +27,7 @@ export default {
    */
   success(msg) {
     return new Promise((resolve) =>
-      resolve(console.log(chalk.bgGreen.bold(` ${msg} `)))
+      resolve(console.log(chalk.bgGreen.black.bold(` ${msg} `)))
     )
   },
 
