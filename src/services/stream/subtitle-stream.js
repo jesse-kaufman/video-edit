@@ -49,29 +49,6 @@ export const getSubtitleStreamData = (stream, index) => {
 }
 
 /**
- * Gets the output file based on the specified input file and stream.
- * @param {string} inputFile - The name of the input file.
- * @param {SubtitleStream} stream - The subtitle stream being extracted.
- * @param {number} streamCount - The number of streams to be extracted.
- * @returns {string} The output file.
- */
-export const getSubFilename = (inputFile, stream, streamCount) => {
-  // Set base output file path to the input file path minus the extension
-  let outputFile = path.join(
-    path.dirname(inputFile),
-    path.basename(inputFile, path.extname(inputFile))
-  )
-
-  // If there are multiple streams, append title (if set) or index to the output file name
-  if (streamCount > 1 && stream.index !== 0) {
-    outputFile += `.${stream.title || stream.index}`
-  }
-
-  // Append ".eng.srt" to the output file name
-  return `${outputFile}.${stream.lang}.srt`
-}
-
-/**
  * Map image-based English subtitles.
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - Fluent-ffmpeg instance.
  * @param {Array<SubtitleStream>} streams - Array of subtitle streams from ffprobe.
