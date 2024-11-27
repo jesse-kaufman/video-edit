@@ -82,7 +82,6 @@ class Ffmpeg {
     ffmpeg
       // Hide output except progress stats
       .outputOptions("-hide_banner")
-      .outputOptions(`-f ${outputContainerFormat}`)
       // Output command on start
       .on("start", (command) => log.debug(command))
       .on("stderr", (err) => {
