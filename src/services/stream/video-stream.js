@@ -45,7 +45,7 @@ export const mapVideoStreams = (ffmpegProcess, inputStreams, convertVideo) => {
 
   ffmpegProcess
     // Map video stream
-    .outputOptions("-map 0:v")
+    .outputOptions("-map 0:v:0")
     // If converting video, set codec to h265, otherwise copy
     .videoCodec(convertVideo ? "hevc" : "copy")
     // Set video language
