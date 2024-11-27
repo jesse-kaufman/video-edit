@@ -93,23 +93,54 @@ class Ffmpeg {
   async extractSubs() {
     log.notice("Extracting text subtitles ...")
 
+    this.extractTextSubs()
+    await this.extractPgsSubs()
+  }
+
+  /**
+   * Extracts all text-based English subs.
+   */
+  extractTextSubs() {
     // Get all text-based subtitle streams from the video file
     const textSubs = getTextSubtitles(this.inputStreams.subtitle)
 
     // If no English subtitles were found, exit the program
     if (textSubs.length === 0) {
-      const msg = `No text English subtitles were found in the video file.`
-      if (exitIfNotFound) {
-        log.error(msg)
-        process.exit(1)
-      }
-      // Log warning if not exiting
-      log.warn(msg)
+      log.warn("No text English subtitles were found in the video file.")
+      return
     }
 
     // Walk through subtitle streams and extract all simultaneously
     for (const stream of textSubs) {
-      this.runExtract(this.inputFile, stream, stream.index)
+      this.extractTextSub(this.inputFile, stream, textSubs.length)
+    }
+  }
+
+  /**
+   * Extracts all text-based English subs.
+   */
+  async extractPgsSubs() {
+    // Get all PGS subtitle streams from the video file
+    const pgsSubs = this.inputStreams.subtitle.filter(
+      (sub) => sub.codecName === "hdmv_pgs_subtitle"
+    )
+
+    // If no English subtitles were found, exit the program
+    if (pgsSubs.length === 0) {
+      log.warn("No text English PGS subtitles were found in the video file.")
+      return
+    }
+
+    log.info("Extracting PGS subtitles...")
+    const execAsync = promisify(exec)
+
+    try {
+      // Execute ffmpeg command to convert PGS subtitle to SRT
+      const output = await execAsync(`pgsrip -a "${this.inputFile}"`)
+      log.success("PGS subtitle converted successfully to SRT!")
+      log.debug(output)
+    } catch (error) {
+      log.fail("Error converting PGS subtitle to SRT:", error)
     }
   }
 
@@ -119,7 +150,7 @@ class Ffmpeg {
    * @param {SubtitleStream} stream - Stream being extracted.
    * @param {number} streamCount - Total number of text streams.
    */
-  async runExtract(inputFilePath, stream, streamCount) {
+  async extractTextSub(inputFilePath, stream, streamCount) {
     // Get the subtitle file path
     const outputFile = getSubFilename(inputFilePath, stream, streamCount)
 
