@@ -56,7 +56,7 @@ export const getInputStreams = (streams) => {
  * @param {ConvertOpts} opts - Options.
  * @returns {Promise<Streams>} Mapped outbut streams.
  */
-export const mapStreams = async (ffmpeg, streams, opts) => {
+export const mapStreams = (ffmpeg, streams, opts) => {
   const { convertVideo, convertAudio } = opts
   const { video, audio, subtitle } = streams
 
