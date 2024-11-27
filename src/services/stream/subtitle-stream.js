@@ -40,7 +40,7 @@ export const getSubtitleStreamData = (stream, index) => {
     .replace(/HDMV.*/, "PGS subtitle")
 
   return {
-    lang: stream.tags?.language || "",
+    lang: stream.tags?.language,
     title: stream.tags?.title?.trim() || "",
     codecName: `${stream.codec_name}`,
     formattedCodecName,
