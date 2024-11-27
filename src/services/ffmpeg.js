@@ -7,15 +7,17 @@
  * @typedef {import('../@types/streams.js').SubtitleStream} SubtitleStream
  */
 
-import fluentFfmpeg from "fluent-ffmpeg"
+import { exec } from "node:child_process"
+import { promisify } from "node:util"
 import { extraDebug, outputContainerFormat } from "../config/config.js"
+import fluentFfmpeg from "fluent-ffmpeg"
 import { getFileInfo } from "./ffprobe.js"
-import log from "./logger.js"
-import { mapStreams } from "./stream/stream.js"
-import { printProgress } from "./output/progress-output.js"
-import { getTextSubtitles } from "./stream/subtitle-stream.js"
 import { getSubFilename } from "./filename.js"
+import log from "./logger.js"
 import { printInputFileInfo } from "./output/file-info-output.js"
+import { printProgress } from "./output/progress-output.js"
+import { mapStreams } from "./stream/stream.js"
+import { getTextSubtitles } from "./stream/subtitle-stream.js"
 
 /** Class that acts as a wrapper for fluent-ffmpeg. */
 class Ffmpeg {
