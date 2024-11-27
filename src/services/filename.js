@@ -30,16 +30,36 @@ export const getOutputFilename = (inputFile, command) => {
  */
 export const getSubFilename = (inputFile, stream, streamCount) => {
   // Set base output file path to the input file path minus the extension
-  let outputFile = path.join(
+  const outputFile = path.join(
     path.dirname(inputFile),
     path.basename(inputFile, path.extname(inputFile))
   )
 
-  // If there are multiple streams, append title (if set) or index to the output file name
-  if (streamCount > 1 && stream.index !== 0) {
-    outputFile += `.${stream.title || stream.index}`
-  }
+  // Get label for subtitle filename, if applicable
+  const label = getStreamLabel(stream, streamCount)
 
-  // Append ".eng.srt" to the output file name
-  return `${outputFile}.${stream.lang}.srt`
+  // Return full filename for subtitle extract
+  return `${outputFile}.${stream.lang}${label}.srt`
+}
+/**
+ * Gets label for subtitle filename, if applicable.
+ * @param {SubtitleStream} stream - Subtitle stream being extracted.
+ * @param {number} streamCount - Total number of streams to be extracted.
+ * @returns {string} The label for the subtitle filename.
+ */
+function getStreamLabel(stream, streamCount) {
+  // If only one stream, don't add a label
+  if (streamCount === 1) return ""
+
+  // Default label to title if set, otherwise empty string
+  let label = stream?.title || ""
+
+  // Mark the first incoming stream as default
+  if (stream.index === 0) label = "default"
+
+  // Make "SDH" lowercase
+  label = label.replace("SDH", "sdh")
+
+  // Use label if set, otherwise fall back to stream index
+  return `.${label || stream.index}`
 }
