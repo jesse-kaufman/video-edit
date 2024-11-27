@@ -135,7 +135,11 @@ export const getOutputAudioCodec = async (
  */
 export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
   // Filter out non-English audio streams from input file
-  const outputStreams = streams.filter((s) => s.lang === "eng")
+  const outputStreams = streams
+    // Get only English audio
+    .filter((s) => s.lang === "eng")
+    // Sort audio streams by channel count
+    .sort((a, b) => b.channelCount - a.channelCount)
 
   // Process each audio stream
   streams.forEach(async (stream) => {
