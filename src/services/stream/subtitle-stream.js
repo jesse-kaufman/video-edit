@@ -3,8 +3,6 @@
  * @typedef {import('../../@types/streams.js').SubtitleStream} SubtitleStream
  */
 
-import path from "node:path"
-
 /** Text subtitle formats. */
 export const textSubTypes = ["mov_text", "subrip", "ass", "ssa"]
 
