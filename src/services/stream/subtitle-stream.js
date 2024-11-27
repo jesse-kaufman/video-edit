@@ -43,6 +43,7 @@ export const getSubtitleStreamData = (stream, index) => {
     lang: stream.tags?.language,
     title: stream.tags?.title?.trim() || "",
     codecName: `${stream.codec_name}`,
+    origTitle: stream.tags?.title?.trim() || "",
     formattedCodecName,
     index,
   }
