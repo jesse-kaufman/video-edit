@@ -9,7 +9,7 @@ export const debug = process.env.DEBUG || false
 export const extraDebug = process.env.EXTRA_DEBUG || false
 
 /** Format to use for the container when saving a file. */
-export const outputContainerFormat = "mp4"
+export const outputContainerFormat = "matroska"
 
 /** Extension to use when saving a file. */
-export const outputFileExt = "m4v"
+export const outputFileExt = "mkv"
