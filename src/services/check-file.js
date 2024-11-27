@@ -3,7 +3,7 @@
  * @file File check service.
  */
 
-import { outputContainerFormat } from "../config/config.js"
+import { outputFileExt } from "../config/config.js"
 import { textSubTypes } from "./stream/subtitle-stream.js"
 
 /**
@@ -28,4 +28,4 @@ export const streamNeedsAttention = (lang, codec, type) =>
  * @returns {boolean} True if container needs attention, otherwise false.
  */
 export const containerNeedsAttention = (container) =>
-  container.toLowerCase() !== outputContainerFormat.toLocaleLowerCase()
+  container.toLowerCase() !== outputFileExt.toLocaleLowerCase()
