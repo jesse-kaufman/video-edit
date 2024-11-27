@@ -26,7 +26,7 @@ export const printInputFileInfo = (log, file, size, streams) => {
   log.notice("--------------------------------")
   log.notice("Input file info:")
   log.notice("--------------------------------")
-  printInfo(log, file, size, streams)
+  printInfo(log, "input", file, size, streams)
 }
 
 /**
@@ -40,17 +40,18 @@ export const printOutputFileInfo = (log, file, size, streams) => {
   log.info("--------------------------------")
   log.notice("Output file info:")
   log.info("--------------------------------")
-  printInfo(log, file, size, streams)
+  printInfo(log, "output", file, size, streams)
 }
 
 /**
  * Prints file information to console.
  * @param {import("../logger.js").Logger} log - Logger instance.
+ * @param {string} displayType - Type of file info display (input or output).
  * @param {string} file - Full path to input file.
  * @param {number} size - File size in bytes.
  * @param {import("../../@types/streams.js").Streams} streams - Information to print.
  */
-function printInfo(log, file, size, streams) {
+function printInfo(log, displayType, file, size, streams) {
   const { video, audio, subtitle } = streams
   const container = path.extname(file).replace(".", "").toUpperCase()
   const fileSize = bytes(size).toString()
@@ -78,14 +79,14 @@ function printInfo(log, file, size, streams) {
   // Print audio stream information
   log.info(formatLabel(`Audio (${audio.length} streams)`))
   audio.forEach((stream) => {
-    printStreamInfo(log, stream, "audio")
+    printStreamInfo(log, stream, "audio", displayType)
   })
 
   // Print subtitle stream information
   if (subtitle.length > 0) {
     log.info(formatLabel(`Subtitles (${subtitle.length} streams)`))
     subtitle.forEach((stream) => {
-      printStreamInfo(log, stream, "subtitle")
+      printStreamInfo(log, stream, "subtitle", displayType)
     })
   }
 }
@@ -93,11 +94,13 @@ function printInfo(log, file, size, streams) {
 /**
  * Prints information about a single stream to the console.
  * @param {import("../logger.js").Logger} log - Logger instance used for outputting information.
- * @param {AudioStream|SubtitleStream} stream - Stream object containing details to be printed.
+ * @param {(AudioStream|SubtitleStream)} stream - Stream object containing details to be printed.
  * @param {string} type - Type of stream (audio or subtitle).
+ * @param {string} displayType - Type of display (input or output).
  */
-function printStreamInfo(log, stream, type) {
-  const { index, codecName, formattedCodecName, lang, title } = stream
+function printStreamInfo(log, stream, type, displayType) {
+  const { index, codecName, formattedCodecName, lang, title, origTitle } =
+    stream
 
   // Setup base array of details
   const details = [lang, formattedCodecName]
@@ -111,6 +114,8 @@ function printStreamInfo(log, stream, type) {
     streamNeedsAttention(lang, codecName, type)
   )
 
+  const streamTitle = displayType === "input" ? origTitle : title
+
   // Print formatted stream info
-  log.info(`  ${streamLabel} ${formatStreamTitle(`${title}`)}`)
+  log.info(`  ${streamLabel} ${formatStreamTitle(`${streamTitle}`)}`)
 }
