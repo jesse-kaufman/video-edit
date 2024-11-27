@@ -62,17 +62,17 @@ export const mapImageSubs = (ffmpegProcess, streams) => {
   )
 
   // Map subtitle streams and set metadata
-  imageSubs.forEach((/** @type {SubtitleStream} */ sub) => {
+  imageSubs.forEach((/** @type {SubtitleStream} */ sub, i) => {
     ffmpegProcess
       // Map subtitle stream and set codec to copy
       .outputOptions(["-map", `0:s:${sub.index}`])
-      .outputOptions(`-c:s:${sub.index} copy`)
+      .outputOptions(`-c:s:${i} copy`)
 
     // Set subtitle stream title
-    if (sub?.title !== "") {
-      console.log("Subtitle title already set: `", sub.title.trim(), "`")
+    if (sub?.title?.trim() !== "") {
+      console.log("Subtitle title already set: `", sub?.title?.trim(), "`")
       ffmpegProcess.outputOptions([
-        `-metadata:s:s:${sub.index}`,
+        `-metadata:s:s:${i}`,
         `title=${sub.title}  `,
       ])
     }

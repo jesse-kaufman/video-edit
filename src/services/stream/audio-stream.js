@@ -142,7 +142,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
     .sort((a, b) => b.channelCount - a.channelCount)
 
   // Process each audio stream
-  streams.forEach(async (stream) => {
+  streams.forEach(async (stream, i) => {
     // Get the audio codec to use based on the source codec and the stream should be converted
     const codec = await getOutputAudioCodec(
       ffmpegProcess,
@@ -154,7 +154,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
     ffmpegProcess
       .outputOptions("-map", `0:a:${stream.index}`)
       // Set audio stream codec
-      .outputOptions(`-c:a ${codec}`)
+      .outputOptions(`-c:a:${i} ${codec}`)
       // Set audio stream language
       .outputOptions([`-metadata:s:a:${stream.index}`, `language=eng`])
       // Set audio stream title
