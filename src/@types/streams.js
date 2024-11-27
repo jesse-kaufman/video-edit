@@ -37,6 +37,7 @@
  * @property {string} codecName - Codec name of subtitle.
  * @property {string} formattedCodecName - Long name of codec.
  * @property {number} index - Index of subtitle.
+ * @property {string} origTitle - Original title of audio stream.
  * @property {string} title - Title of subtitle stream.
  */
 
