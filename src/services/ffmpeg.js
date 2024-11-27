@@ -195,6 +195,13 @@ class Ffmpeg {
       ffmpegProcess
         // Set global language
         .outputOptions([`-metadata`, `language=eng`])
+        // Make video work on Apple devices
+        .outputOptions(["-brand mp42", "-movflags +faststart"])
+        // Add hvc1 tag for h265 video stream
+        .outputOptions("-tag:v hvc1")
+        // Strip global metadata
+        .outputOptions("-map_metadata:g -1")
+        .outputOptions(`-f ${outputContainerFormat}`)
         // Output message on progress
         .on("progress", (progress) => printProgress(log, progress, fps))
         // Handle errors
