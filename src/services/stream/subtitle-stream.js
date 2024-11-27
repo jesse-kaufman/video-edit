@@ -14,7 +14,11 @@ export const textSubTypes = ["mov_text", "subrip", "ass", "ssa"]
  * @returns {Array<SubtitleStream>} Image-based subtitle streams.
  */
 export const getImageSubtitles = (streams) =>
-  streams.filter((stream) => !textSubTypes.includes(stream.codecName))
+  streams.filter(
+    (stream) =>
+      !textSubTypes.includes(stream.codecName) &&
+      stream.codecName !== "hdmv_pgs_subtitle"
+  )
 
 /**
  * Returns only text-based subtitle streams.
