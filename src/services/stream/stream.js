@@ -63,7 +63,7 @@ export const mapStreams = async (ffmpeg, streams, opts) => {
   // Map video stream(s)
   const outputVideo = mapVideoStreams(ffmpeg, video, convertVideo)
   // Map audio streams
-  const outputAudio = await mapAudioStreams(ffmpeg, audio, convertAudio)
+  const outputAudio = mapAudioStreams(ffmpeg, audio, convertAudio)
   // Map image-based English subtitles
   const outputSubtitle = mapImageSubs(ffmpeg, subtitle)
 
