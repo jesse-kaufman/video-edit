@@ -9,8 +9,8 @@
 
 import { exec } from "node:child_process"
 import { promisify } from "node:util"
-import { extraDebug, outputContainerFormat } from "../config/config.js"
 import fluentFfmpeg from "fluent-ffmpeg"
+import { extraDebug, outputContainerFormat } from "../config/config.js"
 import { getFileInfo } from "./ffprobe.js"
 import { getSubFilename } from "./filename.js"
 import log from "./logger.js"
