@@ -54,7 +54,7 @@ export const getInputStreams = (streams) => {
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpeg - Fluent-ffmpeg instance.
  * @param {Streams} streams - Input file streams.
  * @param {ConvertOpts} opts - Options.
- * @returns {Promise<Streams>} Mapped outbut streams.
+ * @returns {Streams} Mapped output streams.
  */
 export const mapStreams = (ffmpeg, streams, opts) => {
   const { convertVideo, convertAudio } = opts
