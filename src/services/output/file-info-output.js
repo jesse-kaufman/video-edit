@@ -23,10 +23,11 @@ import {
  * @param {import("../../@types/streams.js").Streams} streams - Information to print.
  */
 export const printInputFileInfo = (log, file, size, streams) => {
-  log.notice("--------------------------------")
+  log.notice("================================")
   log.notice("Input file info:")
   log.notice("--------------------------------")
   printInfo(log, "input", file, size, streams)
+  log.notice("================================")
 }
 
 /**
@@ -37,10 +38,11 @@ export const printInputFileInfo = (log, file, size, streams) => {
  * @param {import("../../@types/streams.js").Streams} streams - Information to print.
  */
 export const printOutputFileInfo = (log, file, size, streams) => {
-  log.info("--------------------------------")
+  log.notice("================================")
   log.notice("Output file info:")
-  log.info("--------------------------------")
+  log.notice("--------------------------------")
   printInfo(log, "output", file, size, streams)
+  log.notice("================================")
 }
 
 /**
