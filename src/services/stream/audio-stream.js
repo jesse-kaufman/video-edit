@@ -142,7 +142,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
     .sort((a, b) => b.channelCount - a.channelCount)
 
   // Process each audio stream
-  streams.forEach(async (stream, i) => {
+  outputStreams.forEach(async (stream, i) => {
     // Get the audio codec to use based on the source codec and the stream should be converted
     const codec = await getOutputAudioCodec(
       ffmpegProcess,
