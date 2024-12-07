@@ -1,6 +1,8 @@
 /**
  * @file Video stream service.
  * @typedef {import('../../@types/streams.js').VideoStream} VideoStream
+ * @typedef {import('../../@types/convert-opts.js').ConvertOpts} ConvertOpts
+
  */
 
 /**
@@ -36,10 +38,10 @@ export const getVideoStreamData = (stream, index) => {
  * Maps video stream(s).
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
  * @param {Array<VideoStream>} streams - Video streams from input file.
- * @param {boolean} [convertVideo] - True to convert video stream, otherwise copy.
+ * @param {ConvertOpts} opts - Conversion options.
  * @returns {Array<VideoStream>} Array of mapped video streams.
  */
-export const mapVideoStreams = (ffmpegProcess, streams, convertVideo) => {
+export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
   // Add first video stream to outputStreams property
   const outputStreams = [streams[0]]
 
@@ -49,7 +51,7 @@ export const mapVideoStreams = (ffmpegProcess, streams, convertVideo) => {
     // Set video language
     .outputOptions([`-metadata:s:v:0`, `language=eng`])
 
-  setVideoConvertOpts(ffmpegProcess, streams[0], convertVideo)
+  setVideoConvertOpts(ffmpegProcess, streams[0], opts)
 
   return outputStreams
 }
@@ -58,12 +60,13 @@ export const mapVideoStreams = (ffmpegProcess, streams, convertVideo) => {
  * Sets video conversion options.
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
  * @param {VideoStream} stream - Video stream from input file.
- * @param {boolean} [convertVideo] - True to convert video stream, otherwise copy.
+ * @param {ConvertOpts} opts - Conversion options.
  * @returns {void}
  */
-function setVideoConvertOpts(ffmpegProcess, stream, convertVideo) {
+function setVideoConvertOpts(ffmpegProcess, stream, opts) {
+  const { convertVideo, forceConvert } = opts
   // Add video options if converting video stream
-  if (convertVideo && stream.codecName !== "hevc") {
+  if (convertVideo && (stream.codecName !== "hevc" || forceConvert === true)) {
     ffmpegProcess
       // Set codec to libx265
       .videoCodec("libx265")

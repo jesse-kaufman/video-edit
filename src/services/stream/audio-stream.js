@@ -1,5 +1,6 @@
 /**
  * @file Audio stream service.
+ * @typedef {import('../../@types/convert-opts.js').ConvertOpts} ConvertOpts
  * @typedef {import('../../@types/streams.js').AudioStream} AudioStream
  * @typedef {import('fluent-ffmpeg').FfmpegCommand} FfmpegCommand
  */
@@ -130,10 +131,12 @@ export const getOutputAudioCodec = async (
  * Maps audio streams in fluent-ffmpeg and returns array of mapped streams.
  * @param {FfmpegCommand} ffmpegProcess - Fluent-ffmpeg object.
  * @param {Array<AudioStream>} streams - Audio streams from ffprobe.
- * @param {boolean} [convertAudio] - True to convert audio stream, otherwise copy.
+ * @param {ConvertOpts} opts - Conversion options.
  * @returns {Array<AudioStream>} Array of audio stream objects.
  */
-export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
+export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
+  const { convertAudio } = opts
+
   // Filter out non-English audio streams from input file
   const outputStreams = streams
     // Get only English audio

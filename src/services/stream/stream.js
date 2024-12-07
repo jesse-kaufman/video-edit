@@ -57,13 +57,12 @@ export const getInputStreams = (streams) => {
  * @returns {Streams} Mapped output streams.
  */
 export const mapStreams = (ffmpeg, streams, opts) => {
-  const { convertVideo, convertAudio } = opts
   const { video, audio, subtitle } = streams
 
   // Map video stream(s)
-  const outputVideo = mapVideoStreams(ffmpeg, video, convertVideo)
+  const outputVideo = mapVideoStreams(ffmpeg, video, opts)
   // Map audio streams
-  const outputAudio = mapAudioStreams(ffmpeg, audio, convertAudio)
+  const outputAudio = mapAudioStreams(ffmpeg, audio, opts)
   // Map image-based English subtitles
   const outputSubtitle = mapImageSubs(ffmpeg, subtitle)
 
