@@ -56,7 +56,7 @@ export const printOutputFileInfo = (log, file, size, streams) => {
 function printInfo(log, displayType, file, size, streams) {
   const { video, audio, subtitle } = streams
   const container = path.extname(file).replace(".", "").toUpperCase()
-  const fileSize = bytes(size).toString()
+  const fileSize = bytes(size)?.toString() || "?"
 
   // Print filename
   log.info(file)
