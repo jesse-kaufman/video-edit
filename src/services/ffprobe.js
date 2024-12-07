@@ -17,6 +17,17 @@ import { getInputStreams } from "./stream/stream.js"
 import log from "./logger.js"
 
 /**
+ * Gets file size in bytes.
+ * @param {string} file - Full path to input file.
+ * @returns {Promise<number>} File size in bytes.
+ */
+export const getFileSize = async (file) => {
+  const statAsync = promisify(fs.stat)
+  const stats = await statAsync(file)
+  return stats.size
+}
+
+/**
  * Gets stream info from input file using ffmpeg.
  * @param {string} inputFile - Full path to input file.
  * @returns {Promise<FileInfo>} Input file info.
@@ -33,15 +44,4 @@ export const getFileInfo = async (inputFile) => {
   const size = await getFileSize(inputFile)
 
   return { streams, size }
-}
-
-/**
- * Gets file size in bytes.
- * @param {string} file - Full path to input file.
- * @returns {Promise<number>} File size in bytes.
- */
-async function getFileSize(file) {
-  const statAsync = promisify(fs.stat)
-  const stats = await statAsync(file)
-  return stats.size
 }
