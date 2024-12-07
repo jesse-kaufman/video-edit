@@ -100,7 +100,7 @@ class App {
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
    * @param {ConvertOpts} convertOpts - Conversion options.
    */
-  async cleanup(convertOpts) {
+  cleanup(convertOpts) {
     // Merge default options with provided options and set to ffmpeg instance.s
     this.ffmpeg.convertOpts = { ...this.defaultOpts, ...convertOpts }
 
@@ -115,7 +115,7 @@ class App {
     // Convert/clean file
     try {
       log.notice("Running ffmpeg command...")
-      await this.ffmpeg.run()
+      this.ffmpeg.run()
     } catch (err) {
       log.fail("Error running ffmpeg:", err)
     }
