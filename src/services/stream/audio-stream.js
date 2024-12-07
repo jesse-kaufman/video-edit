@@ -155,7 +155,6 @@ export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
       outputStreams[i].formattedCodecName = "AAC"
     }
 
-
     // Map audio stream
     ffmpegProcess
       .outputOptions("-map", `0:a:${stream.index}`)
