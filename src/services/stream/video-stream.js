@@ -35,13 +35,13 @@ export const getVideoStreamData = (stream, index) => {
 /**
  * Maps video stream(s).
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
- * @param {Array<VideoStream>} inputStreams - Video streams from input file.
+ * @param {Array<VideoStream>} streams - Video streams from input file.
  * @param {boolean} [convertVideo] - True to convert video stream, otherwise copy.
  * @returns {Array<VideoStream>} Array of mapped video streams.
  */
-export const mapVideoStreams = (ffmpegProcess, inputStreams, convertVideo) => {
-  // Add video stream(s) to outputStreams property
-  const outputStreams = inputStreams
+export const mapVideoStreams = (ffmpegProcess, streams, convertVideo) => {
+  // Add first video stream to outputStreams property
+  const outputStreams = [streams[0]]
 
   ffmpegProcess
     // Map video stream
