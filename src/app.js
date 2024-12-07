@@ -54,7 +54,7 @@ class App {
     let convertOpts = {}
 
     // Print input file info
-    this.printInputInfo()
+    this.ffmpeg.printInputFileInfo()
 
     // If only printing info, return immediately
     if (this.command === "info") return
@@ -94,14 +94,6 @@ class App {
     }
 
     await this.cleanup(convertOpts)
-  }
-
-  printInputInfo() {
-    this.ffmpeg.printInputFileInfo()
-  }
-
-  printOutputInfo() {
-    this.ffmpeg.printOutputFileInfo()
   }
 
   /**
