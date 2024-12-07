@@ -93,11 +93,11 @@ class Ffmpeg {
   }
 
   /** Extracts text-based English subtitles from the video file. */
-  async extractSubs() {
+  extractSubs() {
     log.notice("Extracting text subtitles ...")
 
     this.extractTextSubs()
-    await this.extractPgsSubs()
+    this.extractPgsSubs()
   }
 
   /**
