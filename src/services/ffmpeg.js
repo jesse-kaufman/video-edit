@@ -131,17 +131,25 @@ class Ffmpeg {
       return
     }
 
-    log.info("Extracting PGS subtitles...")
-    const execAsync = promisify(exec)
+    log.notice("Extracting PGS subtitles...")
 
-    try {
-      // Execute ffmpeg command to convert PGS subtitle to SRT
-      const output = await execAsync(`pgsrip -a "${this.inputFile}"`)
-      log.success("PGS subtitle converted successfully to SRT!")
-      log.debug(output)
-    } catch (error) {
-      log.fail("Error converting PGS subtitle to SRT:", error)
-    }
+    const pgsripOpts = [
+      "--all",
+      "--max-workers 20",
+      "--force",
+      "--language en",
+      "--tag ocr",
+      "--tag tidy",
+    ].join(" ")
+
+    // Execute ffmpeg command to convert PGS subtitle to SRT
+    const pgsrip = exec(`pgsrip ${pgsripOpts} "${this.inputFile}"`)
+
+    pgsrip?.stdout?.on("data", (data) => log.info(data))
+    pgsrip?.stderr?.on("data", (data) =>
+      log.error("Error ripping PGS subs:", data)
+    )
+    pgsrip.on("close", () => log.success("Done ripping PGS subs!"))
   }
 
   /**
