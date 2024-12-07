@@ -18,7 +18,7 @@ export const getOutputFilename = (inputFile, command) => {
   /** Base filename of input file. */
   const basename = path.basename(inputFile, path.extname(inputFile))
 
-  return path.join(dir, `${basename}-${command}.${outputFileExt}`)
+  return path.join(dir, `${basename}_${command}.${outputFileExt}`)
 }
 
 /**
