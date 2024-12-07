@@ -8,7 +8,6 @@
  */
 
 import { exec } from "node:child_process"
-import { promisify } from "node:util"
 import fluentFfmpeg from "fluent-ffmpeg"
 import { extraDebug, outputContainerFormat } from "../config/config.js"
 import { getFileInfo, getFileSize } from "./ffprobe.js"
@@ -125,7 +124,7 @@ class Ffmpeg {
   /**
    * Extracts all text-based English subs.
    */
-  async extractPgsSubs() {
+  extractPgsSubs() {
     // Get all PGS subtitle streams from the video file
     const pgsSubs = this.inputStreams.subtitle.filter(
       (sub) => sub.codecName === "hdmv_pgs_subtitle"
