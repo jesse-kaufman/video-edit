@@ -68,7 +68,6 @@ export const mapImageSubs = (ffmpegProcess, streams) => {
 
     // Set subtitle stream title
     if (sub?.title?.trim() !== "") {
-      console.log("Subtitle title already set: `", sub?.title?.trim(), "`")
       ffmpegProcess.outputOptions([
         `-metadata:s:s:${i}`,
         `title=${sub.title}  `,
