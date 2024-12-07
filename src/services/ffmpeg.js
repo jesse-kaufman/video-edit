@@ -34,6 +34,9 @@ class Ffmpeg {
   /** @type {Streams} Input file stream data.*/
   inputStreams = { audio: [], video: [], subtitle: [] }
 
+  /** Output file size in bytes. */
+  outputFileSize = 0
+
   /** @type {Streams} Output file stream data. */
   outputStreams = { audio: [], video: [], subtitle: [] }
 
@@ -228,6 +231,16 @@ class Ffmpeg {
       this.inputFile,
       this.inputFileSize,
       this.inputStreams
+    )
+  }
+
+  /** Prints output file info. */
+  printOutputFileInfo() {
+    printOutputFileInfo(
+      log,
+      this.outputFile,
+      this.outputFileSize,
+      this.outputStreams
     )
   }
 }
