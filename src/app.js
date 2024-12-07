@@ -46,48 +46,54 @@ class App {
 
   /**
    * Runs the program.
+   * @returns {Promise<void>}
    */
   async run() {
     // Initialize VideoEdit with input file and output filename
     this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init()
+    let convertOpts = {}
+
+    // Print input file info
+    this.printInputInfo()
+
+    // If only printing info, return immediately
+    if (this.command === "info") return
 
     switch (this.command) {
       // Extract English subtitles from the video file
       case "extract-subs":
-        this.cleanup({ extractSubs: true, extractOnly: true })
+        convertOpts = { extractSubs: true, extractOnly: true }
         break
 
       // Run cleanup process on video file
       case "clean":
-        await this.cleanup({ extractSubs: true })
+        convertOpts = { extractSubs: true }
         break
 
       // Convert audio to AAC if not already
       case "convert-audio":
-        await this.cleanup({ convertAudio: true })
+        convertOpts = { convertAudio: true }
         break
 
       // Convert video to H265
       case "convert-video":
-        await this.cleanup({ convertVideo: true })
+        convertOpts = { convertVideo: true }
         break
 
       // Clean and convert anything that needs to be converted
       case "full":
-        await this.cleanup({
+        convertOpts = {
           extractSubs: true,
           convertAudio: true,
           convertVideo: true,
-        })
-        break
-
-      case "info":
-        this.printInfo()
+        }
         break
 
       default:
         log.fail(`Invalid command: ${this.command}`)
     }
+
+    await this.cleanup(convertOpts)
   }
 
   printInfo() {
