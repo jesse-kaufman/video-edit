@@ -96,7 +96,7 @@ class App {
     await this.cleanup(convertOpts)
   }
 
-  printInfo() {
+  printInputInfo() {
     this.ffmpeg.printInputFileInfo()
   }
 
