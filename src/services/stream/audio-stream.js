@@ -150,6 +150,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, convertAudio) => {
       convertAudio
     )
 
+    // Set codec name when converting
     if (convertAudio) {
       outputStreams[i].codecName = "aac"
       outputStreams[i].formattedCodecName = "AAC"
