@@ -100,6 +100,10 @@ class App {
     this.ffmpeg.printInputFileInfo()
   }
 
+  printOutputInfo() {
+    this.ffmpeg.printOutputFileInfo()
+  }
+
   /**
    * Cleans up audio and subtitle tracks as well as metadata throughout the video file.
    * @param {ConvertOpts} convertOpts - Conversion options.
