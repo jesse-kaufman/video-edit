@@ -46,12 +46,40 @@ export const mapVideoStreams = (ffmpegProcess, inputStreams, convertVideo) => {
   ffmpegProcess
     // Map video stream
     .outputOptions("-map 0:v:0")
-    // If converting video, set codec to h265, otherwise copy
-    .videoCodec(convertVideo ? "hevc" : "copy")
     // Set video language
     .outputOptions([`-metadata:s:v:0`, `language=eng`])
-    // Blank video title
-    .outputOptions([`-metadata:s:v:0`, `title=`])
+
+  setVideoConvertOpts(ffmpegProcess, streams[0], convertVideo)
 
   return outputStreams
+}
+
+/**
+ * Sets video conversion options.
+ * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
+ * @param {VideoStream} stream - Video stream from input file.
+ * @param {boolean} [convertVideo] - True to convert video stream, otherwise copy.
+ * @returns {void}
+ */
+function setVideoConvertOpts(ffmpegProcess, stream, convertVideo) {
+  // Add video options if converting video stream
+  if (convertVideo && stream.codecName !== "hevc") {
+    ffmpegProcess
+      // Set codec to libx265
+      .videoCodec("libx265")
+      // Use slow preset
+      .outputOptions(["-preset", "slow"])
+      // Use CRF of 24 by default
+      .outputOptions(["-crf", "24"])
+      // Set pixel format to yuv420p10le for HEVC streams
+      .outputOptions(["-pix_fmt:v:0", "yuv420p10le"])
+      // Set HEVC profile to main10 for HEVC streams
+      .outputOptions(["-profile:v:0", "main10"])
+    return
+  }
+
+  // If not converting video, set video codec to copy
+  ffmpegProcess
+    // Set codec to libx265
+    .videoCodec("copy")
 }
