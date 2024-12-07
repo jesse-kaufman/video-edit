@@ -192,36 +192,45 @@ class Ffmpeg {
   /**
    * Runs the ffmpeg command.
    */
-  async run() {
+  run() {
     const { fps } = this.inputStreams.video[0]
     const ffmpegProcess = fluentFfmpeg(this.inputFile)
 
     // Set common options
     this.setCommonOptions(ffmpegProcess)
     // Map streams
-    await mapStreams(ffmpegProcess, this.inputStreams, this.convertOpts)
+    this.outputStreams = mapStreams(
+      ffmpegProcess,
+      this.inputStreams,
+      this.convertOpts
+    )
 
-    // Wrap ffmpeg call in promise
-    await new Promise((resolve, reject) => {
-      ffmpegProcess
-        // Set global language
-        .outputOptions([`-metadata`, `language=eng`])
-        // Make video work on Apple devices
-        .outputOptions(["-brand mp42", "-movflags +faststart"])
-        // Add hvc1 tag for h265 video stream
-        .outputOptions("-tag:v hvc1")
-        // Strip global metadata
-        .outputOptions("-map_metadata:g -1")
-        .outputOptions(`-f ${outputContainerFormat}`)
-        // Output message on progress
-        .on("progress", (progress) => printProgress(log, progress, fps))
-        // Handle errors
-        .on("error", (err) => reject(console.error(err)))
-        // Output message on success
-        .on("end", () => resolve(log.success("Command finished successfully!")))
-        // Save the video to the output file
-        .save(this.outputFile)
-    })
+    if (this.outputStreams.video[0].codecName === "H.265") {
+      // Add hvc1 tag for h265 video stream
+      ffmpegProcess.outputOptions("-tag:v hvc1")
+    }
+
+    ffmpegProcess
+      // Set global language
+      .outputOptions([`-metadata`, `language=eng`])
+      // Make video work on Apple devices
+      .outputOptions(["-brand mp42", "-movflags +faststart"])
+      // Strip global metadata
+      .outputOptions("-map_metadata:g -1")
+      // Set container format
+      .outputOptions(`-f ${outputContainerFormat}`)
+      // Output message on progress
+      .on("progress", (progress) => printProgress(log, progress, fps))
+      // Handle errors
+      .on("error", (err) => console.error(err))
+      // Output message on success
+      .on("end", async () => {
+        this.outputFileSize = await getFileSize(this.outputFile)
+        log.success("Command finished successfully!")
+        this.printOutputFileInfo()
+      })
+      // Save the video to the output file
+      .save(this.outputFile)
   }
 
   /** Prints input file info. */
