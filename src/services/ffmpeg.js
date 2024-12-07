@@ -11,10 +11,13 @@ import { exec } from "node:child_process"
 import { promisify } from "node:util"
 import fluentFfmpeg from "fluent-ffmpeg"
 import { extraDebug, outputContainerFormat } from "../config/config.js"
-import { getFileInfo } from "./ffprobe.js"
+import { getFileInfo, getFileSize } from "./ffprobe.js"
 import { getSubFilename } from "./filename.js"
 import log from "./logger.js"
-import { printInputFileInfo } from "./output/file-info-output.js"
+import {
+  printInputFileInfo,
+  printOutputFileInfo,
+} from "./output/file-info-output.js"
 import { printProgress } from "./output/progress-output.js"
 import { mapStreams } from "./stream/stream.js"
 import { getTextSubtitles } from "./stream/subtitle-stream.js"
