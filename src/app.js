@@ -86,8 +86,7 @@ class App {
         break
 
       default:
-        log.info(`Invalid command: ${this.command}`)
-        process.exit(1)
+        log.fail(`Invalid command: ${this.command}`)
     }
   }
 
