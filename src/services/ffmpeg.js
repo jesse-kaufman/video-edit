@@ -107,7 +107,9 @@ class Ffmpeg {
    */
   extractTextSubs() {
     // Get all text-based subtitle streams from the video file
-    const textSubs = getTextSubtitles(this.inputStreams.subtitle)
+    const textSubs = getTextSubtitles(this.inputStreams.subtitle).filter(
+      (subtitle) => subtitle.lang === "eng"
+    )
 
     // If no English subtitles were found, exit the program
     if (textSubs.length === 0) {
