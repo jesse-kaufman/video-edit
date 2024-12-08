@@ -89,6 +89,28 @@ class App {
         }
         break
 
+      // Clean and convert anything that needs to be converted, forcing video conversion
+      case "force-full":
+        convertOpts = {
+          extractSubs: true,
+          convertAudio: true,
+          convertVideo: true,
+          forceConvert: true,
+        }
+        break
+
+      // Clean and convert anything that needs to be converted, forcing video conversion
+      case "force-full-tv":
+        convertOpts = {
+          extractSubs: true,
+          convertAudio: true,
+          convertVideo: true,
+          forceConvert: true,
+          ffmpegPreset: "medium",
+          ffmpegCrf: 26,
+        }
+        break
+
       default:
         log.fail(`Invalid command: ${this.command}`)
     }
