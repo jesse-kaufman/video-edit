@@ -48,6 +48,7 @@ class App {
    * Runs the program.
    * @returns {Promise<void>}
    */
+  // eslint-disable-next-line complexity, max-lines-per-function
   async run() {
     // Initialize VideoEdit with input file and output filename
     this.ffmpeg = await new Ffmpeg(this.inputFile, this.outputFilename).init()
