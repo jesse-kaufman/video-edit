@@ -116,7 +116,7 @@ class App {
         log.fail(`Invalid command: ${this.command}`)
     }
 
-    await this.cleanup(convertOpts)
+    this.cleanup(convertOpts)
   }
 
   /**
