@@ -2,7 +2,6 @@
  * @file Video stream service.
  * @typedef {import('../../@types/streams.js').VideoStream} VideoStream
  * @typedef {import('../../@types/convert-opts.js').ConvertOpts} ConvertOpts
-
  */
 
 /**
@@ -64,16 +63,19 @@ export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
  * @returns {void}
  */
 function setVideoConvertOpts(ffmpegProcess, stream, opts) {
-  const { convertVideo, forceConvert } = opts
+  const { convertVideo, forceConvert, ffmpegPreset, ffmpegCrf } = opts
+  const preset = ffmpegPreset || "slow"
+  const crf = (ffmpegCrf || 24).toString()
+
   // Add video options if converting video stream
   if (convertVideo && (stream.codecName !== "hevc" || forceConvert === true)) {
     ffmpegProcess
       // Set codec to libx265
       .videoCodec("libx265")
       // Use slow preset
-      .outputOptions(["-preset", "slow"])
+      .outputOptions(["-preset", preset])
       // Use CRF of 24 by default
-      .outputOptions(["-crf", "24"])
+      .outputOptions(["-crf", crf])
       // Set pixel format to yuv420p10le for HEVC streams
       .outputOptions(["-pix_fmt:v:0", "yuv420p10le"])
       // Set HEVC profile to main10 for HEVC streams
