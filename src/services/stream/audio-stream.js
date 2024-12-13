@@ -110,7 +110,7 @@ export const getAudioEncoder = async (
   // Copy if already in output format
   if (currentCodec === outputAudioCodec) return "copy"
 
-  // If not encoding to AAC, return the codec  as-is
+  // If not encoding to AAC, return the codec as-is
   if (outputAudioCodec !== "aac") return outputAudioCodec
 
   // Use libfdk_aac encoder if available, otherwise fall back to libaac
