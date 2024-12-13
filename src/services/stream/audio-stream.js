@@ -93,13 +93,13 @@ function formatChannelLayout(channelLayout) {
 }
 
 /**
- * Sets the audio codec based on if we're converting and if libfdk_aac is available.
+ * Sets the audio encoder based on if we're converting and if libfdk_aac is available.
  * @param {FfmpegCommand} fluentFfmpeg - Fluent ffmpeg object.
  * @param {string} currentCodec - The audio codec of the current stream.
  * @param {boolean|undefined} convert - Whether or not to convert the audio stream.
  * @returns {Promise<string>} The audio codec to use.
  */
-export const getOutputAudioCodec = async (
+export const getAudioEncoder = async (
   fluentFfmpeg,
   currentCodec,
   convert
@@ -152,7 +152,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
   // Process each audio stream
   outputStreams.forEach(async (stream, i) => {
     // Get the audio codec to use based on the source codec and the stream should be converted
-    const codec = await getOutputAudioCodec(
+    const codec = await getAudioEncoder(
       ffmpegProcess,
       stream.codecName,
       convertAudio
