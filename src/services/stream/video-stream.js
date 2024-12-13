@@ -79,6 +79,11 @@ function setVideoConvertOpts(ffmpegProcess, stream, opts) {
   const needsConverting =
     forceConvert === true || stream.codecName !== outputVideoCodec
 
+  log.debug("Video codec:", stream.codecName)
+  log.debug("Force convert:", forceConvert)
+  log.debug("Codec matches target?", stream.codecName !== outputVideoCodec)
+  log.debug("Needs conversion: ", needsConverting)
+
   // Add video options if converting video stream
   if (convertVideo && needsConverting) {
     ffmpegProcess
