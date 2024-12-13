@@ -99,11 +99,7 @@ function formatChannelLayout(channelLayout) {
  * @param {boolean|undefined} convert - Whether or not to convert the audio stream.
  * @returns {Promise<string>} The audio codec to use.
  */
-export const getAudioEncoder = async (
-  fluentFfmpeg,
-  currentCodec,
-  convert
-) => {
+export const getAudioEncoder = async (fluentFfmpeg, currentCodec, convert) => {
   // Copy audio stream unless we're converting
   if (convert !== true) return "copy"
 
