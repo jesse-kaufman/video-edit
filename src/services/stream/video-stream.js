@@ -47,13 +47,7 @@ export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
   const { convertVideo } = opts
 
   // Add first video stream to outputStreams property
-  const outputStreams = [streams[0]]
-
-  // Set video codec when converting video
-  if (convertVideo) {
-    outputStreams[0].codecName = outputVideoCodec
-    outputStreams[0].formattedCodecName = getCodecName(outputVideoCodec)
-  }
+  const videoStream = streams[0]
 
   ffmpegProcess
     // Map video stream
@@ -61,9 +55,14 @@ export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
     // Set video language
     .outputOptions([`-metadata:s:v:0`, `language=eng`])
 
-  setVideoConvertOpts(ffmpegProcess, streams[0], opts)
+  setVideoConvertOpts(ffmpegProcess, videoStream, opts)
 
-  return outputStreams
+  // Set video codec when converting video
+  if (convertVideo) {
+    videoStream.codecName = outputVideoCodec
+    videoStream.formattedCodecName = getCodecName(outputVideoCodec)
+  }
+  return [videoStream]
 }
 
 /**
