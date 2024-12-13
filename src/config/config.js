@@ -13,3 +13,5 @@ export const outputContainerFormat = "matroska"
 
 /** Extension to use when saving a file. */
 export const outputFileExt = "mkv"
+/** Audio codec to use when converting audio stream. */
+export const outputAudioCodec = "aac"

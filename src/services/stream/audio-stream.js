@@ -6,6 +6,7 @@
  */
 
 import log from "../logger.js"
+import { outputAudioCodec } from "../../config/config.js"
 
 /**
  * Sets up AudioStream based on ffprobe stream data.
@@ -106,10 +107,13 @@ export const getOutputAudioCodec = async (
   // Copy audio stream unless we're converting
   if (convert !== true) return "copy"
 
-  // Copy if already AAC
-  if (currentCodec === "aac") return "copy"
+  // Copy if already in output format
+  if (currentCodec === outputAudioCodec) return "copy"
 
-  // Check if libfdk_aac is available
+  // If not encoding to AAC, return the codec  as-is
+  if (outputAudioCodec !== "aac") return outputAudioCodec
+
+  // Use libfdk_aac encoder if available, otherwise fall back to libaac
   const codec = await new Promise((resolve, reject) => {
     fluentFfmpeg.getAvailableEncoders((err, availableEncoders) => {
       if (err) reject(log.fail("Error getting available encoders:", err))
