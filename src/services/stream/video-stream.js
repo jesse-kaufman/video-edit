@@ -4,6 +4,8 @@
  * @typedef {import('../../@types/convert-opts.js').ConvertOpts} ConvertOpts
  */
 
+import { outputVideoCodec, getCodecName } from "../../config/config.js"
+
 /**
  * Sets up VideoStream based on ffprobe stream data.
  * @param {any} stream - The video stream object from ffprobe.
@@ -48,8 +50,8 @@ export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
 
   // Set video codec when converting video
   if (convertVideo) {
-    outputStreams[0].codecName = "hevc"
-    outputStreams[0].formattedCodecName = "H.265"
+    outputStreams[0].codecName = outputVideoCodec
+    outputStreams[0].formattedCodecName = getCodecName(outputVideoCodec)
   }
 
   ffmpegProcess
@@ -74,9 +76,11 @@ function setVideoConvertOpts(ffmpegProcess, stream, opts) {
   const { convertVideo, forceConvert, ffmpegPreset, ffmpegCrf } = opts
   const preset = ffmpegPreset || "slow"
   const crf = (ffmpegCrf || 24).toString()
+  const needsConverting =
+    forceConvert === true || stream.codecName !== outputVideoCodec
 
   // Add video options if converting video stream
-  if (convertVideo && (stream.codecName !== "hevc" || forceConvert === true)) {
+  if (convertVideo && needsConverting) {
     ffmpegProcess
       // Set codec to libx265
       .videoCodec("libx265")
@@ -84,10 +88,15 @@ function setVideoConvertOpts(ffmpegProcess, stream, opts) {
       .outputOptions(["-preset", preset])
       // Use CRF of 24 by default
       .outputOptions(["-crf", crf])
-      // Set pixel format to yuv420p10le for HEVC streams
-      .outputOptions(["-pix_fmt:v:0", "yuv420p10le"])
-      // Set HEVC profile to main10 for HEVC streams
-      .outputOptions(["-profile:v:0", "main10"])
+
+    // Set HEVC-specific options
+    if (outputVideoCodec === "hevc") {
+      ffmpegProcess
+        // Set pixel format to yuv420p10le for HEVC streams
+        .outputOptions(["-pix_fmt:v:0", "yuv420p10le"])
+        // Set HEVC profile to main10 for HEVC streams
+        .outputOptions(["-profile:v:0", "main10"])
+    }
     return
   }
 
