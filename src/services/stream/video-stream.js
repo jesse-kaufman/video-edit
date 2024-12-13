@@ -4,6 +4,7 @@
  * @typedef {import('../../@types/convert-opts.js').ConvertOpts} ConvertOpts
  */
 
+import log from "../logger.js"
 import { outputVideoCodec, getCodecName } from "../../config/config.js"
 
 /**
