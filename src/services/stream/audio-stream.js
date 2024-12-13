@@ -6,7 +6,7 @@
  */
 
 import log from "../logger.js"
-import { outputAudioCodec } from "../../config/config.js"
+import { outputAudioCodec, getCodecName } from "../../config/config.js"
 
 /**
  * Sets up AudioStream based on ffprobe stream data.
@@ -160,8 +160,8 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
 
     // Set codec name when converting
     if (convertAudio) {
-      outputStreams[i].codecName = "aac"
-      outputStreams[i].formattedCodecName = "AAC"
+      outputStreams[i].codecName = outputAudioCodec
+      outputStreams[i].formattedCodecName = getCodecName(outputAudioCodec)
     }
 
     // Map audio stream
