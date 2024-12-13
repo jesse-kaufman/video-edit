@@ -41,8 +41,16 @@ export const getVideoStreamData = (stream, index) => {
  * @returns {Array<VideoStream>} Array of mapped video streams.
  */
 export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
+  const { convertVideo } = opts
+
   // Add first video stream to outputStreams property
   const outputStreams = [streams[0]]
+
+  // Set video codec when converting video
+  if (convertVideo) {
+    outputStreams[0].codecName = "hevc"
+    outputStreams[0].formattedCodecName = "H.265"
+  }
 
   ffmpegProcess
     // Map video stream
