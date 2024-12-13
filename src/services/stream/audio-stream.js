@@ -162,6 +162,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
     if (convertAudio) {
       outputStreams[i].codecName = outputAudioCodec
       outputStreams[i].formattedCodecName = getCodecName(outputAudioCodec)
+      outputStreams[i].lang = "eng"
     }
 
     // Map audio stream
