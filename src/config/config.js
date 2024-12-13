@@ -21,7 +21,7 @@ export const outputVideoCodec = "hevc"
 export const outputAudioCodec = "aac"
 
 /**
- * Human-friendly names for codecs.
+ * Gets human-friendly names for codecs.
  * @param {string} codec - Codec from ffprobe/ffmpeg.
  * @returns {string} Human-friendly name.
  */
