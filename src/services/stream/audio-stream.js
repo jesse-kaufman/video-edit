@@ -145,7 +145,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
   // Filter out non-English audio streams from input file
   const outputStreams = streams
     // Get only English audio
-    .filter((s) => s.lang === "eng")
+    .filter((s) => s.lang === "eng" || s.lang === "und")
     // Sort audio streams by channel count
     .sort((a, b) => b.channelCount - a.channelCount)
 
