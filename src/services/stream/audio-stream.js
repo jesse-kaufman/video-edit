@@ -115,7 +115,7 @@ export const getAudioEncoder = async (fluentFfmpeg, currentCodec, convert) => {
       if (err) reject(log.fail("Error getting available encoders:", err))
 
       // If libfdk_aac is available, use it
-      if (availableEncoders.libfdk_aac.type === "audio") {
+      if (availableEncoders.libfdk_aac?.type === "audio") {
         log.debug("Using libfdk_aac codec")
         resolve("libfdk_aac")
       }
