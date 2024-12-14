@@ -1,6 +1,7 @@
 /**
  * @file File info output service.
  * @typedef {import("../ffprobe.js").FileInfo} FileInfo
+ * @typedef {import("../logger.js").Logger} Logger
  * @typedef {import("../../@types/streams.js").AudioStream} AudioStream
  * @typedef {import("../../@types/streams.js").SubtitleStream} SubtitleStream
  */
