@@ -81,9 +81,7 @@ function printInfo(log, displayType, file, size, streams) {
 
   // Print audio stream information
   log.info(formatLabel(`Audio (${audio.length} streams)`))
-  audio.forEach((stream) => {
-    printStreamInfo(log, stream, "audio", displayType)
-  })
+  audio.forEach((stream) => printStreamInfo(log, stream, "audio", displayType))
 
   // Print subtitle stream information
   if (subtitle.length > 0) {
