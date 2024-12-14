@@ -20,23 +20,16 @@ export const outputVideoCodec = "hevc"
 /** Audio codec to use when converting audio stream. */
 export const outputAudioCodec = "aac"
 
+/** Mapping of ffmpeg/ffprobe codec names to human-friendly names. */
+const codecNames = {
+  hevc: "H.265",
+  aac: "AAC",
+}
+
 /**
  * Gets human-friendly names for codecs.
  * @param {string} codec - Codec from ffprobe/ffmpeg.
  * @returns {string} Human-friendly name.
  */
-export const getCodecName = (codec) => {
-  const codecNames = {
-    hevc: "H.265",
-    aac: "AAC",
-  }
-
-  // Return human-friendly name if available
-  if (Object.prototype.hasOwnProperty.call(codecNames, codec)) {
-    // @ts-ignore
-    return codecNames[codec]
-  }
-
-  // Fall back to returning codec as-is
-  return codec
-}
+// @ts-ignore
+export const getCodecName = (codec) => codecNames?.[codec] || codec
