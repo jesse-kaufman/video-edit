@@ -8,6 +8,7 @@
 
 import path from "node:path"
 import bytes from "bytes"
+import { outputVideoCodec } from "../../config/config.js"
 import { streamNeedsAttention, containerNeedsAttention } from "../check-file.js"
 import {
   formatLabel,
@@ -71,12 +72,11 @@ function printInfo(log, displayType, file, size, streams) {
   log.info(formatDataItem("File Size", fileSize))
 
   // Print video stream information
-  log.info(
-    formatDataItem(
-      "Video",
-      `${video[0].formattedCodecName} @ ${video[0].fps}FPS`,
-      video[0].formattedCodecName !== "H.265"
-    )
+  printInfoItem(
+    log,
+    "Video",
+    `${video[0].formattedCodecName} (${video[0].resolution} @ ${video[0].fps}FPS)`,
+    video[0].codecName !== outputVideoCodec
   )
 
   // Print audio stream information
