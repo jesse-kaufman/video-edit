@@ -67,7 +67,7 @@ function printInfo(log, displayType, file, size, streams) {
   printInfoItem(log, "Container", container, containerNeedsAttention(container))
 
   // Print file size
-  log.info(formatDataItem("File Size", fileSize))
+  printInfoItem(log, "File Size", fileSize)
 
   // Print video stream information
   printInfoItem(
@@ -78,7 +78,7 @@ function printInfo(log, displayType, file, size, streams) {
   )
 
   // Print audio stream information
-  log.info(formatLabel(`Audio (${audio.length} streams)`))
+  printInfoItem(log, `Audio (${audio.length} streams)`, "")
   audio.forEach((stream) => printStreamInfo(log, stream, "audio", displayType))
 
   // Print subtitle stream information
