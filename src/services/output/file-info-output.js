@@ -64,9 +64,7 @@ function printInfo(log, displayType, file, size, streams) {
   log.info(file)
 
   // Print container information
-  log.info(
-    formatDataItem("Container", container, containerNeedsAttention(container))
-  )
+  printInfoItem(log, "Container", container, containerNeedsAttention(container))
 
   // Print file size
   log.info(formatDataItem("File Size", fileSize))
@@ -119,4 +117,15 @@ function printStreamInfo(log, stream, type, displayType) {
 
   // Print formatted stream info
   log.info(`  ${streamLabel} ${formatStreamTitle(`${streamTitle}`)}`)
+}
+
+/**
+ * Prints data item with label and data string.
+ * @param {Logger} log - Logger instance.
+ * @param {string} label - Label to be formatted.
+ * @param {string} data - Data to be formatted.
+ * @param {boolean} needsAttention - True if stream needs attention.
+ */
+function printInfoItem(log, label, data, needsAttention = false) {
+  log.info(formatDataItem(label, data, needsAttention))
 }
