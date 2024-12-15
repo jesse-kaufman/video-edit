@@ -210,15 +210,16 @@ class Ffmpeg {
     )
 
     if (this.outputStreams.video[0].codecName === "H.265") {
-      // Add hvc1 tag for h265 video stream
-      ffmpegProcess.outputOptions("-tag:v hvc1")
+      ffmpegProcess
+        // Add hvc1 tag for h265 video stream
+        .outputOptions("-tag:v hvc1")
+        // Make video work on Apple devices
+        .outputOptions(["-movflags +faststart"])
     }
 
     ffmpegProcess
       // Set global language
       .outputOptions([`-metadata`, `language=eng`])
-      // Make video work on Apple devices
-      .outputOptions(["-brand mp42", "-movflags +faststart"])
       // Strip global metadata
       .outputOptions("-map_metadata:g -1")
       // Set container format
