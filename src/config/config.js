@@ -14,10 +14,10 @@ export const outputContainerFormat = "matroska"
 /** Extension to use when saving a file. */
 export const outputFileExt = "mkv"
 
-/** Video codec to use when converting video stream. */
+/** @type {string} Video codec to use when converting video stream. */
 export const outputVideoCodec = "hevc"
 
-/** Audio codec to use when converting audio stream. */
+/** @type {string} Audio codec to use when converting audio stream. */
 export const outputAudioCodec = "aac"
 
 /** Mapping of ffmpeg/ffprobe codec names to human-friendly names. */
