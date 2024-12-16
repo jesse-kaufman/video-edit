@@ -9,7 +9,11 @@
 
 import { exec } from "node:child_process"
 import fluentFfmpeg from "fluent-ffmpeg"
-import { extraDebug, outputContainerFormat } from "../config/config.js"
+import {
+  extraDebug,
+  outputContainerFormat,
+  outputAudioCodec,
+} from "../config/config.js"
 import { getFileInfo, getFileSize } from "./ffprobe.js"
 import { getSubFilename } from "./filename.js"
 import log from "./logger.js"
@@ -25,8 +29,10 @@ import { getTextSubtitles } from "./stream/subtitle-stream.js"
 class Ffmpeg {
   /** Full path to the input file. */
   inputFile
+
   /** Full path to the output file. */
   outputFile
+
   /** Conversion options. */
   convertOpts
 
@@ -41,6 +47,8 @@ class Ffmpeg {
 
   /** @type {Streams} Output file stream data. */
   outputStreams = { audio: [], video: [], subtitle: [] }
+
+  static hasLibfdk = false
 
   /**
    * Creates a new VideoEdit object.
@@ -256,6 +264,23 @@ class Ffmpeg {
       this.outputFileSize,
       this.outputStreams
     )
+  }
+
+  async hasLibfdkEncoder() {
+    return await new Promise((resolve, reject) => {
+      fluentFfmpeg().getAvailableEncoders((err, availableEncoders) => {
+        if (err) reject(log.fail("Error getting available encoders:", err))
+
+        // If libfdk_aac is available, use it
+        if (availableEncoders.libfdk_aac?.type === "audio") {
+          log.debug("Using libfdk_aac codec")
+          resolve(true)
+        }
+
+        // Default audio codec to aac
+        resolve(false)
+      })
+    })
   }
 }
 
