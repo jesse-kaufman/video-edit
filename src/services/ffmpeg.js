@@ -86,6 +86,10 @@ class Ffmpeg {
       log.error("No audio streams mapped.")
     }
 
+    if (outputAudioCodec === "aac") {
+      Ffmpeg.hasLibfdk = await this.hasLibfdkEncoder()
+    }
+
     // Return instance
     return this
   }
