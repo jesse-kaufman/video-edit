@@ -7,6 +7,7 @@
 
 import log from "../logger.js"
 import { outputAudioCodec, getCodecName } from "../../config/config.js"
+import Ffmpeg from "../ffmpeg.js"
 
 /**
  * Sets up AudioStream based on ffprobe stream data.
@@ -97,9 +98,9 @@ function formatChannelLayout(channelLayout) {
  * @param {FfmpegCommand} fluentFfmpeg - Fluent ffmpeg object.
  * @param {string} currentCodec - The audio codec of the current stream.
  * @param {boolean|undefined} convert - Whether or not to convert the audio stream.
- * @returns {Promise<string>} The audio codec to use.
+ * @returns {string} The audio codec to use.
  */
-export const getAudioEncoder = async (fluentFfmpeg, currentCodec, convert) => {
+export const getAudioEncoder = (fluentFfmpeg, currentCodec, convert) => {
   // Copy audio stream unless we're converting
   if (convert !== true) return "copy"
 
@@ -110,22 +111,15 @@ export const getAudioEncoder = async (fluentFfmpeg, currentCodec, convert) => {
   if (outputAudioCodec !== "aac") return outputAudioCodec
 
   // Use libfdk_aac encoder if available, otherwise fall back to libaac
-  const codec = await new Promise((resolve, reject) => {
-    fluentFfmpeg.getAvailableEncoders((err, availableEncoders) => {
-      if (err) reject(log.fail("Error getting available encoders:", err))
+  return getAACEncoder()
+}
 
-      // If libfdk_aac is available, use it
-      if (availableEncoders.libfdk_aac?.type === "audio") {
-        log.debug("Using libfdk_aac codec")
-        resolve("libfdk_aac")
-      }
-
-      // Default audio codec to aac
-      resolve("aac")
-    })
-  })
-
-  return codec
+/**
+ * Gets AAC encoder.
+ * @returns {string} The audio encoders to use for AAC audio.
+ */
+function getAACEncoder() {
+  return Ffmpeg.hasLibfdk ? "libfdk_aac" : "aac"
 }
 
 /**
@@ -148,7 +142,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
   // Process each audio stream
   outputStreams.forEach(async (stream, i) => {
     // Get the audio codec to use based on the source codec and the stream should be converted
-    const codec = await getAudioEncoder(
+    const encoder = getAudioEncoder(
       ffmpegProcess,
       stream.codecName,
       convertAudio
@@ -165,7 +159,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
     ffmpegProcess
       .outputOptions("-map", `0:a:${stream.index}`)
       // Set audio stream codec
-      .outputOptions(`-c:a:${i} ${codec}`)
+      .outputOptions(`-c:a:${i} ${encoder}`)
       // Set audio stream language
       .outputOptions([`-metadata:s:a:${stream.index}`, `language=eng`])
       // Set audio stream title
