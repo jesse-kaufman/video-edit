@@ -233,6 +233,7 @@ class Ffmpeg {
     }
 
     ffmpegProcess
+      .outputOptions(["-hwaccel", "auto"])
       // Set global language
       .outputOptions([`-metadata`, `language=eng`])
       // Strip global metadata
