@@ -100,6 +100,8 @@ class Ffmpeg {
    */
   setCommonOptions(ffmpeg) {
     ffmpeg
+      // Use hardware acceleration for decoding
+      .inputOptions(["-hwaccel", "auto"])
       // Hide output except progress stats
       .outputOptions("-hide_banner")
       // Output command on start
@@ -233,7 +235,6 @@ class Ffmpeg {
     }
 
     ffmpegProcess
-      .inputOptions(["-hwaccel", "auto"])
       // Set global language
       .outputOptions([`-metadata`, `language=eng`])
       // Strip global metadata
