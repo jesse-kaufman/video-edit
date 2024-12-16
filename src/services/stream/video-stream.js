@@ -41,7 +41,7 @@ export const getVideoStreamData = (stream, index) => {
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
  * @param {Array<VideoStream>} streams - Video streams from input file.
  * @param {ConvertOpts} opts - Conversion options.
- * @returns {Array<VideoStream>} Array of mapped video streams.
+ * @returns {Array<VideoStream>} Contains video stream data and FFMPEG output options.
  */
 export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
   const { convertVideo } = opts
@@ -49,19 +49,29 @@ export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
   // Add first video stream to outputStreams property
   const videoStream = streams[0]
 
+  // Map video stream in ffmpeg options
+  const ffmpegOpts = new Array()
+  ffmpegOpts.push(["-map", "0:v:0"])
+  // Set global language
+  ffmpegOpts.push([`-metadata:s:v:0`, `language=eng`])
+
   ffmpegProcess
     // Map video stream
     .outputOptions("-map 0:v:0")
     // Set video language
     .outputOptions([`-metadata:s:v:0`, `language=eng`])
 
-  setVideoConvertOpts(ffmpegProcess, videoStream, opts)
+  const videoOpts = setVideoConvertOpts(ffmpegProcess, videoStream, opts)
+  if (videoOpts?.length) ffmpegOpts.push(...videoOpts)
 
   // Set video codec when converting video
   if (convertVideo) {
     videoStream.codecName = outputVideoCodec
     videoStream.formattedCodecName = getCodecName(outputVideoCodec)
   }
+
+  log.debug("ffmpegOpts", ffmpegOpts)
+
   return [videoStream]
 }
 
@@ -70,14 +80,20 @@ export const mapVideoStreams = (ffmpegProcess, streams, opts) => {
  * @param {import('fluent-ffmpeg').FfmpegCommand} ffmpegProcess - The fluent-ffmpeg object.
  * @param {VideoStream} stream - Video stream from input file.
  * @param {ConvertOpts} opts - Conversion options.
- * @returns {void}
+ * @returns {Array<Array<string>>|Array<string>} FFMPEG options.
  */
+// eslint-disable-next-line max-lines-per-function, max-statements
 function setVideoConvertOpts(ffmpegProcess, stream, opts) {
   const { convertVideo, forceConvert, ffmpegPreset, ffmpegCrf } = opts
   const preset = ffmpegPreset || "slow"
   const crf = (ffmpegCrf || 24).toString()
   const needsConverting =
     forceConvert === true || stream.codecName !== outputVideoCodec
+
+  const ffmpegOpts = []
+
+  // Default to using copy "encoder" for stream
+  let encoder = "copy"
 
   log.debug("Video codec:", stream.codecName)
   log.debug("Force convert:", forceConvert)
@@ -86,27 +102,50 @@ function setVideoConvertOpts(ffmpegProcess, stream, opts) {
 
   // Add video options if converting video stream
   if (convertVideo && needsConverting) {
+    encoder = getVideoEncoder()
+
+    ffmpegOpts.push(["-preset", preset])
+    ffmpegOpts.push(["-crf", crf])
+
     ffmpegProcess
-      // Set codec to libx265
-      .videoCodec("libx265")
-      // Use slow preset
+      .videoCodec(encoder)
       .outputOptions(["-preset", preset])
-      // Use CRF of 24 by default
       .outputOptions(["-crf", crf])
 
     // Set HEVC-specific options
     if (outputVideoCodec === "hevc") {
+      // Set pixel format to yuv420p10le for HEVC streams
+      ffmpegOpts.push(["-pix_fmt:v:0", "yuv420p10le"])
+      // Set HEVC profile to main10 for HEVC streams
+      ffmpegOpts.push(["-profile:v:0", "main10"])
+
       ffmpegProcess
         // Set pixel format to yuv420p10le for HEVC streams
         .outputOptions(["-pix_fmt:v:0", "yuv420p10le"])
         // Set HEVC profile to main10 for HEVC streams
         .outputOptions(["-profile:v:0", "main10"])
     }
-    return
+  } else {
+    // If not converting video, set video codec to copy
+    ffmpegProcess.videoCodec("copy")
   }
 
-  // If not converting video, set video codec to copy
-  ffmpegProcess
-    // Set codec to libx265
-    .videoCodec("copy")
+  ffmpegOpts.push(["-c:v", encoder])
+
+  return ffmpegOpts
+}
+
+/**
+ * Gets video encoder based on desired output codec.
+ * @returns {string} Video encoder to use.
+ */
+function getVideoEncoder() {
+  switch (outputVideoCodec) {
+    case "hevc":
+      return "libx265"
+    case "h264":
+      return "libx264"
+    default:
+      return outputVideoCodec
+  }
 }
