@@ -129,6 +129,7 @@ function getAACEncoder() {
  * @param {ConvertOpts} opts - Conversion options.
  * @returns {Array<AudioStream>} Array of audio stream objects.
  */
+// eslint-disable-next-line max-lines-per-function
 export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
   const { convertAudio } = opts
 
@@ -140,7 +141,9 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
     .sort((a, b) => b.channelCount - a.channelCount)
 
   // Process each audio stream
-  outputStreams.forEach(async (stream, i) => {
+  outputStreams.forEach((stream, i) => {
+    const ffmpegOpts = new Array()
+
     // Get the audio codec to use based on the source codec and the stream should be converted
     const encoder = getAudioEncoder(
       ffmpegProcess,
@@ -148,13 +151,25 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
       convertAudio
     )
 
-    // Set codec name when converting
+    // Set details when converting
     if (convertAudio) {
       outputStreams[i].codecName = outputAudioCodec
       outputStreams[i].formattedCodecName = getCodecName(outputAudioCodec)
-      outputStreams[i].lang = "eng"
     }
 
+    // Default language to English
+    outputStreams[i].lang = "eng"
+
+    ffmpegOpts.push(["-map", `0:a:${stream.index}`])
+    ffmpegOpts.push([`-c:a:${i}`, encoder])
+    ffmpegOpts.push([`-metadata:s:a:${stream.index}`, `language=eng`])
+    ffmpegOpts.push([
+      `-metadata:s:a:${stream.index}`,
+      `title=${stream.title}  `,
+    ])
+
+    outputStreams[i].ffmpegOpts = ffmpegOpts
+    console.log(outputStreams)
     // Map audio stream
     ffmpegProcess
       .outputOptions("-map", `0:a:${stream.index}`)

@@ -36,6 +36,9 @@ class Ffmpeg {
   /** Conversion options. */
   convertOpts
 
+  /** @type {Array<Array<string>>} FFMPEG output options. */
+  ffmpegOutputOpts = []
+
   /** Input file size in bytes. */
   inputFileSize = 0
 

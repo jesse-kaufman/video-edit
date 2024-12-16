@@ -17,6 +17,7 @@
  * @property {number} index - Index of video stream.
  * @property {string} title - Title of video stream.
  * @property {string} resolution - Resolution of video stream.
+ * @property {any[]} [ffmpegOpts] - Mapping options for FFMPEG command.
  */
 
 /**
@@ -29,6 +30,7 @@
  * @property {string} title - Title of audio stream.
  * @property {string} channelLayout - Channel layout of audio stream.
  * @property {number} channelCount - Number of channels in audio stream.
+ * @property {any[]} [ffmpegOpts] - Mapping options for FFMPEG command.
  */
 
 /**
@@ -39,6 +41,7 @@
  * @property {number} index - Index of subtitle.
  * @property {string} origTitle - Original title of audio stream.
  * @property {string} title - Title of subtitle stream.
+ * @property {any[]} [ffmpegOpts] - Mapping options for FFMPEG command.
  */
 
 export default {}
