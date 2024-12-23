@@ -56,7 +56,7 @@ export const getSubtitleStreamData = (stream, index) => {
 export const mapImageSubs = (ffmpegProcess, streams) => {
   // Grab image-based English subtitle streams
   const imageSubs = getImageSubtitles(streams).filter(
-    (sub) => sub.lang === "eng"
+    (sub) => sub.lang === "eng" || sub.lang === undefined
   )
 
   // Map subtitle streams and set metadata
