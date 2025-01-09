@@ -36,18 +36,19 @@ export const getSubFilename = (inputFile, stream, streamCount) => {
   )
 
   // Get label for subtitle filename, if applicable
-  const label = getStreamLabel(stream, streamCount)
+  const label = getSubtitleStreamLabel(stream, streamCount)
 
   // Return full filename for subtitle extract
   return `${outputFile}.${stream.lang}${label}.srt`
 }
+
 /**
  * Gets label for subtitle filename, if applicable.
  * @param {SubtitleStream} stream - Subtitle stream being extracted.
  * @param {number} streamCount - Total number of streams to be extracted.
  * @returns {string} The label for the subtitle filename.
  */
-function getStreamLabel(stream, streamCount) {
+function getSubtitleStreamLabel(stream, streamCount) {
   // If only one stream, don't add a label
   if (streamCount === 1) return ""
 
