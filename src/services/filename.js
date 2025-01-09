@@ -57,8 +57,12 @@ function getStreamLabel(stream, streamCount) {
   // Mark the first incoming stream as default
   if (stream.index === 0) label = "default"
 
-  // Make "SDH" lowercase
-  label = label.replace("SDH", "sdh")
+  // Make "SDH" lowercase and fix invalid characters
+  label = label
+    .replace("SDH", "sdh")
+    .replace(/\//g, " - ")
+    .replace("[", "(")
+    .replace("]", ")")
 
   // Use label if set, otherwise fall back to stream index
   return `.${label || stream.index}`
