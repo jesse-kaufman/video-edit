@@ -90,6 +90,24 @@ class App {
         }
         break
 
+      // Clean and convert anything that needs to be converted using TV settings
+      case "full-tv":
+        convertOpts = {
+          extractSubs: true,
+          convertAudio: true,
+          convertVideo: true,
+        }
+        break
+
+      // Clean and convert anything that needs to be converted using Extras settings
+      case "full-extras":
+        convertOpts = {
+          extractSubs: true,
+          convertAudio: true,
+          convertVideo: true,
+        }
+        break
+
       // Clean and convert anything that needs to be converted, forcing video conversion
       case "force-full":
         convertOpts = {
@@ -100,7 +118,7 @@ class App {
         }
         break
 
-      // Clean and convert anything that needs to be converted, forcing video conversion
+      // Clean and convert anything that needs to be converted, forcing video conversion using TV settings
       case "force-full-tv":
         convertOpts = {
           extractSubs: true,
@@ -109,6 +127,18 @@ class App {
           forceConvert: true,
           ffmpegPreset: "medium",
           ffmpegCrf: 26,
+        }
+        break
+
+      // Clean and convert anything that needs to be converted, forcing video conversion using Extras settings
+      case "force-full-extras":
+        convertOpts = {
+          extractSubs: true,
+          convertAudio: true,
+          convertVideo: true,
+          forceConvert: true,
+          ffmpegPreset: "medium",
+          ffmpegCrf: 28,
         }
         break
 
