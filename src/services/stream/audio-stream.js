@@ -169,7 +169,7 @@ export const mapAudioStreams = (ffmpegProcess, streams, opts) => {
     ])
 
     outputStreams[i].ffmpegOpts = ffmpegOpts
-    console.log(outputStreams)
+
     // Map audio stream
     ffmpegProcess
       .outputOptions("-map", `0:a:${stream.index}`)
