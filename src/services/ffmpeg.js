@@ -244,7 +244,7 @@ class Ffmpeg {
       // Strip global metadata
       .outputOptions("-map_metadata:g -1")
       // Map other attachments
-      .outputOptions("-map t")
+      .outputOptions("-map 0:t?")
       .outputOptions("-c:t copy")
       // Set container format
       .outputOptions(`-f ${outputContainerFormat}`)
