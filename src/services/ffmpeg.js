@@ -187,16 +187,20 @@ class Ffmpeg {
     const outputFile = getSubFilename(inputFilePath, stream, streamCount)
 
     await new Promise((resolve, reject) => {
+      // Default to SRT for subtitle codec
+      let codec = "srt"
       const { fps } = this.inputStreams.video[0]
       const { index } = stream
 
       const ffmpegExtract = fluentFfmpeg(this.inputFile)
       this.setCommonOptions(ffmpegExtract)
 
+      if (stream.codecName === "ass") codec = "copy"
+
       // Extract subtitle using ffmpeg
       ffmpegExtract
         // Map subtitle
-        .outputOptions([`-map 0:s:${index}`, "-scodec srt"])
+        .outputOptions([`-map 0:s:${index}`, `-scodec ${codec}`])
         // Print progress message
         .on("progress", (progress) => printProgress(log, progress, fps, index))
         // Handle errors
@@ -239,6 +243,9 @@ class Ffmpeg {
       .outputOptions([`-metadata`, `language=eng`])
       // Strip global metadata
       .outputOptions("-map_metadata:g -1")
+      // Map other attachments
+      .outputOptions("-map t")
+      .outputOptions("-c:t copy")
       // Set container format
       .outputOptions(`-f ${outputContainerFormat}`)
       // Output message on progress

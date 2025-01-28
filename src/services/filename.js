@@ -29,6 +29,9 @@ export const getOutputFilename = (inputFile, command) => {
  * @returns {string} The output file.
  */
 export const getSubFilename = (inputFile, stream, streamCount) => {
+  // Default to srt for filename extension
+  let ext = "srt"
+
   // Set base output file path to the input file path minus the extension
   const outputFile = path.join(
     path.dirname(inputFile),
@@ -38,8 +41,11 @@ export const getSubFilename = (inputFile, stream, streamCount) => {
   // Get label for subtitle filename, if applicable
   const label = getSubtitleStreamLabel(stream, streamCount)
 
+  // Use .ass for ASS subtitles
+  if (stream.codecName === "ass") ext = "ass"
+
   // Return full filename for subtitle extract
-  return `${outputFile}.${stream.lang}${label}.srt`
+  return `${outputFile}.${stream.lang}${label}.${ext}`
 }
 
 /**
